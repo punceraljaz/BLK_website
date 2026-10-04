@@ -267,7 +267,7 @@ Source videos (outside the project):
   `.pf-room-track`. Picture `assets/img/hero-kitchen.webp` (Downloads\"Sunlit Minimalist Stone Kitchen Interior.png",
   1957×804, Chrome-encoded q0.94, 249 KB; cropped from the top, `object-position: 60% 78%`). On it: logo + "Ras Al Khaimah · UAE" at the top, the four packages along
   the bottom (`.pf-hero__nav`; since 2026-10-04 three items, 3 columns also on phones: FURNISH 01 "Furnishing & styling" → #pkg-1, REMODEL 02 "Renovation & transformation" → #pkg-2, MANAGE 03 ↗ "Property management" → the property management site, **href is a placeholder `#` (data-todo="manage-url"), waiting for the address**; hairline that fills in on hover). Desktop
-  height `clamp(22rem, 64svh, 46vw)` (client: shorter), phone 56svh with a 2×2 grid; small gap below it.
+  height `clamp(18rem, 48svh, 36vw)` (client: shorter, twice), phone 44svh (min 21rem); small gap below it on desktop, none on phones. On phones the room layer's empty text zone then shows below the hero until package text appears (open question to the client).
 - The fixed header is hidden while the hero is on screen: `html.hero-on` (set in the head script when there is no
   #hash, then kept by an IntersectionObserver in js/home.js). The hero is layered over package 01's fixed text and
   package text only becomes current once package 01's top is in the top 18% of the screen (else it showed cut under the hero on phones).
