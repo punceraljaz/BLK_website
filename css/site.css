@@ -1,7 +1,6 @@
 /* Shared by index.html and the package pages (packages/*.html):
    palette, header bar + package rail, the contact dock with its number
-   chooser, and the footer. Load after scrollcraft.css (it overrides that
-   file's :root palette). Moved out of index.html on 2026-10-02. */
+   chooser, and the footer. Load after base.css. Moved out of index.html on 2026-10-02. */
 
 :root {
   /* Palette (2026-10-03, client references: "Smoke #D1D1CC", "Mahogany
@@ -56,13 +55,6 @@
   font-size: 0.95rem; letter-spacing: 0.18em;
   text-transform: uppercase; color: var(--sc-ink); text-decoration: none;
 }
-/* Header in the same quiet serif as the packages. */
-.site-bar .pf-cta--ghost {
-  font-family: var(--pf-serif); font-weight: 500; font-size: 0.8rem;
-  letter-spacing: 0.2em; padding: 0.4em 0;
-  border: 0; background: none;               /* text only, no box */
-}
-.site-bar .pf-cta--ghost:hover { background: none; opacity: 0.6; }
 .site-bar__mark span { color: var(--sc-accent); }
 
 /* Package rail: lives inside the fixed header, not floating over the
@@ -101,7 +93,6 @@
   position: fixed; z-index: var(--sc-z-chrome);
   left: 50%; bottom: clamp(0.9rem, 2.4vh, 1.5rem); transform: translateX(-50%);
   display: flex; gap: 0.6rem;
-  font-family: "Inter Tight", system-ui, sans-serif;
 }
 /* Editorial controls, not app buttons (2026-10-03): a 2px corner instead of
    a pill, lower, no shadow, same height for both. */
@@ -131,7 +122,6 @@
   background: var(--sc-canvas); color: var(--sc-ink);
   border: 1px solid var(--pf-line); border-radius: 3px;
   box-shadow: 0 10px 30px rgb(40 35 31 / 0.08);
-  font-family: "Inter Tight", system-ui, sans-serif; font-weight: 300;
   opacity: 0; transform: translateY(6px); pointer-events: none;
   transition: opacity 180ms var(--sc-ease-out), transform 180ms var(--sc-ease-out);
 }
@@ -194,7 +184,7 @@ footer.pf-site-foot { padding-bottom: calc(var(--sc-8) + 4.5rem); }
 .pf-social svg { width: 18px; height: 18px; }
 .pf-site-foot__contact {
   display: flex; flex-wrap: wrap; justify-content: center; gap: var(--sc-2) var(--sc-6);
-  font-family: "Inter Tight", system-ui, sans-serif; font-weight: 300; font-size: 0.95rem;
+  font-size: 0.95rem;
 }
 .pf-site-foot__contact a { color: var(--sc-surface); text-decoration: none; }
 .pf-site-foot__contact a:hover { opacity: 0.7; }

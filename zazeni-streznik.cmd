@@ -13,5 +13,5 @@ if errorlevel 1 (
   pause
   exit /b
 )
-node "C:\Users\Kugler\.claude\plugins\cache\nateherk\nateherk-design\0.3.0\skills\scroll-craft\scripts\serve.mjs" .
+node tools\serve.mjs 4500
 pause

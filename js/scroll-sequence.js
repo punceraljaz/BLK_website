@@ -1,31 +1,37 @@
 /* ==========================================================================
-   scroll-sequence.js — scroll-scrubbed image-sequence section
-   Plain JS, no dependencies. Pairs with scroll-sequence.css.
+   scroll-sequence.js — the room animation: clips of one room drawn on a
+   canvas, played on load or scrubbed by scroll. Plain JS, no dependencies.
 
-   Markup (one per animation; any number per page):
+     <div data-seq-chain='[
+       {"path":"assets/frames/room/",  "count":122, "play":"load",
+        "fps":24, "delay":150, "buffer":40},
+       {"path":"assets/frames/room2/", "count":121, "play":"scroll",
+        "from":"#pkg-1", "to":"#pkg-2", "blend":8}
+     ]'>
+       <canvas class="seq__canvas"></canvas>
+     </div>
 
-     <section class="seq" data-seq
-              data-seq-path="assets/frames/room/"   folder, trailing slash
-              data-seq-count="122"                  number of frames
-              data-seq-pad="4"                      digits in file names (0001)
-              data-seq-ext="webp"
-              data-seq-captions='[{"below":0.25,"text":"Empty shell"}, ...]'>
-       <div class="seq__sticky">
-         <canvas class="seq__canvas"></canvas>
-         <p class="seq__caption"></p>
-         <div class="seq__progress"><span class="seq__progress-fill"></span></div>
-       </div>
-     </section>
+   Per clip:
+     "play"   "load"   plays once on page load (fps, delay ms, buffer = frames
+                       downloaded before it starts). Reduced motion: last frame.
+              "scroll" progress 0 when the top of `from` is at the top of the
+                       viewport, 1 when the top of `to` is.
+              "manual" rests on its last frame until playClip(i).
+     "blend"  cross-fades the first N frames over the previous clip's last
+              frame to hide the seam between two AI clips.
+     "video"  true: play the .h264 frames next to the images (GPU decode).
+     "pad" (default 4), "ext" (default "webp").
 
-   Captions: the first entry whose "below" is greater than the progress wins;
-   the last entry should use a "below" above 1 so it covers the end.
+   On the element:
+     data-seq-lazy           download nothing until .__seq.start()
+     data-seq-focus="0.62"   horizontal crop anchor 0..1
+     data-seq-assist="smooth" smooth wheel + auto finish (see below)
+   From page code: .__seq.start(), .setActive(false) (a hidden chain stops
+   drawing), .playClip(i) (plays clip i once in place).
 
-   Autoplay mode: add data-seq-mode="autoplay" (any element holding a
-   .seq__canvas, no 400vh section needed). The sequence plays once on page
-   load at data-seq-fps (default 24) after data-seq-delay ms (default 400),
-   then holds on the last frame. data-seq-buffer="N" starts playback once
-   the first N frames are ready instead of waiting for all of them. Scroll does not drive it. With
-   prefers-reduced-motion it shows the last frame straight away.
+   Performance: the loop only runs while something changes (scroll, a clip
+   playing, frames arriving or decoding). At rest it sleeps, so an idle page
+   costs nothing.
    ========================================================================== */
 
 (function () {
@@ -33,345 +39,19 @@
 
   var SMOOTHING = 0.14;         // share of the gap closed per animation frame
   var SNAP = 0.0005;            // snap when closer than this
-  var IDLE_MS = 140;            // scroll pause before auto-complete kicks in
-  var AUTO_MS_PER_SECTION = 2200;
-  var AUTO_MIN_MS = 500, AUTO_MAX_MS = 1600;
   var AUTOPLAY_WAIT_MAX_MS = 4000;  // start playback even if frames are still loading
 
   var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-  function easeInOutCubic(t) {
-    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-  }
   function clamp01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
-
-  // html has scroll-behavior:smooth (scrollcraft.css). 'instant' stops the
-  // browser from smoothing each step of our own eased auto-scroll.
+  // html has scroll-behavior:smooth (base.css). 'instant' stops the browser
+  // from smoothing each step of our own eased scrolling.
   function jumpTo(y) { window.scrollTo({ top: y, left: 0, behavior: 'instant' }); }
+  function docTop(el) { return el.getBoundingClientRect().top + window.scrollY; }
 
-  function ScrollSequence(section) {
-    this.section = section;
-    this.canvas = section.querySelector('.seq__canvas');
-    this.ctx = this.canvas.getContext('2d');
-    this.caption = section.querySelector('.seq__caption');
-    this.bar = section.querySelector('.seq__progress-fill');
+  var chains = [];
+  function wakeAll() { for (var i = 0; i < chains.length; i++) chains[i].wake(); }
 
-    this.path = section.getAttribute('data-seq-path');
-    this.count = parseInt(section.getAttribute('data-seq-count'), 10);
-    this.pad = parseInt(section.getAttribute('data-seq-pad') || '4', 10);
-    this.ext = section.getAttribute('data-seq-ext') || 'webp';
-    this.captions = JSON.parse(section.getAttribute('data-seq-captions') || '[]');
-    this.autoplay = section.getAttribute('data-seq-mode') === 'autoplay';
-
-    this.frames = new Array(this.count);   // decoded HTMLImageElements
-    this.loadedCount = 0;
-    this.requested = {};
-    this.loadingStarted = false;
-    this.drawnIndex = -1;                  // frame currently on the canvas
-    this.drawnImage = null;
-    this.captionText = null;
-
-    this.shown = 0;                        // smoothed progress
-    this.target = 0;                       // real scroll progress
-
-    // auto-complete state
-    this.lastY = window.scrollY;
-    this.direction = 1;
-    this.idleTimer = 0;
-    this.auto = null;                      // { raf } while auto-scrolling
-    this.ignoreScroll = false;
-
-    this.resize();
-    this.loadFrame(0);                     // frame 1 early: never a blank stage
-    this.bindResize();
-    if (this.autoplay) {
-      this.startAutoplay();
-    } else {
-      this.watchProximity();
-      this.bindScroll();
-    }
-    this.tick = this.tick.bind(this);
-    requestAnimationFrame(this.tick);
-  }
-
-  ScrollSequence.prototype.src = function (i) {
-    var n = String(i + 1);
-    while (n.length < this.pad) n = '0' + n;
-    return this.path + n + '.' + this.ext;
-  };
-
-  ScrollSequence.prototype.loadFrame = function (i) {
-    if (i < 0 || i >= this.count || this.requested[i]) return;
-    this.requested[i] = true;
-    var self = this, img = new Image();
-    img.src = this.src(i);
-    // Decode off the main path now, so the first scrub never stalls on it.
-    img.decode().then(function () {
-      self.frames[i] = img;
-      self.loadedCount++;
-      if (self.onFrameLoaded) self.onFrameLoaded();
-      if (self.drawnIndex === -1 || i === self.wantedIndex()) self.draw(true);
-    }, function () { /* missing/broken frame: keep showing the last good one */ });
-  };
-
-  ScrollSequence.prototype.loadAll = function () {
-    if (this.loadingStarted) return;
-    this.loadingStarted = true;
-    for (var i = 1; i < this.count; i++) this.loadFrame(i);
-  };
-
-  // Start fetching the full sequence when the section is ~1.5 screens away.
-  ScrollSequence.prototype.watchProximity = function () {
-    var self = this;
-    if (!('IntersectionObserver' in window)) { this.loadAll(); return; }
-    var io = new IntersectionObserver(function (entries) {
-      if (entries.some(function (e) { return e.isIntersecting; })) {
-        self.loadAll();
-        io.disconnect();
-      }
-    }, { rootMargin: '150% 0px 150% 0px' });
-    io.observe(this.section);
-  };
-
-  // ---- geometry ----------------------------------------------------------
-  ScrollSequence.prototype.scrollLength = function () {
-    return Math.max(this.section.offsetHeight - window.innerHeight, 1);
-  };
-  ScrollSequence.prototype.sectionTop = function () {
-    return this.section.getBoundingClientRect().top + window.scrollY;
-  };
-  ScrollSequence.prototype.readProgress = function () {
-    return clamp01((window.scrollY - this.sectionTop()) / this.scrollLength());
-  };
-
-  ScrollSequence.prototype.resize = function () {
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var w = this.canvas.clientWidth, h = this.canvas.clientHeight;
-    this.canvas.width = Math.round(w * dpr);
-    this.canvas.height = Math.round(h * dpr);
-    this.ctx.imageSmoothingEnabled = true;
-    this.ctx.imageSmoothingQuality = 'high';
-    this.draw(true);
-  };
-
-  // ---- drawing -----------------------------------------------------------
-  ScrollSequence.prototype.wantedIndex = function () {
-    return Math.round(this.shown * (this.count - 1));
-  };
-
-  ScrollSequence.prototype.draw = function (force) {
-    var i = this.wantedIndex();
-    var img = this.frames[i];
-    if (!img) {
-      // Not loaded yet: keep the last drawn frame. If nothing has been drawn
-      // at all, fall back to the nearest loaded frame so the stage isn't blank.
-      if (this.drawnImage && !force) return;
-      img = this.nearestLoaded(i);
-      if (!img) return;
-    } else if (i === this.drawnIndex && !force) {
-      return;
-    }
-
-    var cw = this.canvas.width, ch = this.canvas.height;
-    var iw = img.naturalWidth, ih = img.naturalHeight;
-    var scale = Math.max(cw / iw, ch / ih);          // "cover"
-    var dw = iw * scale, dh = ih * scale;
-    this.ctx.drawImage(img, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
-
-    this.drawnIndex = this.frames[i] === img ? i : -2;
-    this.drawnImage = img;
-  };
-
-  ScrollSequence.prototype.nearestLoaded = function (i) {
-    for (var d = 1; d < this.count; d++) {
-      if (this.frames[i - d]) return this.frames[i - d];
-      if (this.frames[i + d]) return this.frames[i + d];
-    }
-    return this.frames[i] || null;
-  };
-
-  ScrollSequence.prototype.updateUI = function () {
-    if (this.bar) this.bar.style.transform = 'scaleX(' + this.shown.toFixed(4) + ')';
-    if (!this.caption || !this.captions.length) return;
-    var text = this.captions[this.captions.length - 1].text;
-    for (var c = 0; c < this.captions.length; c++) {
-      if (this.shown < this.captions[c].below) { text = this.captions[c].text; break; }
-    }
-    if (text === this.captionText) return;
-    var el = this.caption, first = this.captionText === null;
-    this.captionText = text;
-    if (first) { el.textContent = text; return; }
-    el.classList.add('is-changing');
-    clearTimeout(this.captionTimer);
-    this.captionTimer = setTimeout(function () {
-      el.textContent = text;
-      el.classList.remove('is-changing');
-    }, 200);
-  };
-
-  // ---- autoplay ----------------------------------------------------------
-  // Plays once: wait for the frames (capped), hold frame 1 for the delay,
-  // then advance on real elapsed time at the clip's own frame rate.
-  ScrollSequence.prototype.startAutoplay = function () {
-    var self = this;
-    var fps = parseFloat(this.section.getAttribute('data-seq-fps') || '24');
-    var delay = parseInt(this.section.getAttribute('data-seq-delay') || '400', 10);
-    this.playDuration = (this.count - 1) / fps * 1000;
-    this.playElapsed = 0;
-    this.playing = false;
-
-    if (reducedMotion.matches) {           // no motion: straight to the end state
-      this.shown = 1;
-      this.loadFrame(this.count - 1);
-      return;
-    }
-
-    this.loadAll();
-    var started = false;
-    function go() {
-      if (started) return;
-      started = true;
-      self.onFrameLoaded = null;
-      setTimeout(function () { self.playing = true; self.lastNow = 0; }, delay);
-    }
-    // Start once the opening stretch is decoded (data-seq-buffer frames,
-    // default: all); the rest keeps loading while those play.
-    var buffer = Math.min(this.count,
-      parseInt(this.section.getAttribute('data-seq-buffer') || String(this.count), 10));
-    this.onFrameLoaded = function () {
-      var k = 0;
-      while (k < buffer && self.frames[k]) k++;
-      if (k >= buffer) go();
-    };
-    setTimeout(go, AUTOPLAY_WAIT_MAX_MS);
-  };
-
-  ScrollSequence.prototype.stepAutoplay = function (now) {
-    if (!this.playing) return;
-    // Cap each step so a backgrounded tab resumes where it left off
-    // instead of jumping to the end.
-    var dt = this.lastNow ? Math.min(now - this.lastNow, 100) : 0;
-    this.lastNow = now;
-    this.playElapsed += dt;
-    this.shown = clamp01(this.playElapsed / this.playDuration);
-    if (this.shown >= 1) this.playing = false;
-  };
-
-  // ---- main loop ---------------------------------------------------------
-  ScrollSequence.prototype.tick = function (now) {
-    if (this.autoplay) {
-      this.stepAutoplay(now);
-    } else {
-      this.target = this.readProgress();
-      var gap = this.target - this.shown;
-      this.shown = Math.abs(gap) < SNAP ? this.target : this.shown + gap * SMOOTHING;
-    }
-    this.draw(false);
-    this.updateUI();
-    requestAnimationFrame(this.tick);
-  };
-
-  // ---- input + auto-complete ---------------------------------------------
-  ScrollSequence.prototype.bindResize = function () {
-    var self = this, resizeRaf = 0;
-    window.addEventListener('resize', function () {
-      cancelAnimationFrame(resizeRaf);
-      resizeRaf = requestAnimationFrame(function () { self.resize(); });
-    });
-  };
-
-  ScrollSequence.prototype.bindScroll = function () {
-    var self = this;
-
-    window.addEventListener('scroll', function () {
-      var y = window.scrollY;
-      if (self.ignoreScroll) { self.lastY = y; return; }   // our own auto-scroll
-      if (y !== self.lastY) self.direction = y > self.lastY ? 1 : -1;
-      self.lastY = y;
-      clearTimeout(self.idleTimer);
-      self.idleTimer = setTimeout(function () { self.maybeAutoComplete(); }, IDLE_MS);
-    }, { passive: true });
-
-    var cancel = function () { self.cancelAuto(); };
-    ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach(function (type) {
-      window.addEventListener(type, cancel, { passive: true });
-    });
-  };
-
-  ScrollSequence.prototype.maybeAutoComplete = function () {
-    if (reducedMotion.matches || this.auto) return;
-    var p = this.readProgress();
-    if (p <= 0.001 || p >= 0.999) return;              // parked at an end, or outside
-    var top = this.sectionTop(), len = this.scrollLength();
-    var dest = this.direction > 0 ? top + len : top;
-    this.autoScrollTo(dest, len);
-  };
-
-  ScrollSequence.prototype.autoScrollTo = function (dest, len) {
-    var self = this;
-    var from = window.scrollY, dist = dest - from;
-    var ms = Math.min(AUTO_MAX_MS, Math.max(AUTO_MIN_MS, Math.abs(dist) / len * AUTO_MS_PER_SECTION));
-    var start = performance.now();
-    this.ignoreScroll = true;
-    this.auto = { raf: 0 };
-
-    function step(now) {
-      if (!self.auto) return;
-      var t = Math.min(1, (now - start) / ms);
-      jumpTo(from + dist * easeInOutCubic(t));
-      if (t < 1) { self.auto.raf = requestAnimationFrame(step); return; }
-      self.auto = null;
-      // The scroll event for the final step fires next frame; keep ignoring
-      // until it has passed.
-      requestAnimationFrame(function () {
-        requestAnimationFrame(function () { if (!self.auto) self.ignoreScroll = false; });
-      });
-    }
-    this.auto.raf = requestAnimationFrame(step);
-  };
-
-  ScrollSequence.prototype.cancelAuto = function () {
-    clearTimeout(this.idleTimer);
-    if (!this.auto) return;
-    cancelAnimationFrame(this.auto.raf);
-    this.auto = null;
-    this.ignoreScroll = false;
-    this.lastY = window.scrollY;
-  };
-
-  /* ========================================================================
-     SequenceChain — one canvas, several clips of the same room played back
-     to back. The first clip can play on page load; each later clip is
-     scrubbed by the scroll distance between two page elements.
-
-       <div data-seq-chain='[
-         {"path":"assets/frames/room/",  "count":122, "play":"load",
-          "fps":24, "delay":150, "buffer":40},
-         {"path":"assets/frames/room2/", "count":121, "play":"scroll",
-          "from":"#pkg-1", "to":"#pkg-2", "blend":8}
-       ]'>
-         <canvas class="seq__canvas"></canvas>
-       </div>
-
-     "scroll" clips: progress 0 when the top of `from` is at the top of the
-     viewport, 1 when the top of `to` is. "blend" cross-fades the first N
-     frames over the previous clip's last frame to hide any seam.
-     Optional per clip: "pad" (default 4), "ext" (default "webp"), "video"
-     (true: prefer the .h264 frames next to the images, see below).
-     "play":"manual" clips rest on their last frame until playClip(i).
-
-     On the element: data-seq-lazy (download nothing until .__seq.start()),
-     data-seq-focus (horizontal crop anchor 0..1), data-seq-assist="off".
-     From page code: .__seq.setActive(false) stops a hidden chain drawing;
-     .__seq.playClip(i) plays clip i once over its natural length.
-
-     Scroll assist (on by default; data-seq-assist="off" disables it): the
-     first wheel tick or swipe between two packages glides straight to the
-     next one (or back to the previous one when scrolling up). See the
-     "scroll assist" section below. Disabled under prefers-reduced-motion.
-     ======================================================================== */
-
-  /* Frames are downloaded as compressed blobs (all of them, ~100 KB each) but
+  /* Frames are downloaded as compressed data (all of them, ~100 KB each) but
      only a small window around the playhead is kept decoded: VideoFrames
      (see "video" below) or ImageBitmaps made with createImageBitmap(), which
      decodes on background threads.
@@ -383,7 +63,7 @@
     ahead: 30,               // ahead in the direction of travel
     behind: 3,
     idle: 4,                 // either side of the on-screen clip at rest
-    lead: 12                 // head start for the glide that can come next
+    lead: 12                 // head start for the move that can come next
   };
   // Video frames decode in ~10 ms, and a hardware decoder has only a small
   // pool of output buffers, so only a few are held.
@@ -392,17 +72,22 @@
   var decodesInFlight = 0;
 
   /* Hardware video decoding. Even decoded off the main thread, WebP frames
-     kept a laptop CPU (i5 + Iris Xe) too busy to keep up with a glide. With
-     "video": true a clip's frames are also stored as single-frame H.264
-     key frames (0001.h264 ...) that the GPU decodes through WebCodecs
-     (~10 ms, CPU nearly idle). Browsers without a hardware H.264 decoder
-     (or without WebCodecs) use the image files instead. */
+     kept a laptop CPU (i5 + Iris Xe) too busy to keep up. With "video": true
+     a clip's frames are also stored as single-frame H.264 key frames
+     (0001.h264 ...) that the GPU decodes through WebCodecs (~10 ms, CPU
+     nearly idle). Browsers without a hardware H.264 decoder (or without
+     WebCodecs, e.g. plain http on a LAN IP) use the image files instead. */
   var H264_CODEC = 'avc1.640028';          // High profile, level 4.0
   var hardwareH264 = (function () {
     if (!window.VideoDecoder || !window.EncodedVideoChunk) return Promise.resolve(false);
     return VideoDecoder.isConfigSupported({ codec: H264_CODEC, hardwareAcceleration: 'prefer-hardware' })
       .then(function (r) { return !!r.supported; }, function () { return false; });
   })();
+  // Opened straight from disk (file://) the browser blocks fetch(), so there
+  // frames load as plain <img> elements (createImageBitmap accepts those).
+  var FROM_DISK = location.protocol === 'file:';
+  var VIDEO_SILENT_MS = 2000;   // no decoded frame this long: use the images
+  var NEAREST_MAX = 6;          // see nearestIndex
 
   function FrameSet(spec) {
     this.path = spec.path;
@@ -411,7 +96,7 @@
     this.ext = spec.ext || 'webp';
     this.useVideo = !!spec.video;          // decided once hardwareH264 resolves
     this.blobs = new Array(this.count);    // downloaded, compressed
-    this.frames = new Array(this.count);   // decoded ImageBitmaps (windowed)
+    this.frames = new Array(this.count);   // decoded (windowed)
     this.decoding = {};
     this.requested = {};
     this.loaded = 0;
@@ -425,15 +110,11 @@
     while (n.length < this.pad) n = '0' + n;
     return this.path + n + '.' + (this.useVideo ? 'h264' : this.ext);
   };
-  // Opened straight from disk (file://) the browser blocks fetch(), so there
-  // frames load as plain <img> elements (createImageBitmap accepts those).
-  var FROM_DISK = location.protocol === 'file:';
   function loadImage(url) {
     var img = new Image();
     img.src = url;
     return img.decode().then(function () { return img; });
   }
-
   FrameSet.prototype.load = function (i) {
     if (i < 0 || i >= this.count || this.requested[i]) return;
     this.requested[i] = true;
@@ -451,10 +132,18 @@
       self.blobs[i] = data;
       self.loaded++;
       if (self.onLoad) self.onLoad(i);
+      wakeAll();
     }, function () {
       if (video) self.fallBackToImages();    // e.g. no .h264 files on the server
       else delete self.requested[i];
     });
+  };
+  FrameSet.prototype.loadAll = function () {
+    for (var i = 0; i < this.count; i++) this.load(i);
+  };
+  FrameSet.prototype.readyThrough = function (n) {   // first n frames downloaded?
+    for (var k = 0; k < n; k++) if (!this.blobs[k]) return false;
+    return true;
   };
   FrameSet.prototype.fallBackToImages = function () {
     if (!this.useVideo) return;
@@ -465,6 +154,7 @@
     this.blobs = new Array(this.count);
     this.requested = {};
     this.loaded = 0;
+    this.lo = 0; this.hi = -1;
     this.loadAll();
   };
   FrameSet.prototype.getDecoder = function () {
@@ -488,7 +178,7 @@
     if (i === this.count - 1) {
       createImageBitmap(vf).then(function (bmp) {
         if (!self.frames[i]) self.frames[i] = bmp;
-      }, function () {}).then(function () { vf.close(); });
+      }, function () {}).then(function () { vf.close(); wakeAll(); });
     } else if (this.inWindow(i) && !this.frames[i]) {
       this.frames[i] = vf;
     } else {
@@ -511,27 +201,23 @@
     if (!this.decoding[i]) return;
     delete this.decoding[i];
     decodesInFlight--;
-  };
-  FrameSet.prototype.loadAll = function () {
-    for (var i = 0; i < this.count; i++) this.load(i);
-  };
-  FrameSet.prototype.readyThrough = function (n) {   // first n frames downloaded?
-    for (var k = 0; k < n; k++) if (!this.blobs[k]) return false;
-    return true;
+    wakeAll();                             // a decode slot is free, a frame may be ready
   };
   FrameSet.prototype.inWindow = function (i) {
     return (i >= this.lo && i <= this.hi) || i === this.count - 1;   // last frame: blend base
   };
   // Keep frames lo..hi decoded; `order` lists the indices to decode first.
-  var VIDEO_SILENT_MS = 2000;   // no decoded frame this long: use the images
   FrameSet.prototype.keep = function (lo, hi, order) {
     if (this.useVideo && !this.gotVideoFrame && this.firstDecodeAt &&
         performance.now() - this.firstDecodeAt > VIDEO_SILENT_MS) {
       for (var j in this.decoding) this.decodeDone(+j);
       this.fallBackToImages();
     }
+    // Decoded frames only ever sit inside the previous window (or are the
+    // kept last frame), so only that range needs checking.
+    var oldLo = this.lo, oldHi = this.hi;
     this.lo = lo; this.hi = hi;
-    for (var k = 0; k < this.count; k++) {
+    for (var k = oldLo; k <= oldHi; k++) {
       if (this.frames[k] && !this.inWindow(k)) { release(this.frames[k]); this.frames[k] = null; }
     }
     for (var o = 0; o < order.length && decodesInFlight < DECODE_PARALLEL; o++) {
@@ -544,7 +230,10 @@
     this.decoding[i] = true;
     decodesInFlight++;
     if (this.useVideo) {
-      if (!this.firstDecodeAt) this.firstDecodeAt = performance.now();
+      if (!this.firstDecodeAt) {
+        this.firstDecodeAt = performance.now();
+        setTimeout(wakeAll, VIDEO_SILENT_MS + 100);   // so keep() can notice a silent decoder
+      }
       try {
         this.getDecoder().decode(new EncodedVideoChunk({ type: 'key', timestamp: i, data: this.blobs[i] }));
       } catch (e) { this.onDecoderError(); }
@@ -556,7 +245,6 @@
   };
   // Closest decoded frame, looking only a few frames away; a far one (e.g.
   // the kept last frame) would make the room jump.
-  var NEAREST_MAX = 6;
   FrameSet.prototype.nearestIndex = function (i) {
     if (this.frames[i]) return i;
     for (var d = 1; d <= NEAREST_MAX; d++) {
@@ -565,6 +253,8 @@
     }
     return -1;
   };
+
+  /* ======================================================================== */
 
   function SequenceChain(el) {
     var self = this;
@@ -577,8 +267,6 @@
     // canvas starts out black and would cover the poster.
     this.ctx = this.canvas.getContext('2d', { alpha: false });
     this.canvas.style.visibility = 'hidden';
-    // Where a cropped frame is anchored horizontally, 0 (left) .. 1 (right);
-    // data-seq-focus, default centred.
     var focus = parseFloat(el.getAttribute('data-seq-focus'));
     this.focusX = isNaN(focus) ? 0.5 : Math.min(1, Math.max(0, focus));
     this.clips = JSON.parse(el.getAttribute('data-seq-chain')).map(function (spec) {
@@ -592,6 +280,16 @@
     this.lastKey = '';
     this.active = true;                      // false: keeps tracking scroll, draws nothing
     this.started = false;
+    this.raf = 0;
+    this.tops = null;                        // cached page positions of the clips' from/to
+    this.auto = null;                        // running auto-finish glide
+    this.ignoreScroll = false;
+    this.smoothWheel = false;
+    this.lastY = window.scrollY;
+    this.scrollDir = 1;                      // last scroll direction (auto finish)
+    this.tick = this.tick.bind(this);
+    this.wake = this.wake.bind(this);
+    chains.push(this);
     this.resize();
 
     // data-seq-lazy: nothing is downloaded until start() is called (a second
@@ -599,30 +297,51 @@
     if (el.getAttribute('data-seq-lazy') == null) this.start();
 
     var raf = 0;
-    function queueResize() {
+    function relayout() { self.tops = null; self.wake(); }
+    window.addEventListener('scroll', this.wake, { passive: true });
+    window.addEventListener('resize', function () {
+      relayout();
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(function () { self.resize(); });
+    });
+    window.addEventListener('load', relayout);
+    if (window.ResizeObserver) {
+      // The page can also resize the canvas itself (e.g. a wider room for one
+      // package); keep the drawing buffer matched to its displayed size.
+      // Resized directly in the observer callback (after layout, before
+      // paint) so the redraw lands in the same frame as the new size.
+      new ResizeObserver(function () { self.resize(); }).observe(this.canvas);
+      // The page's height changes (fonts, the gallery): positions may move.
+      new ResizeObserver(relayout).observe(document.body);
     }
-    window.addEventListener('resize', queueResize);
-    // The page can also resize the canvas itself (e.g. a wider room for one
-    // package); keep the drawing buffer matched to its displayed size.
-    // Resized directly in the observer callback (after layout, before paint)
-    // so the redraw lands in the same frame as the new size.
-    if (window.ResizeObserver) new ResizeObserver(function () { self.resize(); }).observe(this.canvas);
-    var assist = el.getAttribute('data-seq-assist');
-    if (assist === 'smooth') this.bindSmoothWheel();
-    else if (assist !== 'off') this.bindAssist();
-    this.tick = this.tick.bind(this);
-    requestAnimationFrame(this.tick);
+    if (el.getAttribute('data-seq-assist') === 'smooth') {
+      this.bindSmoothWheel();
+      this.bindAutoFinish();
+    }
+    this.wake();
   }
 
+  SequenceChain.prototype.wake = function () {
+    if (!this.raf) this.raf = requestAnimationFrame(this.tick);
+  };
+
+  // Page positions of each scroll clip's from/to, measured once per layout
+  // (not every frame).
+  SequenceChain.prototype.clipTops = function () {
+    if (!this.tops) {
+      this.tops = this.clips.map(function (c) {
+        return c.fromEl && c.toEl ? [docTop(c.fromEl), docTop(c.toEl)] : null;
+      });
+    }
+    return this.tops;
+  };
+
   // Begin downloading. Loading order: the load-played clip first (it is on
-  // screen now), then the scroll clips once it is ready or after the wait cap.
+  // screen now), then the other clips once it is ready or after the wait cap.
   SequenceChain.prototype.start = function () {
     if (this.started) return;
     this.started = true;
     var self = this, first = this.clips[0];
-    first.set.onLoad = function () { self.lastKey = ''; };
     first.set.load(0);
     var rest = function () {
       for (var c = 1; c < self.clips.length; c++) {
@@ -638,7 +357,7 @@
   // keeps following the scroll, so it is in the right place when shown.
   SequenceChain.prototype.setActive = function (on) {
     this.active = !!on;
-    if (on) this.lastKey = '';
+    if (on) { this.lastKey = ''; this.wake(); }
   };
 
   // Play clip i once from its start, over its natural length, regardless of
@@ -654,201 +373,56 @@
     clip.forced = { t0: null, dur: reducedMotion.matches ? 0 : (clip.set.count - 1) / fps * 1000 };
     clip.p = 0;
     this.lastKey = '';
+    this.wake();
   };
 
-  // ---- scroll assist -----------------------------------------------------
-  // Gesture-driven: the first wheel tick or finger movement inside the
-  // assisted zone (first clip start .. last clip end) glides straight to the
-  // next / previous package. Waiting for scrolling to stop was too slow:
-  // trackpads and phones keep emitting momentum scroll for 1-2 s after the
-  // fingers lift. So:
-  //   wheel  - intercepted inside the zone; momentum is swallowed during the
-  //            glide and until a new gesture starts.
-  //   touch  - inside the zone the finger drags the page 1:1 (the animation
-  //            follows), and release glides one package in the drag direction.
-  //   other  - keyboard / scrollbar: idle fallback glides to the nearer end.
-  var ASSIST_MS_PER_SECTION = 3000;   // a full package-to-package glide
-  var ASSIST_MIN_MS = 800, ASSIST_MAX_MS = 3000;
-  var WHEEL_GESTURE_GAP_MS = 220;     // wheel silence that ends a gesture
-  var TOUCH_MIN_SWIPE = 24;           // px; shorter drags spring back
+  SequenceChain.prototype.startLoadClip = function (clip, then) {
+    var self = this, spec = clip.spec, set = clip.set;
+    var fps = spec.fps || 24, delay = spec.delay == null ? 400 : spec.delay;
+    var buffer = Math.min(set.count, spec.buffer || set.count);
+    clip.duration = (set.count - 1) / fps * 1000;
+    clip.elapsed = 0;
+    clip.playing = false;
 
-  // Glide curve: moves the moment it starts (so the gesture feels answered),
-  // then plays the transformation at an even pace and lands softly.
-  // 35% ease-out-quad (start speed 0.7x average) + 65% ease-in-out-sine.
-  function easeGlide(t) {
-    var outQuad = 1 - (1 - t) * (1 - t);
-    var inOutSine = -(Math.cos(Math.PI * t) - 1) / 2;
-    return 0.35 * outQuad + 0.65 * inOutSine;
-  }
-
-  // Package tops the assist can land on, in page order.
-  SequenceChain.prototype.anchors = function () {
-    var list = [];
-    this.clips.forEach(function (clip) {
-      if (clip.play !== 'scroll' || !clip.fromEl || !clip.toEl) return;
-      list.push(docTop(clip.fromEl), docTop(clip.toEl));
-    });
-    list.sort(function (a, b) { return a - b; });
-    return list.filter(function (v, i) { return i === 0 || v - list[i - 1] > 1; });
-  };
-
-  // Where a gesture in direction `dir` starting at `y` should land, or null
-  // when it is outside the zone and native scrolling should take over.
-  SequenceChain.prototype.landingFor = function (y, dir) {
-    var a = this.anchors(), EPS = 2;
-    if (!a.length) return null;
-    var first = a[0], last = a[a.length - 1];
-    if (dir > 0) {
-      if (y >= last - EPS) return null;                     // leaving the zone downward
-      for (var i = 0; i < a.length; i++) if (a[i] > y + EPS) return a[i];
-    } else {
-      if (y <= first + EPS || y > last + EPS) return null;  // above it, or below it
-      for (var j = a.length - 1; j >= 0; j--) if (a[j] < y - EPS) return a[j];
+    if (reducedMotion.matches) {           // no motion: straight to the end state
+      clip.p = 1;
+      set.load(set.count - 1);
+      set.onLoad = function () { if (set.blobs[set.count - 1]) then(); };
+      return;
     }
-    return null;
-  };
 
-  SequenceChain.prototype.bindAssist = function () {
-    var self = this;
-    this.auto = null;          // running glide
-    this.wheelLock = false;    // swallowing momentum after a wheel glide
-    this.touch = null;         // active touch gesture
-    this.ignoreScroll = false;
-    this.lastY = window.scrollY;
-    this.direction = 1;
-    this.idleTimer = 0;
-    var active = function () { return !reducedMotion.matches; };
-
-    // ---- wheel (mouse, trackpad) ----
-    var lastWheelT = 0, lastMag = 0;
-    window.addEventListener('wheel', function (e) {
-      if (!active() || e.ctrlKey) return;                  // ctrl+wheel = zoom
-      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
-      var now = performance.now();
-      var mag = Math.abs(e.deltaY) * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? 800 : 1);
-      // A new gesture: a pause, or momentum that suddenly grows again.
-      var fresh = now - lastWheelT > WHEEL_GESTURE_GAP_MS || (lastMag < 30 && mag > lastMag * 1.6 + 4);
-      lastWheelT = now; lastMag = mag;
-
-      if (self.auto && self.auto.kind === 'wheel') { e.preventDefault(); return; }
-      if (self.wheelLock) {
-        if (!fresh) { e.preventDefault(); return; }
-        self.wheelLock = false;
-      }
-      var dir = e.deltaY > 0 ? 1 : -1;
-      var dest = self.landingFor(window.scrollY, dir);
-      if (dest == null) { self.cancelAssist(); return; }  // native scroll
-      e.preventDefault();
-      self.glideTo(dest, 'wheel');
-    }, { passive: false });
-
-    // ---- touch ----
-    window.addEventListener('touchstart', function (e) {
-      if (!active() || e.touches.length !== 1) { self.touch = { mode: 'native' }; return; }
-      self.cancelAssist();
-      var y0 = e.touches[0].clientY;
-      self.touch = { mode: null, startY: y0, lastY: y0, startScroll: window.scrollY };
-    }, { passive: true });
-
-    window.addEventListener('touchmove', function (e) {
-      var t = self.touch;
-      if (!t || t.mode === 'native' || e.touches.length !== 1) return;
-      var y = e.touches[0].clientY;
-      if (t.mode === null) {
-        // Decide on the first move: iOS commits to native scrolling if the
-        // first touchmove is not prevented.
-        var dir = t.startY - y >= 0 ? 1 : -1;
-        t.mode = self.landingFor(t.startScroll, dir) == null ? 'native' : 'drag';
-        if (t.mode === 'native') return;
-      }
-      e.preventDefault();
-      var a = self.anchors();
-      var next = window.scrollY + (t.lastY - y);
-      next = Math.max(a[0], Math.min(a[a.length - 1], next));
-      self.ignoreScroll = true;
-      jumpTo(next);
-      t.lastY = y;
-    }, { passive: false });
-
-    var endTouch = function () {
-      var t = self.touch;
-      self.touch = null;
-      if (!t || t.mode !== 'drag') return;
-      self.ignoreScroll = false;
-      var moved = t.startY - t.lastY;
-      var dest = Math.abs(moved) < TOUCH_MIN_SWIPE
-        ? t.startScroll                                   // too small: spring back
-        : self.landingFor(t.startScroll, moved > 0 ? 1 : -1);
-      if (dest == null) dest = t.startScroll;
-      self.glideTo(dest, 'touch');
+    set.loadAll();
+    var started = false, restStarted = false;
+    function play() {
+      setTimeout(function () { clip.playing = true; clip.lastNow = 0; self.wake(); }, delay);
+    }
+    function go() {
+      if (started) return;
+      started = true;
+      // Hold: while <html data-seq-hold> is set (the home page intro is on),
+      // the load clip waits for the "seq:release" event, so it plays when the
+      // intro reveals the room instead of unseen behind it.
+      if (document.documentElement.hasAttribute('data-seq-hold')) {
+        document.addEventListener('seq:release', play, { once: true });
+      } else play();
+    }
+    function startRest() { if (!restStarted) { restStarted = true; then(); } }
+    set.onLoad = function () {
+      if (set.readyThrough(buffer)) go();
+      if (set.loaded >= set.count) startRest();
     };
-    window.addEventListener('touchend', endTouch, { passive: true });
-    window.addEventListener('touchcancel', endTouch, { passive: true });
-
-    // ---- keyboard / scrollbar fallback ----
-    window.addEventListener('scroll', function () {
-      var y = window.scrollY;
-      if (self.ignoreScroll || self.touch) { self.lastY = y; return; }
-      if (y !== self.lastY) self.direction = y > self.lastY ? 1 : -1;
-      self.lastY = y;
-      clearTimeout(self.idleTimer);
-      self.idleTimer = setTimeout(function () { self.idleAssist(); }, IDLE_MS);
-    }, { passive: true });
-    ['keydown', 'mousedown'].forEach(function (type) {
-      window.addEventListener(type, function () { self.cancelAssist(); }, { passive: true });
-    });
+    setTimeout(function () { go(); startRest(); }, AUTOPLAY_WAIT_MAX_MS);
   };
 
-  // Scrolling stopped part-way between two packages without a wheel/touch
-  // gesture (keyboard, scrollbar drag): finish in the last direction.
-  SequenceChain.prototype.idleAssist = function () {
-    if (reducedMotion.matches || this.auto || this.touch) return;
-    var y = window.scrollY, a = this.anchors();
-    if (!a.length || y <= a[0] + 2 || y >= a[a.length - 1] - 2) return;
-    for (var i = 0; i < a.length; i++) if (Math.abs(a[i] - y) <= 2) return;   // already on one
-    var dest = this.landingFor(y, this.direction);
-    if (dest != null) this.glideTo(dest, 'idle');
-  };
-
-  SequenceChain.prototype.glideTo = function (dest, kind) {
-    var self = this;
-    var from = window.scrollY, dist = dest - from;
-    var a = this.anchors();
-    var section = a.length > 1 ? (a[a.length - 1] - a[0]) / (a.length - 1) : window.innerHeight;
-    var ms = kind === 'finish'
-      ? Math.min(FINISH_MAX_MS, Math.max(FINISH_MIN_MS, Math.abs(dist) / section * FINISH_MS_PER_SECTION))
-      : Math.min(ASSIST_MAX_MS, Math.max(ASSIST_MIN_MS, Math.abs(dist) / section * ASSIST_MS_PER_SECTION));
-    if (this.auto) cancelAnimationFrame(this.auto.raf);
-    var start = performance.now();
-    this.ignoreScroll = true;
-    this.auto = { raf: 0, kind: kind };
-
-    function step(now) {
-      if (!self.auto) return;
-      var t = Math.min(1, (now - start) / ms);
-      jumpTo(from + dist * easeGlide(t));
-      if (t < 1) { self.auto.raf = requestAnimationFrame(step); return; }
-      self.auto = null;
-      if (kind === 'wheel') self.wheelLock = true;   // swallow leftover momentum
-      // The final step's scroll event arrives next frame; keep ignoring it.
-      requestAnimationFrame(function () {
-        requestAnimationFrame(function () { if (!self.auto && !self.touch) self.ignoreScroll = false; });
-      });
-    }
-    this.auto.raf = requestAnimationFrame(step);
-  };
-
-  // ---- smooth wheel (data-seq-assist="smooth") -------------------------------
-  // The middle ground between the package glide and raw browser scrolling: a
-  // wheel notch moves the page by its normal distance, but spread over a few
-  // frames (eased toward a target) instead of jumping 100 px in one frame and
-  // standing still until the next notch, which made the room stutter.
+  // ---- smooth wheel (data-seq-assist="smooth") -----------------------------
+  // A wheel notch moves the page by its normal distance, but spread over a
+  // few frames (eased toward a target) instead of jumping 100 px in one frame
+  // and standing still until the next notch, which made the room stutter.
   // Whole page; touch, keyboard and the scrollbar stay native.
   var SMOOTH_WHEEL_TAU = 110;         // ms: time constant of the ease toward the target
 
   SequenceChain.prototype.bindSmoothWheel = function () {
     var self = this, target = null, raf = 0, last = 0;
-    this.smoothWheel = false;
     function maxY() { return document.documentElement.scrollHeight - window.innerHeight; }
     function stop() { target = null; last = 0; self.smoothWheel = false; }
     function step(now) {
@@ -878,26 +452,40 @@
     }, { passive: false });
     // Any other way of scrolling takes over immediately.
     ['mousedown', 'keydown', 'touchstart'].forEach(function (type) {
-      window.addEventListener(type, function () { stop(); self.cancelAssist(); }, { passive: true });
+      window.addEventListener(type, function () { stop(); self.cancelGlide(); }, { passive: true });
     });
-    this.bindAutoFinish();
   };
 
-  // ---- auto finish (with "smooth") -------------------------------------------
-  // Client 2026-10-03: "make auto finish scroll". When scrolling stops part-way
-  // between two packages (any input: wheel, touch, keys, scrollbar), the page
-  // glides to the end of that transition in the direction of travel. A tiny
-  // nudge (under FINISH_MIN of the way) returns to where it came from instead,
-  // so a small scroll never carries the page a whole package. New input
-  // cancels the glide at once.
+  // ---- auto finish (with "smooth") -----------------------------------------
+  // When scrolling stops part-way between two packages (any input: wheel,
+  // touch, keys, scrollbar), the page glides to the end of that transition in
+  // the direction of travel. A tiny nudge (under FINISH_MIN of the way)
+  // returns to where it came from instead, so a small scroll never carries
+  // the page a whole package. New input cancels the glide at once.
   var FINISH_IDLE_MS = 160;           // scroll pause before finishing
   var FINISH_MIN = 0.1;               // share of a transition that counts as "going"
   var FINISH_MS_PER_SECTION = 1500, FINISH_MIN_MS = 450, FINISH_MAX_MS = 1400;
 
+  // Glide curve: moves the moment it starts, even middle, soft landing.
+  // 35% ease-out-quad + 65% ease-in-out-sine.
+  function easeGlide(t) {
+    var outQuad = 1 - (1 - t) * (1 - t);
+    var inOutSine = -(Math.cos(Math.PI * t) - 1) / 2;
+    return 0.35 * outQuad + 0.65 * inOutSine;
+  }
+
+  // Package tops the page can land on, in page order.
+  SequenceChain.prototype.anchors = function () {
+    var list = [];
+    this.clipTops().forEach(function (t, i) {
+      if (t && this.clips[i].play === 'scroll') list.push(t[0], t[1]);
+    }, this);
+    list.sort(function (a, b) { return a - b; });
+    return list.filter(function (v, i) { return i === 0 || v - list[i - 1] > 1; });
+  };
+
   SequenceChain.prototype.bindAutoFinish = function () {
-    var self = this, timer = 0, lastY = window.scrollY, dir = 1, touching = false;
-    this.auto = null;
-    this.ignoreScroll = false;
+    var self = this, timer = 0, touching = false;
     function finish() {
       if (self.auto || touching || self.smoothWheel || reducedMotion.matches) return;
       var a = self.anchors(), y = window.scrollY;
@@ -905,22 +493,20 @@
       for (var i = 0; i < a.length - 1; i++) {
         if (y > a[i] + 2 && y < a[i + 1] - 2) {
           var p = (y - a[i]) / (a[i + 1] - a[i]);
-          var dest = dir > 0 ? (p > FINISH_MIN ? a[i + 1] : a[i]) : (p < 1 - FINISH_MIN ? a[i] : a[i + 1]);
-          self.glideTo(dest, 'finish');
+          var dest = self.scrollDir > 0 ? (p > FINISH_MIN ? a[i + 1] : a[i]) : (p < 1 - FINISH_MIN ? a[i] : a[i + 1]);
+          self.glideTo(dest, a);
           return;
         }
       }
     }
+    // The scroll direction comes from update(), which reads scrollY anyway.
     window.addEventListener('scroll', function () {
-      var y = window.scrollY;
-      if (y !== lastY) dir = y > lastY ? 1 : -1;
-      lastY = y;
       if (self.auto || self.ignoreScroll) return;
       clearTimeout(timer);
       timer = setTimeout(finish, FINISH_IDLE_MS);
     }, { passive: true });
-    window.addEventListener('wheel', function () { if (self.auto) self.cancelAssist(); }, { passive: true, capture: true });
-    window.addEventListener('touchstart', function () { touching = true; self.cancelAssist(); }, { passive: true });
+    window.addEventListener('wheel', function () { if (self.auto) self.cancelGlide(); }, { passive: true, capture: true });
+    window.addEventListener('touchstart', function () { touching = true; self.cancelGlide(); }, { passive: true });
     ['touchend', 'touchcancel'].forEach(function (t) {
       window.addEventListener(t, function () {
         touching = false;
@@ -929,52 +515,37 @@
     });
   };
 
-  SequenceChain.prototype.cancelAssist = function () {
-    clearTimeout(this.idleTimer);
-    this.wheelLock = false;
+  SequenceChain.prototype.glideTo = function (dest, a) {
+    var self = this;
+    var from = window.scrollY, dist = dest - from;
+    var section = (a[a.length - 1] - a[0]) / (a.length - 1);
+    var ms = Math.min(FINISH_MAX_MS, Math.max(FINISH_MIN_MS, Math.abs(dist) / section * FINISH_MS_PER_SECTION));
+    if (this.auto) cancelAnimationFrame(this.auto.raf);
+    var start = performance.now();
+    this.ignoreScroll = true;
+    this.auto = { raf: 0 };
+    function step(now) {
+      if (!self.auto) return;
+      var t = Math.min(1, (now - start) / ms);
+      jumpTo(from + dist * easeGlide(t));
+      if (t < 1) { self.auto.raf = requestAnimationFrame(step); return; }
+      self.auto = null;
+      // The final step's scroll event arrives next frame; keep ignoring it.
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { if (!self.auto) self.ignoreScroll = false; });
+      });
+    }
+    this.auto.raf = requestAnimationFrame(step);
+  };
+
+  SequenceChain.prototype.cancelGlide = function () {
     if (!this.auto) return;
     cancelAnimationFrame(this.auto.raf);
     this.auto = null;
     this.ignoreScroll = false;
-    this.lastY = window.scrollY;
   };
 
-  SequenceChain.prototype.startLoadClip = function (clip, then) {
-    var spec = clip.spec, set = clip.set;
-    var fps = spec.fps || 24, delay = spec.delay == null ? 400 : spec.delay;
-    var buffer = Math.min(set.count, spec.buffer || set.count);
-    clip.duration = (set.count - 1) / fps * 1000;
-    clip.elapsed = 0;
-    clip.playing = false;
-
-    if (reducedMotion.matches) {           // no motion: straight to the end state
-      clip.p = 1;
-      set.load(set.count - 1);
-      set.onLoad = function () { if (set.blobs[set.count - 1]) then(); };
-      return;
-    }
-
-    set.loadAll();
-    var started = false, restStarted = false;
-    function play() { setTimeout(function () { clip.playing = true; clip.lastNow = 0; }, delay); }
-    function go() {
-      if (started) return;
-      started = true;
-      // Hold: while <html data-seq-hold> is set (the home page intro is on),
-      // the load clip waits for the "seq:release" event, so it plays when the
-      // intro reveals the room instead of unseen behind it.
-      if (document.documentElement.hasAttribute('data-seq-hold')) {
-        document.addEventListener('seq:release', play, { once: true });
-      } else play();
-    }
-    function startRest() { if (!restStarted) { restStarted = true; then(); } }
-    set.onLoad = function () {
-      if (set.readyThrough(buffer)) go();
-      if (set.loaded >= set.count) startRest();
-    };
-    setTimeout(function () { go(); startRest(); }, AUTOPLAY_WAIT_MAX_MS);
-  };
-
+  // ---- drawing ---------------------------------------------------------------
   // Resizing clears the canvas, and this canvas is opaque, so it would show
   // black until the next tick draws (a visible flash while the page animates
   // the room's width). So it is redrawn right here, inside the resize; if the
@@ -999,25 +570,25 @@
     this.lastKey = '';
     this.render();
     if (!this.lastKey && snap) this.drawImage(snap, 1);
+    this.wake();
   };
 
-  function docTop(el) { return el.getBoundingClientRect().top + window.scrollY; }
-
+  // Advances every clip; returns true while something is still moving.
   SequenceChain.prototype.update = function (now) {
-    // Glides and finger drags are already smooth; smoothing them again only
-    // makes the room lag behind the page. Wheel input keeps the smoothing.
-    var follow = this.auto || this.smoothWheel || (this.touch && this.touch.mode === 'drag') ? 0.5 : SMOOTHING;
+    // Glides and smooth-wheel steps are already smooth; smoothing them again
+    // only makes the room lag behind the page.
+    var follow = this.auto || this.smoothWheel ? 0.5 : SMOOTHING;
+    var tops = this.clipTops(), y = window.scrollY, busy = false;
+    if (y !== this.lastY) { this.scrollDir = y > this.lastY ? 1 : -1; this.lastY = y; }
     for (var c = 0; c < this.clips.length; c++) {
-      var clip = this.clips[c];
+      var clip = this.clips[c], t = tops[c];
+      if (t) clip.target = clamp01((y - t[0]) / Math.max(t[1] - t[0], 1));
       if (clip.forced) {                       // playClip(): time, not scroll
         var f = clip.forced;
         if (f.t0 === null && clip.set.loaded >= clip.set.count) f.t0 = now;
         clip.p = f.t0 === null ? 0 : f.dur ? clamp01((now - f.t0) / f.dur) : 1;
         if (clip.p >= 1) clip.forced = null;
-        if (clip.fromEl && clip.toEl) {
-          var fa = docTop(clip.fromEl), fb = docTop(clip.toEl);
-          clip.target = clamp01((window.scrollY - fa) / Math.max(fb - fa, 1));
-        }
+        busy = true;
         continue;
       }
       if (clip.play === 'manual') { clip.p = 1; continue; }   // rests on its last frame
@@ -1028,11 +599,11 @@
         clip.elapsed += dt;
         clip.p = clamp01(clip.elapsed / clip.duration);
         if (clip.p >= 1) clip.playing = false;
-      } else if (clip.fromEl && clip.toEl) {
-        var a = docTop(clip.fromEl), b = docTop(clip.toEl);
-        clip.target = clamp01((window.scrollY - a) / Math.max(b - a, 1));
+        busy = true;
+      } else if (t) {
         var gap = clip.target - clip.p;
         clip.p = Math.abs(gap) < SNAP ? clip.target : clip.p + gap * follow;
+        if (clip.p !== clip.target) busy = true;
       }
     }
     // A playClip() playback only holds while the page rests on its package;
@@ -1040,16 +611,17 @@
     for (var i = 0; i < this.clips.length; i++) {
       if (!this.clips[i].forced) continue;
       var here = this.clips[i].play !== 'scroll' || this.clips[i].target > 0.999;
-      for (var j = 0; j < this.clips.length; j++) {
-        if (j !== i && this.clips[j].play === 'scroll' && j > i && this.clips[j].target > 0.001) here = false;
+      for (var j = i + 1; j < this.clips.length; j++) {
+        if (this.clips[j].play === 'scroll' && this.clips[j].target > 0.001) here = false;
       }
       if (!here) this.clips[i].forced = null;
     }
+    return busy;
   };
 
   // Decide which frames of each clip stay decoded: a long run ahead of the
   // playhead in the direction it is heading, a few behind, and a few either
-  // side of clips that are standing still (ready for the next glide).
+  // side of clips that are standing still (ready for the next move).
   SequenceChain.prototype.prepare = function () {
     var active = this.activeIndex();         // gets the decode slots first
     for (var n = 0; n < this.clips.length; n++) {
@@ -1063,7 +635,7 @@
       var dir = goal > idx ? 1 : goal < idx ? -1 : 0;
       var lo, hi;
       if (dir === 0 && clip.play === 'scroll' && (c === active || c === active + 1)) {
-        // At rest next to this clip: the next glide plays it forward from its
+        // At rest next to this clip: the next move plays it forward from its
         // start or backward from its end, so give that a head start.
         if (idx <= 0) dir = 1;
         else if (idx >= last) dir = -1;
@@ -1084,8 +656,8 @@
     }
   };
 
-  // Which clip is on screen: the latest scroll clip that has started;
-  // otherwise the first clip.
+  // Which clip is on screen: one being played by playClip(), else the latest
+  // scroll clip that has started, else the first clip.
   SequenceChain.prototype.activeIndex = function () {
     for (var f = 0; f < this.clips.length; f++) if (this.clips[f].forced) return f;
     for (var c = this.clips.length - 1; c > 0; c--) {
@@ -1100,7 +672,7 @@
   // 1:1 frame leaves uncovered at the edges are filled by the scaled frame
   // underneath.
   var PIXEL_EXACT_MAX = 1.025;
-  SequenceChain.prototype.drawImage = function (img, alpha) {   // ImageBitmap
+  SequenceChain.prototype.drawImage = function (img, alpha) {
     var cw = this.canvas.width, ch = this.canvas.height;
     var iw = img.displayWidth || img.width, ih = img.displayHeight || img.height;
     var scale = Math.max(cw / iw, ch / ih);   // cover
@@ -1126,11 +698,13 @@
     ctx.globalAlpha = 1;
   };
 
+  // Draws the wanted frame (or the closest decoded one). Returns true while
+  // the exact frame is not on the canvas yet.
   SequenceChain.prototype.render = function () {
     var ci = this.activeIndex(), clip = this.clips[ci], set = clip.set;
-    var pos = clip.p * (set.count - 1);
-    var i = set.nearestIndex(Math.round(pos));   // closest decoded frame
-    if (i < 0) return;                      // nothing decoded yet: keep the last frame
+    var pos = clip.p * (set.count - 1), want = Math.round(pos);
+    var i = set.nearestIndex(want);          // closest decoded frame
+    if (i < 0) return true;                  // nothing decoded yet: keep the last frame
     var img = set.frames[i];
 
     // Seam blend: over the first `blend` frames, fade this clip in on top of
@@ -1143,27 +717,27 @@
     }
 
     var key = ci + ':' + i + ':' + alpha.toFixed(2);
-    if (key === this.lastKey) return;
-    if (under) this.drawImage(under, 1);
-    this.drawImage(img, alpha);
-    if (!this.lastKey) this.canvas.style.visibility = '';
-    this.lastKey = key;
+    if (key !== this.lastKey) {
+      if (under) this.drawImage(under, 1);
+      this.drawImage(img, alpha);
+      if (!this.lastKey) this.canvas.style.visibility = '';
+      this.lastKey = key;
+    }
+    return i !== want;
   };
 
   SequenceChain.prototype.tick = function (now) {
-    this.update(now);
+    this.raf = 0;
+    var busy = this.update(now);
     if (this.active) {
       this.prepare();
-      this.render();
+      if (this.render()) busy = true;
     }
-    requestAnimationFrame(this.tick);
+    if (busy) this.wake();
   };
 
-  // ---- boot --------------------------------------------------------------
+  // ---- boot ------------------------------------------------------------------
   function init() {
-    Array.prototype.forEach.call(document.querySelectorAll('[data-seq]'), function (el) {
-      if (!el.__seq) el.__seq = new ScrollSequence(el);
-    });
     Array.prototype.forEach.call(document.querySelectorAll('[data-seq-chain]'), function (el) {
       if (!el.__seq) el.__seq = new SequenceChain(el);
     });
@@ -1171,6 +745,5 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 
-  window.ScrollSequence = ScrollSequence;
   window.SequenceChain = SequenceChain;
 })();
