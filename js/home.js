@@ -18,15 +18,6 @@
   els.forEach(function (el) { io.observe(el); });
 })();
 
-// Floorplan (package 04): measure the two drawn paths once, so CSS can draw
-// them in with stroke-dashoffset.
-(function () {
-  var shell = document.querySelector('.plan-shell');
-  var wall = document.querySelector('.plan-wall-new');
-  if (shell) shell.style.setProperty('--len-shell', shell.getTotalLength());
-  if (wall) wall.style.setProperty('--len-wall', wall.getTotalLength());
-})();
-
 // Hero: while the image band at the top is on screen (below the header's
 // height), html.hero-on hides the fixed header, which would repeat its logo
 // and package menu.
@@ -64,7 +55,7 @@
 // screen, none is current and the text leaves with the room.
 (function () {
   var els = ['pkg-1', 'pkg-2', 'pkg-3', 'pkg-4'].map(function (id) { return document.getElementById(id); });
-  var after = document.getElementById('why');
+  var after = document.getElementById('about');
   if (els.some(function (el) { return !el; })) return;
   var current = null, queued = false;
   function update() {
@@ -171,15 +162,6 @@
   park();
 })();
 
-// About: the studio's local time, refreshed every 20 s.
-(function () {
-  var el = document.querySelector('.pf-about-time');
-  if (!el || !window.Intl) return;
-  var fmt = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit', timeZone: el.getAttribute('data-tz') });
-  function tick() { el.textContent = fmt.format(new Date()); }
-  tick(); setInterval(tick, 20000);
-})();
-
 // "Our work" photo strip (StripGallery). Vertical wheel is left to the page
 // (wheelMode 'horizontal'); drag, arrows and sideways trackpad move it.
 // Built only when the visitor gets within ~1.5 screens of it: it requests
@@ -189,18 +171,20 @@
   if (!root) return;
   // assets/gallery/<name>.webp (+ <name>-thumb.webp). 10-34 are from
   // Desktop\PICS, converted by tools/import-photos.mjs; 33 (same shot as 19) removed.
+  // Order (client 2026-10-04): photos that look like the same apartment are
+  // kept at least three apart, and no two bathrooms sit side by side.
   var PHOTOS = [
-    ['01-living-dining', 'Living & Dining'], ['02-guest-bathroom', 'Guest Bathroom'], ['03-studio-living', 'Studio — Living'],
-    ['04-studio-bedroom', 'Studio — Bedroom'], ['05-master-bedroom', 'Master Bedroom'], ['06-bedroom', 'Bedroom'],
-    ['07-vanity-detail', 'Vanity Detail'], ['08-bathroom', 'Bathroom'], ['09-living-room', 'Living Room'],
-    ['10-living-room', 'Living Room'], ['11-bathroom', 'Bathroom'], ['12-bedroom', 'Bedroom'],
-    ['13-kitchen', 'Kitchen'], ['14-living-dining', 'Living & Dining'], ['15-bathtub', 'Bathtub'],
-    ['16-bedroom', 'Bedroom'], ['17-work-corner', 'Work Corner'], ['18-open-plan-living', 'Open-Plan Living'],
-    ['19-marble-bathroom', 'Marble Bathroom'], ['20-bedroom', 'Bedroom'], ['21-living-room', 'Living Room'],
-    ['22-guest-bathroom', 'Guest Bathroom'], ['23-studio', 'Studio'], ['24-living-dining', 'Living & Dining'],
-    ['25-bathroom-vanity', 'Bathroom Vanity'], ['26-master-bedroom', 'Master Bedroom'], ['27-living-detail', 'Living Detail'],
-    ['28-bathroom', 'Bathroom'], ['29-studio-bedroom', 'Studio — Bedroom'], ['30-hallway', 'Hallway'],
-    ['31-living-room', 'Living Room'], ['32-vanity-detail', 'Vanity Detail'], ['34-guest-bathroom', 'Guest Bathroom']
+    ['01-living-dining', 'Living & Dining'], ['14-living-dining', 'Living & Dining'], ['22-guest-bathroom', 'Guest Bathroom'],
+    ['05-master-bedroom', 'Master Bedroom'], ['07-vanity-detail', 'Vanity Detail'], ['16-bedroom', 'Bedroom'],
+    ['32-vanity-detail', 'Vanity Detail'], ['06-bedroom', 'Bedroom'], ['08-bathroom', 'Bathroom'],
+    ['17-work-corner', 'Work Corner'], ['34-guest-bathroom', 'Guest Bathroom'], ['09-living-room', 'Living Room'],
+    ['25-bathroom-vanity', 'Bathroom Vanity'], ['18-open-plan-living', 'Open-Plan Living'], ['03-studio-living', 'Studio — Living'],
+    ['10-living-room', 'Living Room'], ['28-bathroom', 'Bathroom'], ['24-living-dining', 'Living & Dining'],
+    ['04-studio-bedroom', 'Studio — Bedroom'], ['12-bedroom', 'Bedroom'], ['20-bedroom', 'Bedroom'],
+    ['26-master-bedroom', 'Master Bedroom'], ['21-living-room', 'Living Room'], ['02-guest-bathroom', 'Guest Bathroom'],
+    ['29-studio-bedroom', 'Studio — Bedroom'], ['27-living-detail', 'Living Detail'], ['31-living-room', 'Living Room'],
+    ['11-bathroom', 'Bathroom'], ['13-kitchen', 'Kitchen'], ['30-hallway', 'Hallway'],
+    ['15-bathtub', 'Bathtub'], ['23-studio', 'Studio'], ['19-marble-bathroom', 'Marble Bathroom']
   ];
   var items = PHOTOS.map(function (p) {
     var base = 'assets/gallery/' + p[0];

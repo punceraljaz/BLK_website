@@ -7,6 +7,10 @@ import fs from 'node:fs';
 
 const CAL = 'https://calendly.com/blkremoddeling/30min';
 const F = '../assets/frames/';
+// The sections at the top of every package page (moved from the home page,
+// client 2026-10-04): written once in tools/stories.html with home-relative paths.
+const STORIES = fs.readFileSync(new URL('./stories.html', import.meta.url), 'utf8')
+  .replace(/(src|href)="assets\//g, '$1="../assets/');
 
 const PACKAGES = [
   {
@@ -37,6 +41,7 @@ const PACKAGES = [
       ['../assets/img/01-furnishing-kitchen.webp', 'Kitchen'],
       ['../assets/img/01-furnishing-bathroom.webp', 'Bathroom'],
     ],
+    examples: [['../assets/img/pk-furnishing-example-1.webp', 'A bedroom furnished with this package: upholstered bed, bedside tables, an armchair by the window.']],
     handover: 'a furnished apartment, ready to live in or to rent',
   },
   {
@@ -62,6 +67,7 @@ const PACKAGES = [
     ],
     before: F + 'room2/0001.webp', after: F + 'room2/0121.webp',
     extra: [[F + 'tv2/0121.webp', 'TV corner']],
+    examples: [['../assets/img/pk-basic-airbnb-example-1.webp', 'The same bedroom with Basic Airbnb: bedding, curtains, bedside lamps and art.']],
     handover: 'a fully working apartment, ready for a guest or tenant',
   },
   {
@@ -87,9 +93,10 @@ const PACKAGES = [
       ['You own several units', 'One team equips them all to the same standard, fast.'],
       ['You are not in the UAE', 'Hand over the keys, get back an apartment that is ready to list.'],
     ],
-    figures: true,
     before: F + 'room3/0001.webp', after: F + 'room3/0121.webp',
     extra: [[F + 'tv3/0121.webp', 'TV corner']],
+    figures: true,
+    examples: [['../assets/img/pk-upscale-airbnb-example-1.webp', 'The same bedroom with Upscale Airbnb: a feature wall, wood floor, sofa corner, throws, cushions and plants.']],
     handover: 'a turnkey apartment, photographed and ready to list',
   },
   {
@@ -115,6 +122,10 @@ const PACKAGES = [
     ],
     before: F + 'room4/0001.webp', after: F + 'room4/0121.webp',
     extra: [[F + 'tv4/0121.webp', 'Living corner']],
+    examples: [
+      ['../assets/img/pk-donna-branka-example-1.webp', 'A studio finished as Donna Branka: cove lighting, a pendant cluster, layered art, a sofa corner and fresh towels on the bed.', 1600, 1200],
+      ['../assets/img/pk-donna-branka-example-2.webp', 'Another Donna Branka studio: a textured feature wall, framed botanical prints, warm lamps and a marble side table.', 1280, 960],
+    ],
     handover: 'a finished apartment, ready for its first guest',
   },
 ];
@@ -150,6 +161,7 @@ function page(p, i) {
 <link rel="stylesheet" href="../css/base.css">
 <link rel="stylesheet" href="../css/site.css">
 <link rel="stylesheet" href="../css/package.css">
+<link rel="stylesheet" href="../css/stories.css">
 <link rel="stylesheet" href="../css/type.css">
 </head>
 <body>
@@ -180,7 +192,17 @@ ${p.badge ? `      <p class="pf-badge">${p.badge}</p>\n` : ''}      <h1 class="p
     </figure>
   </section>
 
-  <section class="pk-sec" aria-labelledby="inc-h">
+${p.examples && p.examples.length ? `  <!-- A real apartment finished with this package (client photos, 2026-10-04).
+       Add more to the package's examples list above. -->
+  <section class="pk-sec pk-examples" aria-labelledby="ex-h">
+    ${label('Example', 'A real apartment')}
+    <h2 class="pk-h2" id="ex-h" style="margin-top:clamp(2rem,6vh,3.5rem)">What <em>${p.name}</em> looks like</h2>
+    <div class="pk-examples__grid" style="--n:${Math.min(p.examples.length, 2)}">
+${p.examples.map(([src, alt, w = 1672, h = 941]) => `      <figure><img src="${src}" width="${w}" height="${h}" loading="lazy" alt="${esc(alt)}"><figcaption>${alt}</figcaption></figure>`).join('\n')}
+    </div>
+  </section>
+
+` : ''}  <section class="pk-sec" aria-labelledby="inc-h">
     ${label('01', 'What’s included')}
     <div class="pk-sec__grid">
       <div>
@@ -206,8 +228,7 @@ ${p.included.map(([t, d], k) => `        <li><span>${String(k + 1).padStart(2, '
 ${p.who.map(([t, d], k) => `      <div class="pk-col"><span class="pk-col__n">${String(k + 1).padStart(2, '0')}</span><h3>${t}</h3><p>${d}</p></div>`).join('\n')}
     </div>
   </section>
-${p.figures ? `
-  <section class="pk-sec" aria-labelledby="fig-h">
+${p.figures ? `  <section class="pk-sec" aria-labelledby="fig-h">
     ${label('03', 'What it does')}
     <h2 class="pk-h2" id="fig-h" style="margin-top:clamp(2rem,6vh,3.5rem)">Beautiful is <em>not enough.</em></h2>
     <ul class="pk-figs">
@@ -217,8 +238,8 @@ ${p.figures ? `
     </ul>
     <p class="pk-figs-note">Based on our experience with the apartments we have remodelled.</p>
   </section>
-` : ''}
-  <section class="pk-sec" aria-labelledby="ba-h">
+
+` : ''}  <section class="pk-sec" aria-labelledby="ba-h">
     ${label(p.figures ? '04' : '03', 'Before &amp; after')}
     <h2 class="pk-h2" id="ba-h" style="margin-top:clamp(2rem,6vh,3.5rem)">The same studio, <em>${p.slug === 'furnishing' ? 'filled' : p.slug === 'donna-branka' ? 'perfected' : 'finished'}</em></h2>
     <div class="pk-ba">
@@ -242,6 +263,7 @@ ${steps.map(([t, d], k) => `      <li><span>${String(k + 1).padStart(2, '0')}</s
     </div>
   </section>
 
+${STORIES}
   <nav class="pk-next" aria-label="More packages">
 ${next ? `    <a class="pk-next__big" href="${next.slug}.html">
       ${label('Next · ' + next.n, next.lead)}
@@ -289,6 +311,7 @@ ${next ? `    <a class="pk-next__big" href="${next.slug}.html">
 </footer>
 
 <script src="../js/site.js"></script>
+<script src="../js/stories.js"></script>
 </body>
 </html>
 `;

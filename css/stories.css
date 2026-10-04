@@ -1,0 +1,229 @@
+/* Sections shared by the four package pages, at the top of each (moved
+   from the home page 2026-10-04, client): the flow spread ("You have two
+   seconds to convince" + "Beautiful is not enough") and the reviews.
+   Markup: tools/stories.html (built into packages/*.html); script: js/stories.js.
+   Loaded after package.css, before type.css. */
+
+/* Reveal once on entry (js/stories.js adds .sc-in). */
+[data-sc-in] {
+  opacity: 0; transform: translate3d(0, 14px, 0);
+  transition: opacity 620ms var(--sc-ease-out), transform 620ms var(--sc-ease-out);
+}
+[data-sc-in].sc-in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  [data-sc-in] { transform: none; transition-duration: 220ms; }
+}
+
+.pf-flow, .pf-story { position: relative; }
+.pf-story {
+  background: var(--sc-canvas);
+  padding: clamp(5rem, 14vh, 9rem) var(--sc-gutter);
+  color: var(--sc-ink); font-variant-numeric: lining-nums;
+}
+.pf-story__inner { max-width: 72rem; margin-inline: auto; }
+.pf-kicker {
+  display: block; margin-bottom: var(--sc-5);
+  font-size: 0.7rem; text-transform: uppercase; color: var(--sc-ink-soft);
+}
+.pf-display { margin: 0; }
+.pf-h2 { margin: 0; }
+.pf-lead { margin: var(--sc-6) 0 0; max-width: 34em; color: var(--sc-ink); }
+.pf-body {
+  margin: var(--sc-4) 0 0; max-width: 38em;
+  font-size: 1rem; line-height: 1.7; color: var(--sc-ink-soft);
+}
+.pf-textlink {
+  display: inline-block; margin-top: var(--sc-6);
+  text-transform: uppercase;
+  color: var(--sc-ink); text-decoration: none;
+  transition: opacity var(--sc-d-fast) var(--sc-ease-out);
+}
+.pf-textlink:hover { opacity: 0.55; }
+.pf-textlink:focus-visible { outline: 1px solid var(--sc-ink); outline-offset: 6px; }
+
+/* Flow (client refs: Armani Hotels, "Between Feeling"): one continuous page,
+   "two seconds" runs on into "Beautiful is not enough" with no break. Two
+   small photos sit in different places beside it: the plant high on the far
+   right of chapter 1, the lamp lower and further in on chapter 2. */
+.pf-flow { background: var(--sc-canvas); color: var(--sc-ink); }
+.pf-flow__ch {
+  position: relative; box-sizing: border-box;
+  padding: clamp(5rem, 14vh, 8rem) var(--sc-gutter) clamp(3rem, 8vh, 5rem);
+}
+.pf-flow__ch > :not(.pf-flow__inline) { max-width: min(46rem, 54vw); }
+.pf-flow__ch .pf-kicker { margin-bottom: clamp(1.5rem, 4vh, 2.5rem); }
+.pf-flow__ch .pf-display { max-width: 12em; text-align: left; }
+.pf-flow__cols {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr); gap: clamp(1rem, 3vw, 3rem);
+  margin-top: clamp(2.5rem, 8vh, 4.5rem); max-width: 40rem;
+}
+.pf-flow__cols + .pf-flow__cols { margin-top: clamp(2rem, 5vh, 3rem); }
+.pf-flow__label {
+  margin: 0.35rem 0 0; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--sc-ink-soft); font-weight: 500;
+}
+.pf-flow__cols .pf-lead { margin-top: 0; }
+.pf-flow__know { list-style: none; margin: 0; padding: 0; font-size: 1.05rem; line-height: 1.75; }
+.pf-flow__know em { color: var(--sc-ink-soft); }
+.pf-flow__ch .pf-figures { margin-top: clamp(2.5rem, 7vh, 4rem); }
+.pf-flow__inline {
+  position: absolute; display: block; height: auto; max-width: none;
+  object-fit: cover; filter: var(--pf-photo-filter);
+}
+/* Client 2026-10-04: the plant runs the full height of chapter 1, flush
+   with the right edge of the screen (no page colour above, below or beside it). */
+#why .pf-flow__inline        { right: 0; top: 0; bottom: 0; width: clamp(14rem, 34vw, 40rem); height: 100%; object-position: 40% 50%; }
+/* Client 2026-10-04: chapter 2 mirrors chapter 1 on desktop: the lamp runs
+   the full height on the LEFT edge, all the text sits against the right
+   edge, right-aligned ("Feel right" label on the right of its text). */
+#what-we-do .pf-flow__inline { left: 0; top: 0; bottom: 0; width: clamp(14rem, 34vw, 40rem); height: 100%; object-position: 50% 40%; }
+@media (min-width: 901px) {
+  #what-we-do { display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
+  #what-we-do .pf-display { text-align: right; }
+  #what-we-do .pf-figure__label { margin-left: auto; }
+  #what-we-do .pf-flow__cols { grid-template-columns: minmax(0, 2.4fr) minmax(0, 1fr); }
+  #what-we-do .pf-flow__label { order: 2; }
+}
+
+/* Three figures. */
+.pf-figures {
+  list-style: none; margin: var(--sc-8) 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sc-6);
+}
+.pf-figure__num { display: block; line-height: 1; font-variant-numeric: lining-nums; }
+.pf-figure__label { display: block; margin-top: var(--sc-3); max-width: 15em; font-size: 1rem; line-height: 1.5; color: var(--sc-ink-soft); }
+.pf-figures-note { margin: var(--sc-5) 0 0; font-size: 0.8rem; color: var(--sc-ink-soft); }
+.pf-flow__pair, .pf-flow__pair-text { display: contents; }
+.pf-flow__pair-text > * { max-width: min(46rem, 54vw); }   /* as when they were direct children of the chapter */
+.pf-flow__side { display: none; }
+
+/* Reviews (client 2026-10-04): the title, three reviews up front (one large
+   on the left, two smaller stacked on the right), the other three behind
+   "Read more client stories", and the invitation with the two buttons
+   centred at the end. Behind it all, one room's transformation (before ->
+   the process -> after) cross-fades under a page-colour veil; the sticky
+   layer keeps it filling the screen while the section scrolls over it. */
+.pf-reviews { padding: 0; isolation: isolate; overflow: clip; }   /* clip: the sticky photo never slides past the section (still sticky, unlike hidden) */
+.pf-reviews__bg {
+  position: sticky; top: 0; z-index: -1;
+  height: 100vh; height: 100svh; margin-bottom: -100vh; margin-bottom: -100svh;
+  overflow: hidden; pointer-events: none;
+}
+.pf-reviews__bg img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  opacity: 0; transform: scale(1.04);
+  transition: opacity 1.6s ease, transform 6s ease-out;
+  filter: var(--pf-photo-filter);
+}
+.pf-reviews__bg img.is-bw { filter: grayscale(1) contrast(1.06); }
+.pf-reviews[data-stage="0"] .pf-reviews__bg [data-stage="0"],
+.pf-reviews[data-stage="1"] .pf-reviews__bg [data-stage="1"],
+.pf-reviews[data-stage="2"] .pf-reviews__bg [data-stage="2"] { opacity: 1; transform: none; }
+/* The veil: the photo stays a quiet presence, the text fully readable. */
+.pf-reviews__bg::after {
+  content: ""; position: absolute; inset: 0;
+  background: color-mix(in oklab, var(--pal-cream) 84%, transparent);
+}
+/* The section is warm cream from the client's palette: it fades in from the
+   page colour at the top and back out into it at the bottom. */
+.pf-reviews::before, .pf-reviews::after {
+  content: ""; position: absolute; left: 0; right: 0; z-index: 0; height: clamp(6rem, 22vh, 12rem); pointer-events: none;
+}
+.pf-reviews::before { top: 0; background: linear-gradient(var(--sc-canvas), transparent); }
+.pf-reviews::after { bottom: -2px; background: linear-gradient(transparent, var(--sc-canvas) 92%); }   /* -2px: no sliver of photo at the seam */
+.pf-reviews .pf-story__inner { position: relative; z-index: 1; }
+.pf-reviews .pf-story__inner {
+  max-width: 72rem;
+  padding: clamp(5rem, 14vh, 9rem) var(--sc-gutter) clamp(7rem, 18vh, 11rem);
+}
+.pf-reviews__sub { margin: var(--sc-4) 0 0; font-size: 0.86rem; font-weight: 300; letter-spacing: 0.06em; color: var(--sc-ink-soft); }
+/* Which stage the background shows: three tiny words, the current one ink. */
+.pf-reviews__stages { display: flex; gap: 1.6rem; margin: var(--sc-5) 0 0; }
+.pf-reviews__stages span {
+  font-size: 0.58rem; font-weight: 400; letter-spacing: 0.3em; text-transform: uppercase;
+  color: color-mix(in oklab, var(--sc-ink-soft) 55%, transparent);
+  transition: color 1.2s ease;
+}
+.pf-reviews[data-stage="0"] .pf-reviews__stages [data-stage="0"],
+.pf-reviews[data-stage="1"] .pf-reviews__stages [data-stage="1"],
+.pf-reviews[data-stage="2"] .pf-reviews__stages [data-stage="2"] { color: var(--sc-ink); }
+
+.pf-quotes-top {
+  display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+  gap: clamp(3rem, 7vw, 7rem); align-items: start;
+  margin-top: clamp(3.5rem, 9vh, 5.5rem);
+}
+.pf-quote { margin: 0; }
+.pf-quote blockquote { margin: 0; color: var(--sc-ink); }
+.pf-quote figcaption {
+  margin-top: var(--sc-4);
+  font-size: 0.68rem; text-transform: uppercase; color: var(--sc-ink-soft);
+}
+.pf-quote--hero blockquote { font-size: clamp(1.15rem, 0.8rem + 0.9vw, 1.6rem) !important; line-height: 1.7 !important; letter-spacing: 0.02em; }
+.pf-quote--hero figcaption { margin-top: var(--sc-5); }
+.pf-quotes-side { display: grid; gap: clamp(2rem, 5vh, 3rem); }
+.pf-quotes-side .pf-quote + .pf-quote { padding-top: clamp(2rem, 5vh, 3rem); border-top: 1px solid var(--sc-hairline); }
+
+/* The other three, behind a quiet text link. */
+.pf-more { margin-top: clamp(3rem, 8vh, 4.5rem); }
+.pf-more summary {
+  display: inline-block; cursor: pointer; list-style: none; padding-bottom: 0.45em;
+  font-size: 0.62rem; font-weight: 400; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--sc-ink); box-shadow: inset 0 -1px 0 var(--pf-line);
+  transition: box-shadow 0.4s var(--sc-ease-out);
+}
+.pf-more summary::-webkit-details-marker { display: none; }
+.pf-more summary:hover { box-shadow: inset 0 -1px 0 var(--sc-ink); }
+.pf-more summary:focus-visible { outline: 1px solid var(--sc-ink); outline-offset: 6px; }
+.pf-more[open] summary { color: var(--sc-ink-soft); }
+.pf-quotes {
+  list-style: none; margin: clamp(2.5rem, 6vh, 3.5rem) 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(2.5rem, 5vw, 4.5rem) clamp(2rem, 4vw, 4rem);
+}
+
+/* The invitation, centred, with air around it. */
+.pf-reviews__cta { margin-top: clamp(5rem, 14vh, 8rem); text-align: center; }
+.pf-reviews__ask { margin: 0; font-size: clamp(1rem, 0.8rem + 0.55vw, 1.4rem); font-weight: 300; letter-spacing: 0.08em; color: var(--sc-ink); text-wrap: balance; }
+.pf-cta { display: flex; justify-content: center; flex-wrap: wrap; gap: 0.75rem; margin-top: clamp(1.75rem, 4vh, 2.5rem); }
+
+
+@media (min-width: 901px) and (max-width: 1200px) {
+  .pf-quotes { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+  .pf-figures { grid-template-columns: 1fr; gap: var(--sc-6); }
+  .pf-quotes { grid-template-columns: 1fr; }
+  .pf-flow__ch { padding: clamp(3.5rem, 9vh, 5rem) var(--sc-gutter) 1rem; display: flex; flex-direction: column; }
+  .pf-flow__ch > :not(.pf-flow__inline) { max-width: none; }
+  .pf-flow__inline { position: static; order: 9; margin-top: 2.5rem; }
+  #why .pf-flow__inline        { display: none; }   /* the plant moves beside "Beautiful is not enough" */
+  /* The plant as a narrow strip flush with the right edge, as tall as the
+     headline and figures beside it; cropped on the curtains side. */
+  .pf-flow__pair {
+    display: grid; grid-template-columns: minmax(0, 1fr) 31vw; column-gap: 1.25rem;
+    margin-right: calc(-1 * var(--sc-gutter));
+  }
+  .pf-flow__pair-text { display: block; }
+  .pf-flow__pair-text > * { max-width: none; }
+  .pf-flow__pair .pf-display { margin-top: 0; }
+  .pf-flow__side { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 30% 50%; filter: var(--pf-photo-filter); }
+  #what-we-do .pf-kicker, .pf-figures-note { display: none; }
+  #what-we-do .pf-flow__inline { width: 46%; height: auto; aspect-ratio: 4 / 5; object-position: 50% 25%; align-self: flex-start; margin-left: 8%; }
+  .pf-flow__cols { grid-template-columns: 1fr; gap: 0.6rem; }
+  .pf-reviews .pf-story__inner { padding: 4rem var(--sc-gutter) 6.5rem; }
+  .pf-quotes-top { grid-template-columns: 1fr; gap: 2.5rem; margin-top: 2.75rem; }
+  .pf-quotes-side { padding-top: 2.5rem; border-top: 1px solid var(--sc-hairline); }
+  .pf-reviews__stages { gap: 1.1rem; }
+  .pf-cta a { flex: 1; }
+}
+
+
+/* Client 2026-10-04: "You have two seconds to convince." on one line (wider
+   screens; it would be too small on phones). Shrinks with the screen so it
+   stays clear of the plant photo on the right (34vw). */
+@media (min-width: 901px) {
+  #why .pf-display {
+    max-width: none; white-space: nowrap;
+    font-size: min(clamp(1.25rem, 0.85rem + 1vw, 1.9rem), 2.2vw) !important;
+  }
+}

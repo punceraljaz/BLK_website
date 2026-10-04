@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="../css/base.css">
 <link rel="stylesheet" href="../css/site.css">
 <link rel="stylesheet" href="../css/package.css">
+<link rel="stylesheet" href="../css/stories.css">
 <link rel="stylesheet" href="../css/type.css">
 </head>
 <body>
@@ -43,6 +44,16 @@
       <img src="../assets/frames/room3/0121.webp" width="1904" height="1088" alt="The studio finished with a green feature wall, wood floor, leather armchair, throw and fresh towels.">
       <figcaption>The studio after Upscale Airbnb</figcaption>
     </figure>
+  </section>
+
+  <!-- A real apartment finished with this package (client photos, 2026-10-04).
+       Add more to the package's examples list above. -->
+  <section class="pk-sec pk-examples" aria-labelledby="ex-h">
+    <p class="pk-label"><span>Example</span><span class="pk-label__rule" aria-hidden="true"></span><span>A real apartment</span></p>
+    <h2 class="pk-h2" id="ex-h" style="margin-top:clamp(2rem,6vh,3.5rem)">What <em>Upscale Airbnb</em> looks like</h2>
+    <div class="pk-examples__grid" style="--n:1">
+      <figure><img src="../assets/img/pk-upscale-airbnb-example-1.webp" width="1672" height="941" loading="lazy" alt="The same bedroom with Upscale Airbnb: a feature wall, wood floor, sofa corner, throws, cushions and plants."><figcaption>The same bedroom with Upscale Airbnb: a feature wall, wood floor, sofa corner, throws, cushions and plants.</figcaption></figure>
+    </div>
   </section>
 
   <section class="pk-sec" aria-labelledby="inc-h">
@@ -80,7 +91,6 @@
       <div class="pk-col"><span class="pk-col__n">03</span><h3>You are not in the UAE</h3><p>Hand over the keys, get back an apartment that is ready to list.</p></div>
     </div>
   </section>
-
   <section class="pk-sec" aria-labelledby="fig-h">
     <p class="pk-label"><span>03</span><span class="pk-label__rule" aria-hidden="true"></span><span>What it does</span></p>
     <h2 class="pk-h2" id="fig-h" style="margin-top:clamp(2rem,6vh,3.5rem)">Beautiful is <em>not enough.</em></h2>
@@ -116,6 +126,113 @@
     <div class="pk-actions">
       <a class="pk-btn" href="https://calendly.com/blkremoddeling/30min" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg> Book a session</a>
       <a class="pk-link" href="https://wa.me/971545979814" target="_blank" rel="noopener" data-choose="wa" data-wa-text="Hi BLK Remodelling, I'd like to know more about the Upscale Airbnb package." aria-haspopup="menu">Ask on WhatsApp <span aria-hidden="true">&rarr;</span></a>
+    </div>
+  </section>
+
+<!-- Shared by the four package pages (tools/build-packages.mjs puts it at the
+     top of each page and turns assets/ into ../assets/). Moved here from the
+     home page on 2026-10-04 (client). Styles: css/stories.css; script: js/stories.js. -->
+  <!-- After the room. Flow: "two seconds" and "Beautiful is not enough" as one
+       continuous spread (client refs: Armani Hotels, "Between Feeling"), with
+       two small photos placed beside the text. -->
+  <section class="pf-flow" aria-label="Why presentation matters, and what we do">
+    <div class="pf-flow__text">
+      <article class="pf-flow__ch" id="why" data-img="0">
+        <img class="pf-flow__inline" src="../assets/img/interlude-plant.webp" width="1086" height="1448" loading="lazy" alt="">
+        <span class="pf-kicker">Why presentation matters</span>
+        <h2 class="pf-display">You have <em>two seconds</em> to convince.</h2>
+        <div class="pf-flow__cols" data-sc-in>
+          <p class="pf-flow__label">Booking</p>
+          <div>
+            <p class="pf-lead">Booking an apartment is a swiping game. Guests decide in two seconds; if your place doesn&rsquo;t win them over, they swipe on and the booking is gone.</p>
+            <p class="pf-body">That is why the presentation is everything.</p>
+          </div>
+        </div>
+        <div class="pf-flow__cols" data-sc-in>
+          <p class="pf-flow__label">We know</p>
+          <ul class="pf-flow__know">
+            <li>what guests want</li>
+            <li>how to present your apartment</li>
+            <li><em>and above all</em> how to remodel it cost-effectively</li>
+          </ul>
+        </div>
+      </article>
+      <article class="pf-flow__ch" id="what-we-do" data-img="1">
+        <img class="pf-flow__inline" src="../assets/img/interlude-lamp.webp" width="1086" height="1448" loading="lazy" alt="">
+        <span class="pf-kicker">What we do</span>
+        <!-- Phones only: the plant photo runs as a narrow strip down the right
+             edge beside the headline and figures (client 2026-10-04). On
+             desktop both wrappers are display: contents and the strip is hidden,
+             so the layout there is unchanged. -->
+        <div class="pf-flow__pair">
+          <div class="pf-flow__pair-text">
+            <h2 class="pf-display">Beautiful is <em>not enough.</em></h2>
+            <ul class="pf-figures" data-sc-in>
+              <li><span class="pf-figure__num">+20%</span><span class="pf-figure__label">more bookings</span></li>
+              <li><span class="pf-figure__num">+50%</span><span class="pf-figure__label">higher daily rate</span></li>
+              <li><span class="pf-figure__num">200+</span><span class="pf-figure__label">details taken care of</span></li>
+            </ul>
+            <p class="pf-figures-note">Based on our experience with the apartments we have remodelled.</p>
+          </div>
+          <img class="pf-flow__side" src="../assets/img/interlude-plant.webp" width="1086" height="1448" loading="lazy" alt="">
+        </div>
+        <div class="pf-flow__cols" data-sc-in>
+          <p class="pf-flow__label">Feel right</p>
+          <div>
+            <p class="pf-lead">A rental has to look good, but it also has to feel right.</p>
+            <p class="pf-body">Guests notice when a space is comfortable, practical and carefully put together &mdash; even if they cannot explain exactly why.</p>
+            <p class="pf-body">That is the difference we focus on.</p>
+            <p class="pf-body">From the bigger decisions to the small things that are easy to forget, we make sure the apartment is truly ready for its next guest &mdash; and for the owner behind it.</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="pf-story pf-reviews" id="reviews">
+    <!-- Background (client 2026-10-04): one room's transformation, before ->
+         the process -> after, cross-fading slowly while the section is on
+         screen (js/home.js "Reviews"), under a page-colour veil.
+         TODO: the client will send the real before and after photos; the
+         before and after below are placeholders (demolition shot, a gallery
+         photo). Only the process photo is meant to stay. -->
+    <div class="pf-reviews__bg" aria-hidden="true">
+      <img class="is-bw" data-stage="0" src="../assets/img/reviews-1-demolition.webp" alt="" loading="lazy" data-todo="before-photo">
+      <img class="is-bw" data-stage="1" src="../assets/img/reviews-2-wall.webp" alt="" loading="lazy">
+      <img data-stage="2" src="../assets/gallery/03-studio-living.webp" alt="" loading="lazy" data-todo="after-photo">
+    </div>
+    <div class="pf-story__inner">
+      <header class="pf-reviews__head" data-sc-in>
+        <h2 class="pf-h2">The transformations, in our clients&rsquo; words.</h2>
+        <p class="pf-reviews__sub">Real spaces. Real results. Real experiences.</p>
+        <p class="pf-reviews__stages" aria-hidden="true"><span data-stage="0">Before</span><span data-stage="1">The process</span><span data-stage="2">After</span></p>
+      </header>
+      <!-- Three reviews up front (client): one large, two smaller stacked
+           beside it; the other three open under "Read more client stories". -->
+      <div class="pf-quotes-top" data-sc-in>
+        <figure class="pf-quote pf-quote--hero"><blockquote>&ldquo;I couldn&rsquo;t believe it. I thought it was nice before &mdash; now it&rsquo;s incredible. My apartment is booked out and earning much more than before.&rdquo;</blockquote><figcaption>Branko &middot; JBR, Dubai</figcaption></figure>
+        <div class="pf-quotes-side">
+          <figure class="pf-quote"><blockquote>&ldquo;No words. It looks like a completely different apartment.&rdquo;</blockquote><figcaption>Nastja &middot; Dubai Marina</figcaption></figure>
+          <figure class="pf-quote"><blockquote>&ldquo;What a difference. Rented within a week &mdash; and rented ever since.&rdquo;</blockquote><figcaption>Marko &middot; Dubai Marina</figcaption></figure>
+        </div>
+      </div>
+      <details class="pf-more">
+        <summary>Read more client stories</summary>
+        <ul class="pf-quotes">
+          <li><figure class="pf-quote"><blockquote>&ldquo;I bought a studio and my agent recommended them. Quick, professional, at an unbelievable price. It&rsquo;s booked out, at a much higher rate than other apartments in my building. You&rsquo;ll be remodelling my next ones too!&rdquo;</blockquote><figcaption>Brian &middot; Marjan Island, RAK</figcaption></figure></li>
+          <li><figure class="pf-quote"><blockquote>&ldquo;Wow. Unbelievable, great job.&rdquo;</blockquote><figcaption>Mohamed &middot; Bab Al Bahr, RAK</figcaption></figure></li>
+          <li><figure class="pf-quote"><blockquote>&ldquo;They did all the work in my apartment. Fantastic work, very satisfied. I will definitely recommend them to my friends!&rdquo;</blockquote><figcaption>Rachid &middot; JVC, Dubai</figcaption></figure></li>
+        </ul>
+      </details>
+      <!-- The invitation closes the section; the fixed dock steps aside while
+           it is on screen (html.cta-on), so the same two buttons never show twice. -->
+      <div class="pf-reviews__cta" data-sc-in>
+        <p class="pf-reviews__ask">Ready to see what your property could become?</p>
+        <div class="pf-cta">
+          <a class="pf-dock__book" href="https://calendly.com/blkremoddeling/30min" target="_blank" rel="noopener">Book a session</a>
+          <a class="pf-dock__call" href="tel:+971545979814" data-choose="call" aria-haspopup="menu">Get in touch</a>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -163,5 +280,6 @@
 </footer>
 
 <script src="../js/site.js"></script>
+<script src="../js/stories.js"></script>
 </body>
 </html>

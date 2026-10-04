@@ -12,10 +12,10 @@
   --sc-surface:     #EDECE8;
   --sc-ink:         #2B221E;
   --sc-ink-soft:    #7D7872;
-  --sc-accent:      #351D14;
-  --sc-accent-ink:  #EDECE8;
+  --sc-accent:      #261F1E;   /* chocolate = the gallery/footer colour (client 2026-10-04: buttons and bands match it); was mahogany #351D14 */
+  --sc-accent-ink:  #F2E6D8;   /* palette cream: light text on the browns */
   --pf-line:        #BEBAB2;
-  --pf-accent-soft: #98928A;
+  --pf-accent-soft: #8C8579;   /* palette taupe */
   --sc-hairline:        color-mix(in oklab, var(--pf-line) 60%, transparent);
   --sc-hairline-strong: var(--pf-line);
   /* One treatment for all project photography (room, views, thumbnails,
@@ -25,7 +25,12 @@
   --pf-photo-filter: saturate(0.78) contrast(0.96) brightness(0.98);
   --pf-photo-tint:   rgba(110, 106, 98, 0.05);   /* cooler than before */
   /* The dark bands (gallery, footer): mahogany. */
-  --pf-floor:       #351D14;
+  --pf-floor:       #261F1E;   /* rich dark chocolate (client palette 2026-10-04; was mahogany #351D14) */
+  /* The client's palette, for the background transitions between sections. */
+  --pal-cream:  #F2E6D8;
+  --pal-stone:  #BFB8AA;
+  --pal-taupe:  #8C8579;
+  --pal-cocoa:  #594B43;
 
   /* Type (2026-10-04, client: "like the lettering in the intro"): one light,
      wide geometric sans, Montserrat, for everything. css/type.css sets the
@@ -90,6 +95,7 @@
    bottom; phones: two halves of one bar across the bottom. */
 .pf-dock {
   position: fixed; z-index: var(--sc-z-chrome);
+  transition: opacity 0.5s var(--sc-ease-out), visibility 0.5s;
   left: 50%; bottom: clamp(1.6rem, 4.5vh, 2.6rem); transform: translateX(-50%);
   display: flex; gap: 0.75rem;
 }
@@ -97,7 +103,7 @@
    higher). Hover: the button lifts slightly and casts a soft shadow, a fill
    grows out from the centre behind the text (::before) and the icon nudges.
    Transform and opacity only, so it stays smooth over the room video. */
-.pf-dock a {
+:is(.pf-dock, .pf-cta) a {
   position: relative; isolation: isolate; overflow: hidden;
   display: inline-flex; align-items: center; justify-content: center; gap: 0.65rem;
   min-height: 2.9rem; padding: 0 1.7rem; border-radius: 999px; box-sizing: border-box;
@@ -106,29 +112,29 @@
   transition: transform 0.5s var(--sc-ease-out), box-shadow 0.5s var(--sc-ease-out),
               color 0.4s var(--sc-ease-out), border-color 0.4s var(--sc-ease-out);
 }
-.pf-dock a::before {
+:is(.pf-dock, .pf-cta) a::before {
   content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit;
   opacity: 0; transform: scale(0.4, 0.2);
   transition: transform 0.55s var(--sc-ease-out), opacity 0.4s var(--sc-ease-out);
 }
 .pf-dock svg { width: 14px; height: 14px; flex: none; stroke-width: 1.3; transition: transform 0.5s var(--sc-ease-out); }
 @media (hover: hover) {
-  .pf-dock a:hover { transform: translateY(-2px); box-shadow: 0 10px 24px -8px rgb(53 29 20 / 0.35); }
-  .pf-dock a:hover::before { opacity: 1; transform: none; }
-  .pf-dock a:hover svg { transform: translateX(-2px) rotate(-8deg); }
+  :is(.pf-dock, .pf-cta) a:hover { transform: translateY(-2px); box-shadow: 0 10px 24px -8px rgb(38 31 30 / 0.4); }
+  :is(.pf-dock, .pf-cta) a:hover::before { opacity: 1; transform: none; }
+  :is(.pf-dock, .pf-cta) a:hover svg { transform: translateX(-2px) rotate(-8deg); }
 }
-.pf-dock a:active { transform: scale(0.97); transition-duration: 0.15s; }
-.pf-dock a:focus-visible { outline: 1px solid var(--sc-ink); outline-offset: 3px; }
+:is(.pf-dock, .pf-cta) a:active { transform: scale(0.97); transition-duration: 0.15s; }
+:is(.pf-dock, .pf-cta) a:focus-visible { outline: 1px solid var(--sc-ink); outline-offset: 3px; }
 /* Solid, no backdrop blur: the button floats over the room video, and
    re-blurring the moving video behind it every frame caused 50-100 ms
    hitches on the client's laptop (Iris Xe), measured: 17 slow frames per
    pass with the blur, 2 without. */
 .pf-dock__call {
-  background: var(--sc-surface); color: var(--sc-ink);
-  border: 1px solid var(--pf-line);
+  background: var(--pal-stone); color: #fff;       /* stone #BFB8AA, white text, client 2026-10-04 */
+  border: 1px solid color-mix(in oklab, var(--pal-taupe) 45%, var(--pal-stone));
 }
-.pf-dock__call::before { background: var(--sc-ink); }      /* fills dark, text turns light */
-@media (hover: hover) { .pf-dock__call:hover { color: var(--sc-surface); border-color: var(--sc-ink); } }
+.pf-dock__call::before { background: var(--pf-floor); }      /* fills chocolate, text turns cream */
+@media (hover: hover) { .pf-dock__call:hover { color: var(--pal-cream); border-color: var(--pf-floor); } }
 /* Number chooser: "Get in touch" and the WhatsApp links open this small
    menu with both phone numbers (script "Number chooser"). */
 .pf-choose {
@@ -156,12 +162,15 @@
 
 /* Primary: the accent. A faint light edge keeps it readable over the dark
    About band and footer. */
-.pf-dock__book { background: var(--sc-accent); color: var(--sc-surface); border: 1px solid color-mix(in oklab, var(--sc-surface) 22%, var(--sc-accent)); }
-.pf-dock__book::before { background: color-mix(in oklab, var(--sc-accent) 70%, #8a6a58); }   /* a warmer glow */
+.pf-dock__book { background: var(--sc-accent); color: var(--sc-accent-ink); border: 1px solid color-mix(in oklab, var(--pal-stone) 35%, var(--sc-accent)); }
+.pf-dock__book::before { background: var(--pal-cocoa); }   /* hover: cocoa, so it lifts off the chocolate background too */
 @media (max-width: 600px) {
   .pf-dock { left: var(--sc-gutter); right: var(--sc-gutter); transform: none; bottom: calc(1.25rem + env(safe-area-inset-bottom)); gap: 0.55rem; }
-  .pf-dock a { flex: 1; min-height: 3rem; padding: 0 0.8rem; letter-spacing: 0.14em; font-size: 0.62rem; }
+  :is(.pf-dock, .pf-cta) a { flex: 1; min-height: 3rem; padding: 0 0.8rem; letter-spacing: 0.14em; font-size: 0.62rem; }
 }
+/* The reviews section has the same two buttons (.pf-cta): the dock steps
+   aside while they are on screen (html.cta-on, js/home.js). */
+html.cta-on .pf-dock { opacity: 0; visibility: hidden; }
 /* Room under the dock at the very end of the page, so it never covers the footer text. */
 footer.pf-site-foot { padding-bottom: calc(var(--sc-8) + 6rem); }
 

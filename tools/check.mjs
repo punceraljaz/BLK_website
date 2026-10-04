@@ -2,7 +2,7 @@
 // Starts its own server, then on desktop (1536x864 @1.25, the client's screen)
 // and phone (390x844):
 //   - home page: script errors, failed requests, broken images
-//   - a screenshot at every section (packages 1-4, flow, reviews, apartments, about, work, footer)
+//   - a screenshot at every section (packages 1-4, about, work, footer)
 //   - which package text is shown at each package, and the wide room on package 4
 //   - the TV-corner view switch, the number chooser, the "Our work" strip
 //   - the intro (?intro): it runs, releases the room, and a click skips it
@@ -75,7 +75,7 @@ for (const [dev, opts] of Object.entries(DEVICES)) {
   R.tvView.backToBedroom = await page.evaluate(() => !document.documentElement.classList.contains('view-tv'));
 
   // the story sections and the end of the page
-  for (const id of ['why', 'what-we-do', 'reviews', 'apartments', 'about', 'work']) {
+  for (const id of ['about', 'work']) {
     await scrollToId(page, id);
     await page.screenshot({ path: `${out}/${dev}-${id}.png` });
   }
@@ -85,7 +85,6 @@ for (const [dev, opts] of Object.entries(DEVICES)) {
   await page.evaluate(() => scrollTo(0, document.body.scrollHeight));
   await page.waitForTimeout(800);
   await page.screenshot({ path: `${out}/${dev}-footer.png` });
-  R.aboutTime = await page.evaluate(() => document.querySelector('.pf-about-time').textContent.trim());
 
   // number chooser from the dock
   await page.click('.pf-dock__call');

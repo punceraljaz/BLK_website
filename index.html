@@ -79,14 +79,16 @@
       <a class="pf-hero__mark" href="#top">BLK<span>·</span>REMODELLING</a>
       <span class="pf-hero__place">Ras Al Khaimah · UAE</span>
     </div>
-    <!-- Three ways in (client 2026-10-04): Furnish -> package 01, Remodel ->
-         packages 02-04, Manage -> the property management site. -->
+    <!-- The four packages + Manage (client 2026-10-04; they were a list under
+         the hero before). Manage -> the property management site. -->
     <nav class="pf-hero__nav" aria-label="What we do">
-      <a href="#pkg-1"><span class="pf-hero__name">Furnish</span><span class="pf-hero__n">01</span><span class="pf-hero__line">Furnishing &amp; styling</span></a>
-      <a href="#pkg-2"><span class="pf-hero__name">Remodel</span><span class="pf-hero__n">02</span><span class="pf-hero__line">Renovation &amp; transformation</span></a>
+      <a href="#pkg-1"><span class="pf-hero__name">Furnishing</span><span class="pf-hero__n">01</span><span class="pf-hero__line">The empty shell, furnished</span></a>
+      <a href="#pkg-2"><span class="pf-hero__name">Basic Airbnb</span><span class="pf-hero__n">02</span><span class="pf-hero__line">Furniture and appliances</span></a>
+      <a href="#pkg-3"><span class="pf-hero__name">Upscale Airbnb</span><span class="pf-hero__n">03</span><span class="pf-hero__line">Down to the linens</span></a>
+      <a href="#pkg-4"><span class="pf-hero__name">Donna Branka</span><span class="pf-hero__n">04</span><span class="pf-hero__line">The signature package</span></a>
       <!-- TODO: the property management site's address (client to send); then add
            target="_blank" rel="noopener" so it opens in a new tab. -->
-      <a href="#" data-todo="manage-url"><span class="pf-hero__name">Manage</span><span class="pf-hero__n">03</span><span class="pf-hero__line">Property management</span></a>
+      <a href="#" data-todo="manage-url"><span class="pf-hero__name">Manage</span><span class="pf-hero__n">05</span><span class="pf-hero__line">Property management</span></a>
     </nav>
   </section>
 
@@ -132,8 +134,10 @@
        2026-10-04). Sits at the top of the track and scrolls away with it;
        fades out once a package's own text is shown (css/home.css .pf-lede). -->
   <div class="pf-lede">
-    <h2 class="pf-h2 pf-lede__title">Choose how far you want to take the transformation.</h2>
-    <p class="pf-body pf-lede__text">Three remodeling packages, shaped around the space, the vision and the investment.</p>
+    <div class="pf-lede__intro">
+      <h2 class="pf-h2 pf-lede__title">Choose how far you want to take the transformation.</h2>
+      <p class="pf-body pf-lede__text">Four remodeling packages, shaped around the space, the vision and the investment.</p>
+    </div>
   </div>
 
   <!-- Package 01, Furnishing -->
@@ -222,7 +226,8 @@
     <div class="pf-stage">
       <div class="pf-page">
         <div class="pf-page__body">
-          <h2 class="pf-page__title">Donna Branka <span class="pf-badge">Signature · Best seller</span></h2>
+          <h2 class="pf-page__title">Donna Branka</h2>
+          <p class="pf-badge">Signature · Best seller</p>
           <p class="pf-page__sub">Our signature. Finished to the last detail.</p>
           <p class="pf-page__text">Designed and styled by Branka. Nothing left to add.</p>
           <div class="pf-page__links">
@@ -235,101 +240,6 @@
             <li><button type="button" class="pf-room" aria-pressed="false" data-view="tv" data-caption="TV corner">
               <img src="assets/img/04-tv-end-thumb.webp" alt=""><span>TV corner</span></button></li>
           </ul>
-          <!-- Floorplan: draws itself and moves a wall once this package is shown
-               (desktop only; driven by --plan-p, see .pf-plan-wrap in css/home.css). -->
-          <div class="pf-plan-wrap" aria-hidden="true">
-            <svg class="pf-plan" viewBox="0 0 380 200" xmlns="http://www.w3.org/2000/svg">
-              <!-- Traced from the unit's actual floor plan: balcony, open
-                   sleep area, bath + separate shower, open kitchen run,
-                   entry. Not a generic reference — this is the real layout. -->
-              <path class="plan-shell" d="M12,12 H370 V188 H12 Z" />
-              <!-- balcony glass line: an existing sliding door, not new
-                   construction, so it stays plain ink, not accent -->
-              <g class="plan-glass">
-                <line x1="53" y1="14" x2="53" y2="186" />
-                <line x1="57" y1="14" x2="57" y2="186" />
-              </g>
-              <!-- balcony furniture: two lounge chairs facing a round table -->
-              <g class="plan-balcony">
-                <rect x="19" y="34" width="24" height="15" rx="3" transform="rotate(58 31 41.5)" class="plan-balcony__chair" />
-                <rect x="19" y="140" width="24" height="15" rx="3" transform="rotate(-58 31 147.5)" class="plan-balcony__chair" />
-                <circle cx="31" cy="94" r="12" />
-                <path d="M20,83 42,105 M42,83 20,105" />
-              </g>
-              <!-- interior partitions drawn in accent: the bath/shower block
-                   is the one enclosed construction in an otherwise open plan -->
-              <path class="plan-wall-new" d="M267,12 V96 H370 M328,12 V96" />
-              <path class="plan-door" d="M267,52 a22,22 0 0 1 22,22" stroke-dasharray="2.5 2.5" />
-              <!-- entry door, far right wall -->
-              <g class="plan-entry">
-                <path d="M370,106 a30,30 0 0 0 -30,30" stroke-dasharray="2.5 2.5" />
-                <path d="M370,106 L370,136" />
-                <path d="M362,121 l8,-4 v8 z" class="plan-entry__arrow" />
-              </g>
-              <!-- bed, against the top wall, with nightstands -->
-              <g class="plan-bed">
-                <rect x="96" y="16" width="68" height="38" rx="2" />
-                <path d="M96,29 H164" />
-                <rect x="103" y="19" width="22" height="9" rx="2.5" class="plan-bed__pillow" />
-                <rect x="135" y="19" width="22" height="9" rx="2.5" class="plan-bed__pillow" />
-                <rect x="85" y="21" width="9" height="13" rx="1.5" />
-                <rect x="166" y="21" width="9" height="13" rx="1.5" />
-              </g>
-              <!-- decorative rug, patterned, centred below the bed -->
-              <g class="plan-rug">
-                <rect x="112" y="66" width="36" height="30" />
-                <path d="M112,66 148,96 M148,66 112,96 M112,81 H148 M130,66 V96" />
-              </g>
-              <!-- hatched triangular feature against the top wall, right of
-                   the bed — traced as drawn, a built detail of this unit -->
-              <path class="plan-triangle" d="M170,16 H262 V58 Z" />
-              <!-- sofa, bottom-left of the open area -->
-              <g class="plan-sofa">
-                <rect x="24" y="148" width="88" height="32" rx="3" />
-                <path d="M48,148 V180 M72,148 V180 M96,148 V180" />
-              </g>
-              <!-- dining table with a chair at each end -->
-              <g class="plan-dining-real">
-                <rect x="142" y="154" width="48" height="20" rx="2" />
-                <rect x="124" y="157" width="14" height="14" rx="6" />
-                <rect x="194" y="157" width="14" height="14" rx="6" />
-              </g>
-              <!-- bath: vanity and toilet -->
-              <g class="plan-fixtures">
-                <rect x="277" y="19" width="20" height="11" rx="2" />
-                <circle cx="287" cy="24.5" r="3.4" />
-                <ellipse cx="312" cy="78" rx="7" ry="6" />
-                <rect x="306" y="84" width="12" height="8" rx="1.5" />
-              </g>
-              <!-- shower: hatched wet-room floor, drain mark -->
-              <g class="plan-shower">
-                <rect x="330" y="14" width="38" height="80" class="plan-shower__box" />
-                <path class="plan-shower__hatch" d="M330,24 350,14 M330,34 368,14.5 M330,44 368,24 M330,54 368,34 M330,64 368,44 M330,74 368,54 M330,84 368,64 M330,94 368,74 M338,94 368,84 M358,94 368,94" />
-                <circle cx="349" cy="22" r="2.6" />
-              </g>
-              <!-- kitchen run: fridge, sink, hob, cabinet, along the bottom
-                   wall — open to the room, no partition, as drawn -->
-              <g class="plan-kitchen">
-                <rect x="258" y="152" width="26" height="34" />
-                <rect x="288" y="152" width="30" height="34" />
-                <path d="M293,158 H313 M296,164 H310 M293,152 V186" class="plan-kitchen__detail" />
-                <rect x="322" y="152" width="26" height="34" />
-                <circle cx="330" cy="160" r="2.6" /><circle cx="341" cy="160" r="2.6" />
-                <circle cx="330" cy="171" r="2.6" /><circle cx="341" cy="171" r="2.6" />
-                <rect x="352" y="152" width="18" height="34" />
-                <path d="M352,152 370,186 M370,152 352,186" class="plan-kitchen__detail" />
-              </g>
-              <!-- room labels, set in the same coordinate space as the walls -->
-              <g class="plan-room-labels">
-                <text x="33" y="102" class="plan-room-label" transform="rotate(-90 33 102)">Balcony</text>
-                <text x="130" y="135" class="plan-room-label">Sleep area</text>
-                <text x="287" y="45" class="plan-room-label plan-room-label--accent">Bath</text>
-                <text x="349" y="45" class="plan-room-label plan-room-label--accent">Sh.</text>
-                <text x="313" y="145" class="plan-room-label">Kitchen</text>
-                <text x="352" y="112" class="plan-room-label" text-anchor="middle">Ent.</text>
-              </g>
-            </svg>
-          </div>
         </div>
       </div>
     </div>
@@ -337,121 +247,9 @@
 
   </div><!-- /.pf-room-track -->
 
-  <!-- After the room. Flow: "two seconds" and "Beautiful is not enough" as one
-       continuous spread (client refs: Armani Hotels, "Between Feeling"), with
-       two small photos placed beside the text. -->
-  <section class="pf-flow" aria-label="Why presentation matters, and what we do">
-    <div class="pf-flow__text">
-      <article class="pf-flow__ch" id="why" data-img="0">
-        <img class="pf-flow__inline" src="assets/img/interlude-plant.webp" width="1086" height="1448" loading="lazy" alt="">
-        <span class="pf-kicker">Why presentation matters</span>
-        <h2 class="pf-display">You have <em>two seconds</em> to convince.</h2>
-        <div class="pf-flow__cols" data-sc-in>
-          <p class="pf-flow__label">Booking</p>
-          <div>
-            <p class="pf-lead">Booking an apartment is a swiping game. Guests decide in two seconds; if your place doesn&rsquo;t win them over, they swipe on and the booking is gone.</p>
-            <p class="pf-body">That is why the presentation is everything.</p>
-          </div>
-        </div>
-        <div class="pf-flow__cols" data-sc-in>
-          <p class="pf-flow__label">We know</p>
-          <ul class="pf-flow__know">
-            <li>what guests want</li>
-            <li>how to present your apartment</li>
-            <li><em>and above all</em> how to remodel it cost-effectively</li>
-          </ul>
-        </div>
-      </article>
-      <article class="pf-flow__ch" id="what-we-do" data-img="1">
-        <img class="pf-flow__inline" src="assets/img/interlude-lamp.webp" width="1086" height="1448" loading="lazy" alt="">
-        <span class="pf-kicker">What we do</span>
-        <h2 class="pf-display">Beautiful is <em>not enough.</em></h2>
-        <ul class="pf-figures" data-sc-in>
-          <li><span class="pf-figure__num">+20%</span><span class="pf-figure__label">more bookings</span></li>
-          <li><span class="pf-figure__num">+50%</span><span class="pf-figure__label">higher daily rate</span></li>
-          <li><span class="pf-figure__num">200+</span><span class="pf-figure__label">details taken care of</span></li>
-        </ul>
-        <p class="pf-figures-note">Based on our experience with the apartments we have remodelled.</p>
-        <div class="pf-flow__cols" data-sc-in>
-          <p class="pf-flow__label">Feel right</p>
-          <div>
-            <p class="pf-lead">A rental has to look good, but it also has to feel right.</p>
-            <p class="pf-body">Guests notice when a space is comfortable, practical and carefully put together &mdash; even if they cannot explain exactly why.</p>
-            <p class="pf-body">That is the difference we focus on.</p>
-            <p class="pf-body">From the bigger decisions to the small things that are easy to forget, we make sure the apartment is truly ready for its next guest &mdash; and for the owner behind it.</p>
-          </div>
-        </div>
-      </article>
-    </div>
-  </section>
-
-  <section class="pf-story pf-reviews" id="reviews">
-    <!-- Collage against the left edge (client scheme): three equal black and
-         white photos stacked, the reviews beside them. -->
-    <div class="pf-reviews__pics" aria-hidden="true">
-      <img src="assets/img/reviews-1-demolition.webp" alt="" loading="lazy">
-      <img src="assets/img/reviews-2-wall.webp" alt="" loading="lazy">
-      <img src="assets/img/reviews-3-bathroom.webp" alt="" loading="lazy">
-    </div>
-    <div class="pf-story__inner">
-      <div data-sc-in>
-        <span class="pf-kicker">Before &amp; after</span>
-        <h2 class="pf-h2">The transformations, in our clients&rsquo; words.</h2>
-      </div>
-      <ul class="pf-quotes" data-sc-in>
-        <li><figure class="pf-quote"><blockquote>&ldquo;I couldn&rsquo;t believe it. I thought it was nice before; now it&rsquo;s incredible. My apartment is booked out and I earn much more than before.&rdquo;</blockquote><figcaption>Branko &middot; JBR, Dubai</figcaption></figure></li>
-        <li><figure class="pf-quote"><blockquote>&ldquo;No words! It looks like a completely different apartment. Delighted with the result; I don&rsquo;t think renting it out will be a problem.&rdquo;</blockquote><figcaption>Nastja &middot; Dubai Marina</figcaption></figure></li>
-        <li><figure class="pf-quote"><blockquote>&ldquo;What a difference, unbelievable! Rented out within a week, and rented out ever since.&rdquo;</blockquote><figcaption>Marko &middot; Dubai Marina</figcaption></figure></li>
-        <li><figure class="pf-quote"><blockquote>&ldquo;I bought a studio and my agent recommended them. Quick, professional, at an unbelievable price. It&rsquo;s booked out, at a much higher rate than other apartments in my building. You&rsquo;ll be remodelling my next ones too!&rdquo;</blockquote><figcaption>Brian &middot; Marjan Island, RAK</figcaption></figure></li>
-        <li><figure class="pf-quote"><blockquote>&ldquo;Wow. Unbelievable, great job.&rdquo;</blockquote><figcaption>Mohamed &middot; Bab Al Bahr, RAK</figcaption></figure></li>
-        <li><figure class="pf-quote"><blockquote>&ldquo;They did all the work in my apartment. Fantastic work, very satisfied. I will definitely recommend them to my friends!&rdquo;</blockquote><figcaption>Rachid &middot; JVC, Dubai</figcaption></figure></li>
-      </ul>
-    </div>
-  </section>
-
-
-  <section class="pf-story" id="apartments">
-    <div class="pf-story__inner">
-      <div data-sc-in>
-        <span class="pf-kicker">Our apartments for rent</span>
-        <h2 class="pf-h2">Remodelled by us. Stay in one.</h2>
-      </div>
-      <ul class="pf-places" data-sc-in>
-        <li>
-          <h3 class="pf-place__name">Pacific</h3>
-          <p class="pf-place__where">Marjan Island &middot; RAK</p>
-          <p class="pf-place__units">A125 &middot; A734 &middot; A927<br>B431 (1 bed) &middot; B912 &middot; B923<br>C902</p>
-        </li>
-        <li>
-          <h3 class="pf-place__name">Bab Al Bahr</h3>
-          <p class="pf-place__where">Marjan Island &middot; RAK</p>
-          <p class="pf-place__units">F125 &middot; F224<br>K231<br>Y101 &middot; Y108</p>
-        </li>
-        <li>
-          <h3 class="pf-place__name">Bahar 4</h3>
-          <p class="pf-place__where">JBR &middot; Dubai</p>
-          <p class="pf-place__units">506</p>
-        </li>
-      </ul>
-      <a class="pf-textlink" href="https://wa.me/971545979814" target="_blank" rel="noopener" data-choose="wa" data-wa-text="Hi BLK Remodelling, I'd like to check availability of one of your apartments." aria-haspopup="menu">Check availability</a>
-    </div>
-  </section>
-
   <!-- About us · studio sheet (client reference "Form & Sight",
        copied as is; Branka's text verbatim). -->
   <section class="pf-about" id="about">
-    <div class="pf-about-row pf-about-row--top">
-      <p class="pf-about-up">Studio<br>B&amp;B Remodeling</p>
-      <p>Ras Al Khaimah <span class="pf-about-time" data-tz="Asia/Dubai">&nbsp;</span> UTC+4</p>
-      <p class="pf-about-up">Location<br>Ras Al Khaimah, UAE</p>
-      <p><span class="pf-about-up">Contact</span><br><a href="mailto:branka.kugler@gmail.com">branka.kugler@gmail.com</a></p>
-    </div>
-    <div class="pf-about-row pf-about-row--head">
-      <p class="pf-about-up">About us</p>
-      <p>Branka</p>
-      <p class="pf-about-up">Role</p>
-      <p class="pf-about-up">Founder, B&amp;B Remodeling</p>
-    </div>
     <div class="pf-about-body">
       <figure class="pf-about-photo-wrap">
         <img class="pf-about-photo" src="assets/img/05-about-branka.webp" width="1500" height="2000" loading="lazy"
@@ -459,21 +257,12 @@
       </figure>
       <div class="pf-about-info" data-sc-in>
         <div class="pf-about-desc">
-          <h3>Description</h3>
+          <h3>About us</h3>
           <p>I&rsquo;m Branka, the founder of B&amp;B Remodeling.</p>
           <p>I believe every property has the potential to become something exceptional. For me, transformation is not just about changing how a space looks, but about giving it character, warmth and a feeling people remember.</p>
           <p>I&rsquo;m drawn to the details that make a place feel effortless &mdash; the balance, the atmosphere, the way everything comes together without needing to compete for attention.</p>
           <p>Every project is personal to me. I want each space to feel considered, distinctive and complete, with a sense of identity that goes beyond trends.</p>
           <p>Because the most beautiful interiors are not simply seen &mdash; they are felt.</p>
-        </div>
-        <div class="pf-about-services">
-          <h3>Services</h3>
-          <ul>
-            <li><a href="packages/furnishing.html">Furnishing</a></li>
-            <li><a href="packages/basic-airbnb.html">Basic Airbnb</a></li>
-            <li><a href="packages/upscale-airbnb.html">Upscale Airbnb</a></li>
-            <li><a href="packages/donna-branka.html">Donna Branka</a></li>
-          </ul>
         </div>
         <a class="pf-about-arrow" href="https://calendly.com/blkremoddeling/30min" target="_blank" rel="noopener" aria-label="Book a session">&rarr;</a>
       </div>
@@ -486,7 +275,6 @@
     <div class="pf-work__head" data-sc-in>
       <span class="pf-about-kicker">Our work</span>
       <h2 class="pf-work__title">Finished <em>apartments</em></h2>
-      <p class="pf-work__hint">Swipe or use the arrows &middot; tap the big photo to enlarge</p>
     </div>
     <div id="work-strip"></div>
     <div class="pf-work__cta">

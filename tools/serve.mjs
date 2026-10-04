@@ -19,7 +19,8 @@ export function serve(port = 0, root = path.resolve('.')) {
     if (!file.startsWith(root)) { res.writeHead(403); res.end(); return; }
     fs.readFile(file, (err, data) => {
       if (err) { res.writeHead(404); res.end(); return; }
-      res.writeHead(200, { 'Content-Type': TYPES[path.extname(file)] || 'application/octet-stream' });
+      // no-cache: browsers (phones especially) always check for the latest file while we iterate.
+      res.writeHead(200, { 'Content-Type': TYPES[path.extname(file)] || 'application/octet-stream', 'Cache-Control': 'no-cache' });
       res.end(data);
     });
   });

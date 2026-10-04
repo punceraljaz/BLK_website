@@ -38,11 +38,11 @@ body { background: var(--sc-canvas); color: var(--sc-ink); }
 .pk-btn {
   display: inline-flex; align-items: center; gap: 0.55rem;
   min-height: 2.6rem; padding: 0 1.3rem; border-radius: 2px; box-sizing: border-box;
-  background: var(--sc-accent); color: var(--sc-surface); text-decoration: none;
+  background: var(--sc-accent); color: var(--sc-accent-ink); text-decoration: none;
   font-size: 0.64rem; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase;
   transition: background var(--sc-d-fast) var(--sc-ease-out);
 }
-.pk-btn:hover { background: color-mix(in oklab, var(--sc-accent) 82%, var(--sc-ink)); }
+.pk-btn:hover { background: var(--pal-cocoa); }
 .pk-btn svg { width: 14px; height: 14px; stroke-width: 1.3; }
 .pk-link {
   display: inline-flex; align-items: center; gap: 1.4rem;
@@ -160,3 +160,13 @@ body { background: var(--sc-canvas); color: var(--sc-ink); }
 @media (max-width: 560px) {
   .pk-steps, .pk-extra { grid-template-columns: 1fr; }
 }
+
+/* A real apartment finished with the package (client photos): large, one
+   per row until there are several, then two per row. */
+.pk-examples__grid { display: grid; grid-template-columns: repeat(var(--n, 1), minmax(0, 1fr)); gap: clamp(1rem, 2vw, 2rem); margin-top: clamp(2.5rem, 7vh, 4rem); }
+.pk-examples__grid figure { margin: 0; }
+.pk-examples__grid img { display: block; width: 100%; height: auto; }   /* each photo keeps its own shape (width/height attributes) */
+.pk-examples__grid figcaption { margin-top: 0.8rem; max-width: 46rem; font-size: 0.8rem; line-height: 1.7; color: var(--sc-ink-soft); }
+@media (max-width: 700px) { .pk-examples__grid { grid-template-columns: 1fr; } }
+.pk-examples .pk-h2 { max-width: none; }
+.pk-examples__grid { max-width: 76rem; }

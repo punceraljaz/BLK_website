@@ -15,7 +15,8 @@ what is open. Last updated: 2026-10-04.
   4. **Donna Branka** (`donna-branka.html`): the signature package, the most beautiful and most detailed,
      finish-ready; **best seller**, marked with a "Signature · Best seller" badge (`.pf-badge`, site.css).
      **The site should funnel people here.** Clip 4. There is no renovation package any more; the
-     package-04 floorplan (draws itself and moves a wall) is still shown under its text: ask the client.
+     package-04 floorplan was **removed 2026-10-04** (client): markup, CSS and script, in git history.
+  The `#apartments` section ("Our apartments for rent", Pacific / Bab Al Bahr / Bahar 4) was also removed 2026-10-04 (client).
   Copy for 3 and 4 (home + package pages) is Claude's draft from the client's one-line descriptions.
 - Every package should push to booking an appointment (CTAs are WhatsApp links; the number `971500000000` is a **placeholder**).
 - Client's vision (from the very first prompt): an editorial, premium, **fullscreen** hero where
@@ -210,12 +211,57 @@ Source videos (outside the project):
   `.pk-extra img[src*="/img/"]`). View thumbs regenerated from the new end frames. Seams SSIM 0.94–0.99.
 - Screenshots for the client are in `primeri/` (`corador-*`, `katalog-*`, `clean-*` = current).
 - `zazeni-streznik.cmd` (double-click): starts the server if needed and prints the phone URL
-  (http://<LAN IP>:4500; the IP changes per network, was 192.168.178.29 on 2026-09-30, 192.168.20.155 on 2026-10-04). Over plain http
+  (http://<LAN IP>:4500; the IP changes per network, was 192.168.178.29 on 2026-09-30, 192.168.20.155 on 2026-10-04, then 172.20.10.4 on an iPhone hotspot the same day). Over plain http
   on a LAN IP WebCodecs is unavailable (secure context only), so phones there use the WebP frames.
 - Performance note: on battery the laptop/Chrome caps at exactly 30 fps (worst frame 34 ms) for every
   layout; measure on mains power. Likely why the client saw ~20 fps.
 - `?fps` in the address shows a corner readout (fps, worst frame, GPU video vs images).
 - Measured in headed Chrome at the client's size: ~58–60 fps during a glide.
+
+## 3u. Flow + reviews moved to the package pages (2026-10-04, client)
+
+- The home page no longer has "You have two seconds" / "Beautiful is not enough" (`.pf-flow`) or the reviews
+  (`#reviews`): after package 04 the room hands over straight to About (current-package script now keys on `#about`).
+- They open every package page, before the package's own intro: markup in `tools/stories.html` (written once, home-relative
+  paths; build-packages.mjs inserts it and rewrites `assets/` to `../assets/`), styles `css/stories.css` (package pages
+  only, after package.css), script `js/stories.js` (reveal + reviews background stages + dock hiding). Edit there, then
+  `node tools/build-packages.mjs`.
+- Upscale Airbnb keeps its own "What it does / Beautiful is not enough" figures block (client: keep all old package content).
+- **2026-10-04 later: the stories now sit near the END of each package page** (before "Next package"), so the package
+  hero is the first screen (client: "too much on the page, optimise for the customer"). Planned next, not done yet
+  (Claude given free hand): before/after slider in the hero, 4 short bullets instead of the intro paragraph, cut
+  "The right package if…", steps as one line, 3 short quotes instead of the reviews section, figures only on 2-4,
+  "Not in this package" as an upsell to the next package / Donna Branka, remove the → arrows (no-icons rule).
+  Target ~4 screens, ~250 words (was 9.6 screens, 628 words).
+- "You have two seconds to convince." is on one line on screens over 900px (client 2026-10-04; end of css/stories.css,
+  `nowrap`, size capped at 2.2vw so it stays clear of the plant photo). Phones: wraps as before.
+- `.pf-reviews` has `overflow: clip`, or its sticky photo slid over the package intro below it.
+
+## 3t. Client palette + gallery order (2026-10-04)
+
+- Palette (client, "Autumn Rust"): #F2E6D8 cream, #BFB8AA stone, #8C8579 taupe, #594B43 cocoa, #261F1E chocolate
+  (`--pal-*` and `--pf-floor` in site.css). **Buttons and browns, same day:** `--sc-accent` = cocoa #594B43 (Book a session pills, package-page
+  buttons, badge outline, logo dot), hover glow cocoa+taupe; package-name band = chocolate #261F1E; Get in touch = stone
+  #BFB8AA, white text (client; low contrast, ~1.9:1), with a slightly darker stone/taupe edge (was cream #F2E6D8 until later on 2026-10-04, client), fills chocolate on hover; light text on browns = cream; `--pf-accent-soft` = taupe. Gallery + footer (all pages) are now #261F1E (was #351D14; `--sc-accent`
+  for buttons and the package-name band is unchanged). The About sheet fades into the gallery through stone, taupe,
+  cocoa (`.pf-work` gradient, `--fade`). Reviews are warm cream (veil), fading in from the page colour and out into About.
+- Gallery order (js/home.js PHOTOS): photos that LOOK like the same apartment (visual guess: wood-slat flats 14/16/17/18/
+  24/26/27/30, 03+04, 07+08, 05/06/09, 22/32/34, 20+29, 25+28, 21+31, 10+12) at least 3 apart, no two bathrooms adjacent.
+- Package pages have an "Example · A real apartment" section (`examples` in tools/build-packages.mjs): B212 bedroom
+  for packages 1-3, F148 + B606 for Donna Branka (assets/img/pk-*-example-*.webp, Chrome-encoded q0.9).
+
+## 3s. Reviews rebuilt (2026-10-04, replaces 3o)
+
+- Client's structure: title + "Real spaces. Real results. Real experiences."; Branko large on the left, Nastja + Marko
+  (client's shortened wording) stacked on the right; Brian / Mohamed / Rachid in `<details class="pf-more">` "Read more
+  client stories"; centred "Ready to see what your property could become?" + Book a session / Get in touch (`.pf-cta`,
+  same pill styles as the dock via `:is(.pf-dock, .pf-cta) a` in site.css). The dock hides while `.pf-cta` is on screen
+  (`html.cta-on`). No arrows/icons (client rule).
+- The three side photos are gone. Background `.pf-reviews__bg`: sticky full-screen layer, before -> the process -> after
+  cross-fade every 3.2 s while the section is on screen (js/home.js "Reviews"; reduced motion = after only), 84% page-colour
+  veil, "Before / The process / After" words under the subtitle mark the stage. **Placeholders:** before =
+  reviews-1-demolition.webp, after = gallery 03-studio-living.webp (`data-todo`); the client will send the real before and
+  after photos. The process photo (reviews-2-wall.webp) stays.
 
 ## 3o. Reviews + black and white collage (2026-10-03)
 
@@ -266,8 +312,10 @@ Source videos (outside the project):
 - Client (ref: a services page whose menu sits on an image band): `section.pf-hero` at the top of `<main>`, before
   `.pf-room-track`. Picture `assets/img/hero-kitchen.webp` (since 2026-10-04 Downloads\"Sunlit Mediterranean Kitchen Sanctuary.png", 1916×666, 305 KB; first version was "...Stone Kitchen Interior.png",
   1957×804, Chrome-encoded q0.94, 249 KB; cropped from the top, `object-position: 60% 78%`). On it: logo + "Ras Al Khaimah · UAE" at the top, the four packages along
-  the bottom (`.pf-hero__nav`; since 2026-10-04 three items, 3 columns also on phones: FURNISH 01 "Furnishing & styling" → #pkg-1, REMODEL 02 "Renovation & transformation" → #pkg-2, MANAGE 03 ↗ "Property management" → the property management site, **href is a placeholder `#` (data-todo="manage-url"), waiting for the address**; hairline that fills in on hover). Desktop
+  the bottom (`.pf-hero__nav`, latest 2026-10-04: **five items** = the four packages (01 Furnishing, 02 Basic Airbnb, 03 Upscale Airbnb, 04 Donna Branka -> #pkg-1..4, with their short lines) + 05 MANAGE "Property management" -> the property management site, **href is a placeholder `#` (data-todo="manage-url"), waiting for the address**. Desktop: 5 columns, number above the name. Phone: a list, one per line, name left / line right, no numbers, stronger shade behind it. Before that: FURNISH / REMODEL / MANAGE; hairline that fills in on hover). Desktop
   height `clamp(18rem, 48svh, 36vw)` (client: shorter, twice), phone 44svh (min 21rem); small gap below it on desktop, none on phones. On phones the room layer's empty text zone then shows below the hero until package text appears (open question to the client).
+- `.pf-lede` (css/home.css), between the hero and the room: "Choose how far you want to take the transformation." only;
+  its 01-04 package index moved up into the hero (client 2026-10-04). Phones: right under the hero, not centred.
 - The fixed header is hidden while the hero is on screen: `html.hero-on` (set in the head script when there is no
   #hash, then kept by an IntersectionObserver in js/home.js). The hero is layered over package 01's fixed text and
   package text only becomes current once package 01's top is in the top 18% of the screen (else it showed cut under the hero on phones).
