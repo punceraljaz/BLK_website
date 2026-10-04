@@ -410,7 +410,7 @@ The head script preloads the picture. Everything below about the window-opening 
   floor brown, Inter Tight caps, Cormorant title. `wheelMode: 'horizontal'` so the vertical wheel scrolls the page,
   not the strip (the original default hijacked it). Placeholder captions "[Location] · [Package] · [Duration]" left out.
   CTA under it = WhatsApp 971545979814 with the current photo's name in the message. Tests: `tools/test-gallery.mjs`.
-  **34 photos since 2026-10-02:** 25 added from `Desktop\PICS` (10–34, `tools/import-photos.mjs`: Chrome decodes so
+  **33 photos since 2026-10-04** (33-marble-bathroom removed: same shot as 19; the list in js/home.js names each file, so numbers can have gaps). **Was 34 since 2026-10-02:** 25 added from `Desktop\PICS` (10–34, `tools/import-photos.mjs`: Chrome decodes so
   EXIF rotation is right, 1600 px long edge + 480 px thumb, WebP). Duplicates (`tools/find-duplicates.mjs` + contact
   sheet): `20250711_165425 (1).jpg` byte-identical → deleted from PICS; `IMG-20260619-WA0213.jpg` = gallery 01 →
   not added (file left in PICS). Gallery is now ~5.4 MB, so StripGallery is only built when `#work-strip` is within

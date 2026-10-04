@@ -173,24 +173,23 @@
 (function () {
   var root = document.getElementById('work-strip');
   if (!root) return;
-  // assets/gallery/NN-<slug>.webp (+ -thumb.webp), in this order; 10-34 from
-  // Desktop\PICS, converted by tools/import-photos.mjs.
+  // assets/gallery/<name>.webp (+ <name>-thumb.webp). 10-34 are from
+  // Desktop\PICS, converted by tools/import-photos.mjs; 33 (same shot as 19) removed.
   var PHOTOS = [
-    ['living-dining', 'Living & Dining'], ['guest-bathroom', 'Guest Bathroom'], ['studio-living', 'Studio — Living'],
-    ['studio-bedroom', 'Studio — Bedroom'], ['master-bedroom', 'Master Bedroom'], ['bedroom', 'Bedroom'],
-    ['vanity-detail', 'Vanity Detail'], ['bathroom', 'Bathroom'], ['living-room', 'Living Room'],
-    ['living-room', 'Living Room'], ['bathroom', 'Bathroom'], ['bedroom', 'Bedroom'],
-    ['kitchen', 'Kitchen'], ['living-dining', 'Living & Dining'], ['bathtub', 'Bathtub'],
-    ['bedroom', 'Bedroom'], ['work-corner', 'Work Corner'], ['open-plan-living', 'Open-Plan Living'],
-    ['marble-bathroom', 'Marble Bathroom'], ['bedroom', 'Bedroom'], ['living-room', 'Living Room'],
-    ['guest-bathroom', 'Guest Bathroom'], ['studio', 'Studio'], ['living-dining', 'Living & Dining'],
-    ['bathroom-vanity', 'Bathroom Vanity'], ['master-bedroom', 'Master Bedroom'], ['living-detail', 'Living Detail'],
-    ['bathroom', 'Bathroom'], ['studio-bedroom', 'Studio — Bedroom'], ['hallway', 'Hallway'],
-    ['living-room', 'Living Room'], ['vanity-detail', 'Vanity Detail'], ['marble-bathroom', 'Marble Bathroom'],
-    ['guest-bathroom', 'Guest Bathroom']
+    ['01-living-dining', 'Living & Dining'], ['02-guest-bathroom', 'Guest Bathroom'], ['03-studio-living', 'Studio — Living'],
+    ['04-studio-bedroom', 'Studio — Bedroom'], ['05-master-bedroom', 'Master Bedroom'], ['06-bedroom', 'Bedroom'],
+    ['07-vanity-detail', 'Vanity Detail'], ['08-bathroom', 'Bathroom'], ['09-living-room', 'Living Room'],
+    ['10-living-room', 'Living Room'], ['11-bathroom', 'Bathroom'], ['12-bedroom', 'Bedroom'],
+    ['13-kitchen', 'Kitchen'], ['14-living-dining', 'Living & Dining'], ['15-bathtub', 'Bathtub'],
+    ['16-bedroom', 'Bedroom'], ['17-work-corner', 'Work Corner'], ['18-open-plan-living', 'Open-Plan Living'],
+    ['19-marble-bathroom', 'Marble Bathroom'], ['20-bedroom', 'Bedroom'], ['21-living-room', 'Living Room'],
+    ['22-guest-bathroom', 'Guest Bathroom'], ['23-studio', 'Studio'], ['24-living-dining', 'Living & Dining'],
+    ['25-bathroom-vanity', 'Bathroom Vanity'], ['26-master-bedroom', 'Master Bedroom'], ['27-living-detail', 'Living Detail'],
+    ['28-bathroom', 'Bathroom'], ['29-studio-bedroom', 'Studio — Bedroom'], ['30-hallway', 'Hallway'],
+    ['31-living-room', 'Living Room'], ['32-vanity-detail', 'Vanity Detail'], ['34-guest-bathroom', 'Guest Bathroom']
   ];
-  var items = PHOTOS.map(function (p, i) {
-    var base = 'assets/gallery/' + (i < 9 ? '0' : '') + (i + 1) + '-' + p[0];
+  var items = PHOTOS.map(function (p) {
+    var base = 'assets/gallery/' + p[0];
     return { src: base + '.webp', thumb: base + '-thumb.webp', title: p[1] };
   });
   var wa = document.getElementById('work-wa');
