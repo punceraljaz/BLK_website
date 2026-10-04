@@ -211,8 +211,10 @@ html.hero-on .site-bar { opacity: 0; transform: translateY(-100%); pointer-event
   position: absolute; left: var(--view-left); top: var(--view-top);
   width: var(--view-max-w); height: var(--view-h);
   clip-path: inset(0 calc(var(--view-max-w) - var(--view-w)) 0 0);
-  /* --feather: how far in the soft edge reaches (see ::after below). */
-  --feather: clamp(2.5rem, 8vw, 8rem);
+  /* --feather: left/top/bottom soft edge; --feather-r: right edge (wider —
+     the picture's right side meets the text panel, so it needs more air). */
+  --feather: clamp(2.5rem, 7vw, 7rem);
+  --feather-r: clamp(4rem, 17vw, 17rem);
   --feather-y: clamp(2rem, 9vh, 6rem);
 }
 /* No hard edge (client 2026-10-04): the picture fades into the page on all
@@ -221,13 +223,30 @@ html.hero-on .site-bar { opacity: 0; transform: translateY(-100%); pointer-event
    51-53, tools/measure.mjs). will-change keeps the gradient on its own layer,
    painted once; without it it was repainted with the video (-3 to -5 fps).
    Two layers (across and down), so the corners fade softest. As wide as the
-   visible picture, so it follows the wider room on package 04. */
+   visible picture, so it follows the wider room on package 04.
+   Right edge uses an ease-in curve (multi-stop) so it blends gradually rather
+   than fading at a mechanical linear rate. */
 .pf-room-frame::after {
   content: ""; position: absolute; z-index: 2; top: 0; bottom: 0; left: 0;
-  width: calc(var(--view-w) + 2px); pointer-events: none; will-change: transform;   /* +2px: no hairline at the clip edge */
+  width: calc(var(--view-w) + 2px); pointer-events: none; will-change: transform;
   background:
-    linear-gradient(to right, var(--sc-canvas), transparent var(--feather), transparent calc(100% - var(--feather)), var(--sc-canvas)),
-    linear-gradient(to bottom, var(--sc-canvas), transparent var(--feather-y), transparent calc(100% - var(--feather-y)), var(--sc-canvas));
+    linear-gradient(to right,
+      var(--sc-canvas),
+      color-mix(in srgb, var(--sc-canvas) 45%, transparent) calc(var(--feather) * 0.4),
+      transparent var(--feather),
+      transparent calc(100% - var(--feather-r)),
+      color-mix(in srgb, var(--sc-canvas)  6%, transparent) calc(100% - var(--feather-r) * 0.78),
+      color-mix(in srgb, var(--sc-canvas) 20%, transparent) calc(100% - var(--feather-r) * 0.54),
+      color-mix(in srgb, var(--sc-canvas) 50%, transparent) calc(100% - var(--feather-r) * 0.30),
+      color-mix(in srgb, var(--sc-canvas) 82%, transparent) calc(100% - var(--feather-r) * 0.09),
+      var(--sc-canvas)),
+    linear-gradient(to bottom,
+      var(--sc-canvas),
+      color-mix(in srgb, var(--sc-canvas) 45%, transparent) calc(var(--feather-y) * 0.4),
+      transparent var(--feather-y),
+      transparent calc(100% - var(--feather-y)),
+      color-mix(in srgb, var(--sc-canvas) 45%, transparent) calc(100% - var(--feather-y) * 0.4),
+      var(--sc-canvas));
 }
 .pf-room-frame > .pf-room-layer__poster,
 .pf-room-frame .seq__canvas {
@@ -311,7 +330,7 @@ html.view-tv .pf-tv-view { opacity: 1; }
     --view-max-w: var(--view-w);
     --view-h: calc(var(--m-img-h) - var(--room-inset));
   }
-  .pf-room-frame { --feather: 3.5rem; --feather-y: 3rem; }
+  .pf-room-frame { --feather: 3rem; --feather-r: 3rem; --feather-y: 2.5rem; }
   .pf-page {
     left: 0; top: 4.75rem; bottom: var(--m-img-h);
     padding: clamp(1.5rem, 5svh, 3rem) var(--sc-gutter) var(--sc-4);
@@ -572,7 +591,8 @@ html.view-tv .pf-tv-view { opacity: 1; }
    Four columns: 21% · 33% · 21% · rest (measured on the reference). */
 .pf-about {
   --pad: clamp(0.9rem, 1.5vw, 1.4rem);
-  background: var(--sc-surface); color: var(--sc-ink);
+  /* Warm camel / skin tone from the hero image palette — breaks the section. */
+  background: #CDBFAB; color: var(--sc-ink);
   padding-top: 4.75rem;                                 /* under the fixed header */
 }
 .pf-about p { margin: 0; }
@@ -581,38 +601,48 @@ html.view-tv .pf-tv-view { opacity: 1; }
   display: grid; grid-template-columns: 21% 33% 21% 1fr;
   padding: var(--pad) var(--pad) 0;
 }
-.pf-about-row--top { padding-bottom: clamp(5rem, 13vw, 13rem); }
+.pf-about-row--top { padding-bottom: clamp(1.5rem, 3vw, 3rem); }
 .pf-about-row--head { padding-bottom: 0.7rem; }
 .pf-about-row--head > :last-child { text-align: right; }
 .pf-about-up { text-transform: uppercase; }
-.pf-about-body { display: grid; grid-template-columns: 54% 1fr; }
-.pf-about-photo-wrap { position: relative; margin: 0; aspect-ratio: 0.865; overflow: hidden; }
+/* Photo 42% wide, height capped so the whole section fits on one screen.
+   13rem = estimated overhead (header + two meta rows + their spacing). */
+.pf-about-body { display: grid; grid-template-columns: 42% 1fr; }
+.pf-about-photo-wrap {
+  position: relative; margin: 0; overflow: hidden;
+  height: calc(100svh - 4.75rem - 13rem);
+}
 .pf-about-photo {
   position: absolute; inset: 0; width: 100%; height: 100%;
-  object-fit: cover; object-position: 50% 100%;     /* only the top of the wall is trimmed */
+  object-fit: cover; object-position: 50% 25%;         /* show face, not feet */
 }
 .pf-about-info {
   display: flex; flex-direction: column;
-  padding: clamp(3rem, 7vw, 6.5rem) var(--pad) var(--pad) calc(var(--pad) + 0.15rem);
+  padding: clamp(2.5rem, 5vw, 5rem) var(--pad) var(--pad) calc(var(--pad) + 0.15rem);
 }
 .pf-about-info h3 { margin: 0 0 0.75rem; font: inherit; text-transform: uppercase; }
-.pf-about-desc { max-width: 46em; }
-.pf-about-services { margin-top: auto; padding-top: 3rem; }
+.pf-about-desc {
+  font-size: clamp(0.95rem, 1vw + 0.3rem, 1.15rem);
+  line-height: 1.85;
+}
+.pf-about-desc p { text-align: justify; text-justify: inter-word; }
+.pf-about-services { margin-top: auto; padding-top: 2.5rem; }
 .pf-about-services ul { list-style: none; margin: 0; padding: 0; }
 .pf-about-services a:hover { text-decoration: underline; text-underline-offset: 0.2em; }
 .pf-about-arrow {
-  align-self: flex-end; margin-top: 12vw;            /* services sit ~60% down, air below */
+  align-self: flex-end; margin-top: 8vw;
   font-size: 1.15rem; line-height: 1; transition: transform var(--sc-d-base) var(--sc-ease-out);
 }
 .pf-about-arrow:hover { transform: translateX(0.3rem); }
 .pf-about a:focus-visible { outline: 1px solid var(--sc-ink); outline-offset: 3px; }
 @media (max-width: 900px) {
   .pf-about-row { grid-template-columns: 1fr 1fr; gap: 0.9rem 0.8rem; }
-  .pf-about-row--top { padding-bottom: 3.5rem; }
+  .pf-about-row--top { padding-bottom: 2.5rem; }
   .pf-about-row--head > :last-child { text-align: left; }
-  .pf-about-body { grid-template-columns: 1fr; }
-  .pf-about-info { padding-top: 2.5rem; }
-  .pf-about-arrow { margin-top: 2.5rem; }
+  .pf-about-body { grid-template-columns: 1fr; flex: none; }
+  .pf-about-photo-wrap { aspect-ratio: 4 / 3; }
+  .pf-about-info { padding-top: 2rem; }
+  .pf-about-arrow { margin-top: 2rem; }
 }
 
 /* -------------------------------------------------------- our work strip -- */

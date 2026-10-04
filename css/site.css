@@ -24,8 +24,8 @@
      laid over it (a pseudo-element where the markup allows). */
   --pf-photo-filter: saturate(0.78) contrast(0.96) brightness(0.98);
   --pf-photo-tint:   rgba(110, 106, 98, 0.05);   /* cooler than before */
-  /* The dark bands (gallery, footer): mahogany. */
-  --pf-floor:       #351D14;
+  /* The dark bands (gallery, footer): warm dark oak from the hero palette. */
+  --pf-floor:       #5C4535;
 
   /* Type (2026-10-04, client: "like the lettering in the intro"): one light,
      wide geometric sans, Montserrat, for everything. css/type.css sets the
