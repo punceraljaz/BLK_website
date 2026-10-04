@@ -33,10 +33,10 @@
 }
 .pf-hero__place { font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.8; }
 .pf-hero__nav {
-  bottom: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  bottom: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1.5rem clamp(1.5rem, 3vw, 3.5rem); padding-bottom: clamp(2rem, 7vh, 4rem);
 }
-/* Each package: a hairline that fills in on hover, name and number on one
+/* Each item: a hairline that fills in on hover, name and number on one
    line, a short line of text under them. */
 .pf-hero__nav a {
   display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 1rem 0.75rem;
@@ -59,7 +59,7 @@
 @media (max-width: 900px) {
   .pf-hero { height: 56svh; margin-bottom: 0; }
   .pf-hero__place { display: none; }
-  .pf-hero__nav { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.4rem 1.25rem; padding-bottom: 1.75rem; }
+  .pf-hero__nav { gap: 1.4rem 1rem; padding-bottom: 1.75rem; }
   .pf-hero__line { font-size: 0.68rem; line-height: 1.6; }
   .pf-hero__name { font-size: 0.58rem; letter-spacing: 0.24em; }
 }
