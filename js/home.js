@@ -27,6 +27,18 @@
   if (wall) wall.style.setProperty('--len-wall', wall.getTotalLength());
 })();
 
+// Hero: while the image band at the top is on screen (below the header's
+// height), html.hero-on hides the fixed header, which would repeat its logo
+// and package menu.
+(function () {
+  var hero = document.querySelector('.pf-hero');
+  var root = document.documentElement;
+  if (!hero || !('IntersectionObserver' in window)) { root.classList.remove('hero-on'); return; }
+  new IntersectionObserver(function (entries) {
+    root.classList.toggle('hero-on', entries[entries.length - 1].isIntersecting);
+  }, { rootMargin: '-76px 0px 0px 0px' }).observe(hero);
+})();
+
 // Package rail: highlights whichever package is crossing the screen's
 // centre (a -48%/-48% rootMargin collapses the trigger zone to a thin band).
 (function () {
@@ -46,7 +58,8 @@
 
 // Current package: marks the package section (01-04) whose top is nearest
 // the scroll position with .is-current, which shows its fixed text page (it
-// swaps halfway between two packages). The one it replaces gets .is-leaving
+// swaps halfway between two packages; none while the hero above fills the
+// screen). The one it replaces gets .is-leaving
 // for the slide-out. Once the first section after the room fills half the
 // screen, none is current and the text leaves with the room.
 (function () {
@@ -62,6 +75,7 @@
       if (d < bestD) { bestD = d; best = el; }
     });
     if (after && after.getBoundingClientRect().top < innerHeight * 0.5) best = null;
+    if (els[0].getBoundingClientRect().top > innerHeight * 0.3) best = null;   // the hero is still in the way
     if (best === current) return;
     if (current) {
       var old = current;

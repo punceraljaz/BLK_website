@@ -21,6 +21,7 @@
   // Safety: if the intro script never finishes, the page is released after 9 s.
   (function () {
     var d = document.documentElement, seen = null;
+    if (!location.hash) d.classList.add('hero-on');      // header waits until the hero has scrolled away (js/home.js)
     try { seen = sessionStorage.getItem('pf-intro-seen'); } catch (e) {}
     var force = /[?&]intro\b/.test(location.search);
     if (!force && (seen || location.hash || matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
@@ -67,6 +68,24 @@
 </header>
 
 <main id="top">
+
+  <!-- HERO (client 2026-10-04, ref: a services page with an image band whose
+       menu sits on the picture): the kitchen picture with the logo and the four
+       packages on it. The fixed header stays hidden while this is on screen
+       (html.hero-on, js/home.js), so the two never show at once. -->
+  <section class="pf-hero" aria-label="BLK Remodelling: four packages">
+    <img class="pf-hero__img" src="assets/img/hero-kitchen.webp" width="1957" height="804" alt="" fetchpriority="high">
+    <div class="pf-hero__top">
+      <a class="pf-hero__mark" href="#top">BLK<span>·</span>REMODELLING</a>
+      <span class="pf-hero__place">Ras Al Khaimah · UAE</span>
+    </div>
+    <nav class="pf-hero__nav" aria-label="Packages">
+      <a href="#pkg-1"><span class="pf-hero__name">Furnishing</span><span class="pf-hero__n">01</span><span class="pf-hero__line">We furnish the empty shell, end to end.</span></a>
+      <a href="#pkg-2"><span class="pf-hero__name">Basic Airbnb</span><span class="pf-hero__n">02</span><span class="pf-hero__line">Furniture and appliances, ready to live in.</span></a>
+      <a href="#pkg-3"><span class="pf-hero__name">Upscale Airbnb</span><span class="pf-hero__n">03</span><span class="pf-hero__line">Finer pieces, soft linens, every detail guests notice.</span></a>
+      <a href="#pkg-4"><span class="pf-hero__name">Donna Branka</span><span class="pf-hero__n">04</span><span class="pf-hero__line">Our signature. Finished to the last detail.</span></a>
+    </nav>
+  </section>
 
   <!-- ROOM TRACK · one room behind the four packages (js/scroll-sequence.js).
        The layer is sticky across the whole track, and the package stages above

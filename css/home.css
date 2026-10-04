@@ -1,6 +1,72 @@
 /* Home page (index.html). Loaded after base.css, strip-gallery.css, site.css
    and intro.css; type.css comes last and sets the type. */
 
+/* ------------------------------------------------------------------ hero -- */
+/* Client 2026-10-04 (ref: a services page whose menu sits on an image band):
+   the kitchen picture across the top with the logo and the four packages on
+   it; the first package and the room start below it, after some air. The
+   fixed header is hidden while the hero is on screen (html.hero-on). */
+.pf-hero {
+  z-index: calc(var(--sc-z-copy) + 1);        /* over package 01's fixed text: it is uncovered as the hero leaves */
+  position: relative; overflow: hidden;
+  height: clamp(26rem, 86svh, 64vw);
+  margin-bottom: clamp(3rem, 12vh, 8rem);
+  color: #F6F3EE;
+}
+.pf-hero__img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: 60% 50%;
+}
+/* A soft shade behind the light text, top and bottom only. */
+.pf-hero::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(to bottom, rgb(36 27 22 / 0.30) 0, transparent 24%, transparent 52%, rgb(36 27 22 / 0.52) 100%);
+}
+.pf-hero__top, .pf-hero__nav { position: absolute; z-index: 1; left: 0; right: 0; padding-inline: var(--sc-gutter); }
+.pf-hero__top {
+  top: 0; display: flex; justify-content: space-between; align-items: center;
+  min-height: 4.75rem;
+}
+.pf-hero__mark {
+  font-size: 0.74rem; font-weight: 400; letter-spacing: 0.34em; text-transform: uppercase;
+  color: inherit; text-decoration: none;
+}
+.pf-hero__place { font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.8; }
+.pf-hero__nav {
+  bottom: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.5rem clamp(1.5rem, 3vw, 3.5rem); padding-bottom: clamp(2rem, 7vh, 4rem);
+}
+/* Each package: a hairline that fills in on hover, name and number on one
+   line, a short line of text under them. */
+.pf-hero__nav a {
+  display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 1rem 0.75rem;
+  padding-top: 1.15rem; color: inherit; text-decoration: none;
+  background:
+    linear-gradient(#F6F3EE, #F6F3EE) 0 0 / 0 1px no-repeat,
+    linear-gradient(rgb(246 243 238 / 0.4), rgb(246 243 238 / 0.4)) 0 0 / 100% 1px no-repeat;
+  transition: background-size 0.7s var(--sc-ease-out);
+}
+.pf-hero__name { font-size: 0.64rem; font-weight: 400; letter-spacing: 0.3em; text-transform: uppercase; white-space: nowrap; }
+.pf-hero__n { font-size: 0.6rem; letter-spacing: 0.2em; opacity: 0.7; }
+.pf-hero__line {
+  grid-column: 1 / -1; max-width: 21em;
+  font-size: 0.76rem; font-weight: 300; line-height: 1.75; letter-spacing: 0.03em; opacity: 0.78;
+  transition: opacity 0.5s var(--sc-ease-out);
+}
+.pf-hero__nav a:hover { background-size: 100% 1px, 100% 1px; }
+.pf-hero__nav a:hover .pf-hero__line { opacity: 1; }
+.pf-hero a:focus-visible { outline: 1px solid #F6F3EE; outline-offset: 6px; }
+@media (max-width: 900px) {
+  .pf-hero { height: 70svh; margin-bottom: clamp(2rem, 7vh, 4rem); }
+  .pf-hero__place { display: none; }
+  .pf-hero__nav { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.4rem 1.25rem; padding-bottom: 1.75rem; }
+  .pf-hero__line { font-size: 0.68rem; line-height: 1.6; }
+  .pf-hero__name { font-size: 0.58rem; letter-spacing: 0.24em; }
+}
+/* The fixed header waits until the hero has scrolled away. */
+.site-bar { transition: opacity 0.6s ease, transform 0.7s var(--sc-ease-out); }
+html.hero-on .site-bar { opacity: 0; transform: translateY(-100%); pointer-events: none; }
+
 /* ------------------------------------------------- pinned package sections -- */
 /* Each package section is --span screens tall; its stage sticks to the top
    while the page scrolls through it. (Was the scrollcraft engine's

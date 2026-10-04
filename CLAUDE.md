@@ -261,6 +261,19 @@ Source videos (outside the project):
   quote) were removed. No prices on the site now. `.pf-tier*` / `.pf-example*` CSS is unused. Renovation package
   page no longer links to "price ranges". Test scripts updated (no 'pricing' id).
 
+## 3r. Hero image band above the packages (2026-10-04)
+
+- Client (ref: a services page whose menu sits on an image band): `section.pf-hero` at the top of `<main>`, before
+  `.pf-room-track`. Picture `assets/img/hero-kitchen.webp` (Downloads\"Sunlit Minimalist Stone Kitchen Interior.png",
+  1957×804, Chrome-encoded q0.94, 249 KB). On it: logo + "Ras Al Khaimah · UAE" at the top, the four packages along
+  the bottom (`.pf-hero__nav`: name, 01–04, one line; hairline that fills in on hover; links to #pkg-N). Desktop
+  height `clamp(26rem, 86svh, 64vw)`, phone 70svh with a 2×2 grid; gap below it before package 01.
+- The fixed header is hidden while the hero is on screen: `html.hero-on` (set in the head script when there is no
+  #hash, then kept by an IntersectionObserver in js/home.js). The hero is layered over package 01's fixed text and
+  package text only becomes current once package 01's top is in the top 30% of the screen.
+- The load clip (bed) now waits until its canvas is 35% on screen (`whenVisible`, js/scroll-sequence.js) as well
+  as for the intro release, so it no longer plays unseen below the hero.
+
 ## 3q. Montserrat everywhere + lighter phone intro (2026-10-04)
 
 - **Type** (client: "big headlines like LA CASA BRANKA in the intro, everything smaller like WE SEE WHAT IS
@@ -443,6 +456,11 @@ The head script preloads the picture. Everything below about the window-opening 
   hairline: "02 —— My approach", "Every project is *personal* to me." + vertical rule + the other two paragraphs
   (Branka's text verbatim, only split). Old `05-about.webp` no longer used.
 - Footer icons linked: Instagram `bnb_remodelling_apartments`, Facebook profile id 61593609083694, WhatsApp wa.me/971545979814.
+- **Dock buttons as pills (2026-10-04, client: oval, no sharp corners, nicer hover, a bit higher):** css/site.css
+  `.pf-dock a` border-radius 999px, 2.9rem tall (phone 3rem); hover (only on hover-capable devices) = lift 2px +
+  soft shadow + a fill growing from the centre (`::before`: ink on "Get in touch" so its text turns light, a warmer
+  brown on "Book a session") + the icon tilts. Bottom gap ~39px desktop / ~20px phone (was ~22 / ~11). Still no
+  backdrop blur. Scroll fps unchanged within noise (interleaved measure with/without the rounded clip).
 - **Contact dock** `.pf-dock` (fixed, bottom, every page position): "Get in touch" = `tel:+971545979814`,
   "Book a session" = `https://calendly.com/blkremoddeling/30min` (tracking params from the IG link removed).
   Desktop: centred pair; ≤600px: two halves of a bar. Footer has extra bottom padding so the dock never covers it.

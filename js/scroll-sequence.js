@@ -394,8 +394,21 @@
 
     set.loadAll();
     var started = false, restStarted = false;
+    // Plays once a good part of the picture is on screen (the home page has
+    // a hero above the room, so on load the room can still be out of view).
     function play() {
-      setTimeout(function () { clip.playing = true; clip.lastNow = 0; self.wake(); }, delay);
+      whenVisible(function () {
+        setTimeout(function () { clip.playing = true; clip.lastNow = 0; self.wake(); }, delay);
+      });
+    }
+    function whenVisible(fn) {
+      if (!('IntersectionObserver' in window)) { fn(); return; }
+      var io = new IntersectionObserver(function (entries) {
+        if (!entries[entries.length - 1].isIntersecting) return;
+        io.disconnect();
+        fn();
+      }, { threshold: 0.35 });
+      io.observe(self.canvas);
     }
     function go() {
       if (started) return;
