@@ -90,29 +90,45 @@
    bottom; phones: two halves of one bar across the bottom. */
 .pf-dock {
   position: fixed; z-index: var(--sc-z-chrome);
-  left: 50%; bottom: clamp(0.9rem, 2.4vh, 1.5rem); transform: translateX(-50%);
-  display: flex; gap: 0.6rem;
+  left: 50%; bottom: clamp(1.6rem, 4.5vh, 2.6rem); transform: translateX(-50%);
+  display: flex; gap: 0.75rem;
 }
-/* Editorial controls, not app buttons (2026-10-03): a 2px corner instead of
-   a pill, lower, no shadow, same height for both. */
+/* Pills (client 2026-10-04: oval, no sharp corners, a nicer hover, a little
+   higher). Hover: the button lifts slightly and casts a soft shadow, a fill
+   grows out from the centre behind the text (::before) and the icon nudges.
+   Transform and opacity only, so it stays smooth over the room video. */
 .pf-dock a {
-  display: inline-flex; align-items: center; justify-content: center; gap: 0.55rem;
-  min-height: 2.6rem; padding: 0 1.3rem; border-radius: 2px; box-sizing: border-box;
+  position: relative; isolation: isolate; overflow: hidden;
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.65rem;
+  min-height: 2.9rem; padding: 0 1.7rem; border-radius: 999px; box-sizing: border-box;
   font-size: 0.64rem; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase;
   text-decoration: none; white-space: nowrap;
-  transition: background var(--sc-d-fast) var(--sc-ease-out), border-color var(--sc-d-fast) var(--sc-ease-out), color var(--sc-d-fast) var(--sc-ease-out);
+  transition: transform 0.5s var(--sc-ease-out), box-shadow 0.5s var(--sc-ease-out),
+              color 0.4s var(--sc-ease-out), border-color 0.4s var(--sc-ease-out);
 }
+.pf-dock a::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit;
+  opacity: 0; transform: scale(0.4, 0.2);
+  transition: transform 0.55s var(--sc-ease-out), opacity 0.4s var(--sc-ease-out);
+}
+.pf-dock svg { width: 14px; height: 14px; flex: none; stroke-width: 1.3; transition: transform 0.5s var(--sc-ease-out); }
+@media (hover: hover) {
+  .pf-dock a:hover { transform: translateY(-2px); box-shadow: 0 10px 24px -8px rgb(53 29 20 / 0.35); }
+  .pf-dock a:hover::before { opacity: 1; transform: none; }
+  .pf-dock a:hover svg { transform: translateX(-2px) rotate(-8deg); }
+}
+.pf-dock a:active { transform: scale(0.97); transition-duration: 0.15s; }
 .pf-dock a:focus-visible { outline: 1px solid var(--sc-ink); outline-offset: 3px; }
-.pf-dock svg { width: 14px; height: 14px; flex: none; stroke-width: 1.3; }
 /* Solid, no backdrop blur: the button floats over the room video, and
    re-blurring the moving video behind it every frame caused 50-100 ms
-   hitches on the client's laptop (Iris Xe), measured with
-   tools/measure-lag.mjs: 17 slow frames per pass with the blur, 2 without. */
+   hitches on the client's laptop (Iris Xe), measured: 17 slow frames per
+   pass with the blur, 2 without. */
 .pf-dock__call {
   background: var(--sc-surface); color: var(--sc-ink);
   border: 1px solid var(--pf-line);
 }
-.pf-dock__call:hover { border-color: var(--sc-ink); }
+.pf-dock__call::before { background: var(--sc-ink); }      /* fills dark, text turns light */
+@media (hover: hover) { .pf-dock__call:hover { color: var(--sc-surface); border-color: var(--sc-ink); } }
 /* Number chooser: "Get in touch" and the WhatsApp links open this small
    menu with both phone numbers (script "Number chooser"). */
 .pf-choose {
@@ -141,13 +157,13 @@
 /* Primary: the accent. A faint light edge keeps it readable over the dark
    About band and footer. */
 .pf-dock__book { background: var(--sc-accent); color: var(--sc-surface); border: 1px solid color-mix(in oklab, var(--sc-surface) 22%, var(--sc-accent)); }
-.pf-dock__book:hover { background: color-mix(in oklab, var(--sc-accent) 82%, var(--sc-ink)); }
+.pf-dock__book::before { background: color-mix(in oklab, var(--sc-accent) 70%, #8a6a58); }   /* a warmer glow */
 @media (max-width: 600px) {
-  .pf-dock { left: var(--sc-gutter); right: var(--sc-gutter); transform: none; bottom: calc(0.7rem + env(safe-area-inset-bottom)); gap: 0.5rem; }
-  .pf-dock a { flex: 1; padding: 0 0.6rem; letter-spacing: 0.14em; font-size: 0.62rem; }
+  .pf-dock { left: var(--sc-gutter); right: var(--sc-gutter); transform: none; bottom: calc(1.25rem + env(safe-area-inset-bottom)); gap: 0.55rem; }
+  .pf-dock a { flex: 1; min-height: 3rem; padding: 0 0.8rem; letter-spacing: 0.14em; font-size: 0.62rem; }
 }
 /* Room under the dock at the very end of the page, so it never covers the footer text. */
-footer.pf-site-foot { padding-bottom: calc(var(--sc-8) + 4.5rem); }
+footer.pf-site-foot { padding-bottom: calc(var(--sc-8) + 6rem); }
 
 /* ---------------------------------------------------------- site foot -- */
 /* The floor colour, continued: #462C24 was sampled directly from the
