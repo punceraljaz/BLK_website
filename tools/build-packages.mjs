@@ -10,8 +10,8 @@ const F = '../assets/frames/';
 
 const PACKAGES = [
   {
-    slug: 'pure-furnishing', n: '01', name: 'Pure Furnishing', titleHtml: 'Pure <em>Furnishing</em>',
-    lead: 'Every renovation starts empty.',
+    slug: 'furnishing', n: '01', name: 'Furnishing', titleHtml: '<em>Furnishing</em>',
+    lead: 'Every home starts empty.',
     intro: 'You have the keys to an empty apartment. We furnish it from bare floor to finished room: we choose the pieces, deliver them, assemble them and set up every room, so you walk into a home rather than a shell.',
     hero: F + 'room/0122.webp', heroAlt: 'The studio furnished: an upholstered bed and an armchair by the sea-view window.',
     included: [
@@ -24,8 +24,7 @@ const PACKAGES = [
     ],
     notIncluded: [
       ['Appliances', 'basic-airbnb', 'Basic Airbnb'],
-      ['Linens, towels and kitchenware', 'complete-airbnb', 'Complete Airbnb'],
-      ['Building work', 'complete-renovation', 'Complete Renovation'],
+      ['Linens, towels and kitchenware', 'upscale-airbnb', 'Upscale Airbnb'],
     ],
     who: [
       ['You just got the keys', 'A new, empty unit and no time to furnish it piece by piece.'],
@@ -43,10 +42,10 @@ const PACKAGES = [
   {
     slug: 'basic-airbnb', n: '02', name: 'Basic Airbnb', titleHtml: 'Basic <em>Airbnb</em>',
     lead: 'Furnished. Fitted. Functioning.',
-    intro: 'Everything in Pure Furnishing, plus the appliances that make an apartment work: the kitchen, the laundry, the screen and the air conditioning. A guest or tenant can move in and live there; the finishing touches for short stays stay with you.',
+    intro: 'Everything in Furnishing, plus the appliances that make an apartment work: the kitchen, the laundry, the screen and the air conditioning. A guest or tenant can move in and live there; the finishing touches for short stays stay with you.',
     hero: F + 'room2/0121.webp', heroAlt: 'The studio with bedding, curtains, bedside lamps and wall art.',
     included: [
-      ['Everything in Pure Furnishing', 'Layout, furniture, decoration, delivery and assembly.'],
+      ['Everything in Furnishing', 'Layout, furniture, decoration, delivery and assembly.'],
       ['Kitchen appliances', 'Fridge, oven, hob and dishwasher.'],
       ['Washing machine', 'Installed and tested.'],
       ['TV', 'Mounted or placed, connected and working.'],
@@ -54,8 +53,7 @@ const PACKAGES = [
       ['Installation and testing', 'Every appliance running before we hand over.'],
     ],
     notIncluded: [
-      ['Linens, towels, kitchenware and toiletries', 'complete-airbnb', 'Complete Airbnb'],
-      ['Building work', 'complete-renovation', 'Complete Renovation'],
+      ['Linens, towels, kitchenware and toiletries', 'upscale-airbnb', 'Upscale Airbnb'],
     ],
     who: [
       ['You will host it yourself', 'You want a working apartment and prefer to choose the linens and kitchenware yourself.'],
@@ -67,12 +65,13 @@ const PACKAGES = [
     handover: 'a fully working apartment, ready for a guest or tenant',
   },
   {
-    slug: 'complete-airbnb', n: '03', name: 'Complete Airbnb', titleHtml: 'Complete <em>Airbnb</em>',
-    lead: 'Move-in is day one of bookings.',
-    intro: 'The turnkey package. Furniture, appliances and the more than 200 details a short-term rental needs, from plates and glasses to towels, linens and toiletries. We hand over an apartment that is ready to photograph, list and book.',
+    slug: 'upscale-airbnb', n: '03', name: 'Upscale Airbnb', titleHtml: 'Upscale <em>Airbnb</em>',
+    lead: 'The finer things, already in place.',
+    intro: 'Everything a short-term rental needs, a step up. Finer furniture, lighting and decoration, plus the more than 200 details guests notice, from plates and glasses to soft towels, linens and toiletries. We hand over an apartment that is ready to photograph, list and book.',
     hero: F + 'room3/0121.webp', heroAlt: 'The studio finished with a green feature wall, wood floor, leather armchair, throw and fresh towels.',
     included: [
       ['Everything in Basic Airbnb', 'Furniture, decoration, appliances, delivery and installation.'],
+      ['Finer pieces', 'Upgraded furniture, lighting and decoration throughout.'],
       ['Bed linen and towels', 'With throws and cushions, ready for the first guest.'],
       ['Kitchenware', 'Plates, glasses, cutlery, pots and pans.'],
       ['Toiletries and first-stay essentials', 'The small things guests notice when they are missing.'],
@@ -81,7 +80,7 @@ const PACKAGES = [
       ['A reliable host, if you need one', 'We help you find a property manager to run it.'],
     ],
     notIncluded: [
-      ['Building work: moving walls, new floors or bathrooms', 'complete-renovation', 'Complete Renovation'],
+      ['The signature finish: pieces, art and styling chosen by Branka', 'donna-branka', 'Donna Branka'],
     ],
     who: [
       ['You want to start earning now', 'First-time host, no time to learn what guests expect. Day one is booking day.'],
@@ -94,29 +93,29 @@ const PACKAGES = [
     handover: 'a turnkey apartment, photographed and ready to list',
   },
   {
-    slug: 'complete-renovation', n: '04', name: 'Complete Renovation', titleHtml: 'Complete <em>Renovation</em>',
-    lead: 'We don’t decorate. We rebuild.',
-    intro: 'For apartments whose layout works against them. We move walls, open or divide rooms and redo the floors, walls and bathroom, then furnish and equip the result to the level you choose. One team and one plan, from the first measurement to the finished apartment.',
-    hero: F + 'room4/0121.webp', heroAlt: 'The same studio reconfigured, with a new living corner, sofa, shelves and a reading lamp beside the bed.',
+    slug: 'donna-branka', n: '04', name: 'Donna Branka', titleHtml: 'Donna <em>Branka</em>',
+    badge: 'Signature · Best seller',
+    lead: 'Our signature. Finished to the last detail.',
+    intro: 'Our most complete and most chosen package. Everything in Upscale Airbnb, designed and styled by Branka herself: every piece, fabric and object chosen for the apartment, every room layered and finished, nothing left to add. The apartment is ready for its first guest the day we hand it over.',
+    hero: F + 'room4/0121.webp', heroAlt: 'The studio finished: a living corner with a sofa, shelves with plants and a reading lamp beside the bed.',
     included: [
-      ['A new layout', 'Floor plan and design, so every square metre earns its place.'],
-      ['Walls moved, rooms opened or divided', 'The building work, done by our own subcontractors.'],
-      ['Floors and walls', 'New flooring, painting, accent and colour walls.'],
-      ['Bathroom', 'Vanity, shower and fittings.'],
-      ['Technical work', 'Air conditioning and drainage maintenance.'],
-      ['Permits', 'We take care of the approvals the work needs.'],
-      ['Furnished and equipped', 'Finished to the level of Pure Furnishing, Basic Airbnb or Complete Airbnb.'],
+      ['Everything in Upscale Airbnb', 'Furniture, appliances, linens, kitchenware, toiletries and the photo shoot.'],
+      ['Designed by Branka', 'One personal design for the whole apartment, from where the furniture goes to the colours.'],
+      ['Signature pieces', 'Statement furniture, lighting and art, chosen piece by piece.'],
+      ['Layered textiles', 'Curtains, rugs, throws and cushions that make a room feel finished.'],
+      ['Plants and objects', 'Greenery, books, vases and the small things that give a home its character.'],
+      ['The finishing check', 'Every room, surface and detail checked before the first guest.'],
+      ['A personal handover', 'Branka walks you through the finished apartment.'],
     ],
     notIncluded: [],
     who: [
-      ['Your unit is dated or awkward', 'A better layout is worth more per square metre, to live in or to rent.'],
-      ['You buy to add value', 'Buy below the market, rebuild it, rent or sell it for more.'],
-      ['You are switching to short stays', 'Turn a long-term let into an apartment guests choose first.'],
+      ['You want the best in the building', 'An apartment guests pick first, at a higher nightly rate.'],
+      ['You want it done once, properly', 'No second round of buying and fixing later: it is complete from day one.'],
+      ['You will not be there', 'Hand over the keys and get back an apartment finished to the last detail.'],
     ],
-    pricing: true,
     before: F + 'room4/0001.webp', after: F + 'room4/0121.webp',
     extra: [[F + 'tv4/0121.webp', 'Living corner']],
-    handover: 'a rebuilt, furnished apartment, ready to live in or to rent',
+    handover: 'a finished apartment, ready for its first guest',
   },
 ];
 
@@ -131,11 +130,11 @@ function page(p, i) {
   const waText = `Hi BLK Remodelling, I'd like to know more about the ${p.name} package.`;
   const steps = [
     ['A visit', 'We see the apartment, measure it and listen to what you want from it.'],
-    ['A plan and a quote', p.slug === 'complete-renovation' ? 'A new layout, the design and one clear price for the whole job.' : 'The design, the full list of what goes in and one clear price.'],
-    ['We do the work', p.slug === 'complete-renovation' ? 'Building work, then sourcing, delivery and assembly, with one contact throughout.' : 'Sourcing, delivery and assembly. You do not need to be there.'],
+    ['A plan and a quote', 'The design, the full list of what goes in and one clear price.'],
+    ['We do the work', 'Sourcing, delivery and assembly. You do not need to be there.'],
     ['The handover', `You get the keys back to ${p.handover}.`],
   ];
-  const rail = PACKAGES.map(q => `    <a class="pf-rail__item${q === p ? ' is-active' : ''}" href="${q.slug}.html"${q === p ? ' aria-current="page"' : ''}><span class="pf-rail__label">${q.name.replace('Pure ', '').replace('Complete Renovation', 'Renovation')}</span></a>`).join('\n');
+  const rail = PACKAGES.map(q => `    <a class="pf-rail__item${q === p ? ' is-active' : ''}" href="${q.slug}.html"${q === p ? ' aria-current="page"' : ''}><span class="pf-rail__label">${q.name}</span></a>`).join('\n');
 
   return `<!doctype html>
 <html lang="en">
@@ -147,7 +146,7 @@ function page(p, i) {
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23161009'/><path d='M9 22V10h5.2c2.6 0 4.2 1.3 4.2 3.5 0 1.5-.8 2.5-2 3 1.5.4 2.5 1.5 2.5 3.2 0 2.5-1.8 3.8-4.5 3.8H9zm3-7h2c1 0 1.6-.5 1.6-1.3S15 12.4 14 12.4h-2v2.3zm0 4.7h2.3c1.1 0 1.8-.5 1.8-1.5s-.7-1.4-1.8-1.4H12v2.9z' fill='%23C1502E'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../css/base.css">
 <link rel="stylesheet" href="../css/site.css">
 <link rel="stylesheet" href="../css/package.css">
@@ -167,7 +166,7 @@ ${rail}
   <section class="pk-hero">
     <div class="pk-hero__copy">
       ${label('Package ' + p.n, p.name)}
-      <h1 class="pk-title">${p.titleHtml}</h1>
+${p.badge ? `      <p class="pf-badge">${p.badge}</p>\n` : ''}      <h1 class="pk-title">${p.titleHtml}</h1>
       <p class="pk-lead">${p.lead}</p>
       <p class="pk-intro">${p.intro}</p>
       <div class="pk-actions">
@@ -221,7 +220,7 @@ ${p.figures ? `
 ` : ''}
   <section class="pk-sec" aria-labelledby="ba-h">
     ${label(p.figures ? '04' : '03', 'Before &amp; after')}
-    <h2 class="pk-h2" id="ba-h" style="margin-top:clamp(2rem,6vh,3.5rem)">The same studio, <em>${p.slug === 'pure-furnishing' ? 'filled' : p.slug === 'complete-renovation' ? 'rebuilt' : 'finished'}</em></h2>
+    <h2 class="pk-h2" id="ba-h" style="margin-top:clamp(2rem,6vh,3.5rem)">The same studio, <em>${p.slug === 'furnishing' ? 'filled' : p.slug === 'donna-branka' ? 'perfected' : 'finished'}</em></h2>
     <div class="pk-ba">
       <figure><img src="${p.before}" width="1904" height="1088" loading="lazy" alt="Before ${esc(p.name)}."><figcaption>Before</figcaption></figure>
       <figure><img src="${p.after}" width="1904" height="1088" loading="lazy" alt="After ${esc(p.name)}."><figcaption>After</figcaption></figure>
@@ -237,7 +236,6 @@ ${p.extra.map(([src, cap]) => `      <figure><img src="${src}" loading="lazy" al
     <ol class="pk-steps">
 ${steps.map(([t, d], k) => `      <li><span>${String(k + 1).padStart(2, '0')}</span><h3>${t}</h3><p>${d}</p></li>`).join('\n')}
     </ol>
-${p.pricing ? `    <p class="pk-note" style="max-width:34rem">Renovation is priced per square metre, depending on what goes in. Book a session for a quote for your apartment.</p>` : ''}
     <div class="pk-actions">
       <a class="pk-btn" href="${CAL}" target="_blank" rel="noopener">${ICON_CAL} Book a session</a>
       <a class="pk-link" href="https://wa.me/971545979814" target="_blank" rel="noopener" data-choose="wa" data-wa-text="${esc(waText)}" aria-haspopup="menu">Ask on WhatsApp <span aria-hidden="true">&rarr;</span></a>
@@ -249,7 +247,7 @@ ${next ? `    <a class="pk-next__big" href="${next.slug}.html">
       ${label('Next · ' + next.n, next.lead)}
       <strong>${next.name} <i aria-hidden="true">&rarr;</i></strong>
     </a>` : `    <a class="pk-next__big" href="${prev.slug}.html">
-      ${label('Not ready to rebuild? · ' + prev.n, prev.lead)}
+      ${label('Something simpler? · ' + prev.n, prev.lead)}
       <strong>${prev.name} <i aria-hidden="true">&rarr;</i></strong>
     </a>`}
     <a class="pk-link" href="../index.html#pkg-1">All four packages <span aria-hidden="true">&rarr;</span></a>

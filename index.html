@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>BLK Remodelling · four ways into a rental-ready apartment</title>
-<meta name="description" content="BLK Remodelling furnishes, equips and rebuilds apartments in Ras Al Khaimah, from a bare shell to a fully reconfigured, rental-ready home.">
+<meta name="description" content="BLK Remodelling furnishes, equips and styles apartments in Ras Al Khaimah, from a bare shell to a rental-ready home finished to the last detail.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23161009'/><path d='M9 22V10h5.2c2.6 0 4.2 1.3 4.2 3.5 0 1.5-.8 2.5-2 3 1.5.4 2.5 1.5 2.5 3.2 0 2.5-1.8 3.8-4.5 3.8H9zm3-7h2c1 0 1.6-.5 1.6-1.3S15 12.4 14 12.4h-2v2.3zm0 4.7h2.3c1.1 0 1.8-.5 1.8-1.5s-.7-1.4-1.8-1.4H12v2.9z' fill='%23C1502E'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/strip-gallery.css">
 <link rel="stylesheet" href="css/site.css">
@@ -16,16 +16,20 @@
 <script>
   // Intro switch (js/intro.js), decided before the first paint: once per tab,
   // not under reduced motion, not when arriving at a #section; ?intro forces it.
+  // The picture is chosen by the screen's shape: upright screens (phones)
+  // the tall atrium picture, others the wide one (js/intro.js uses the same test).
   // Safety: if the intro script never finishes, the page is released after 9 s.
   (function () {
     var d = document.documentElement, seen = null;
+    if (!location.hash) d.classList.add('hero-on');      // header waits until the hero has scrolled away (js/home.js)
     try { seen = sessionStorage.getItem('pf-intro-seen'); } catch (e) {}
     var force = /[?&]intro\b/.test(location.search);
     if (!force && (seen || location.hash || matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+    var tall = matchMedia('(orientation: portrait)').matches;
     d.classList.add('intro-run', 'intro-on');
     d.setAttribute('data-seq-hold', '');
     var pre = document.createElement('link');           // the intro picture, first
-    pre.rel = 'preload'; pre.as = 'image'; pre.href = 'assets/img/intro.webp';
+    pre.rel = 'preload'; pre.as = 'image'; pre.href = 'assets/img/intro-' + (tall ? 'tall' : 'wide') + '.webp';
     document.head.appendChild(pre);
     setTimeout(function () {
       if (!d.classList.contains('intro-run')) return;
@@ -43,15 +47,10 @@
 
 <!-- Intro (css/intro.css, js/intro.js), once per tab. -->
 <div class="pf-intro" aria-hidden="true">
-  <!-- The client's intro picture (text and crest are part of the image).
-       Two blurred copies cover the text and the crest at the start and are
-       wiped / faded away, so both sharpen out of the blur. -->
-  <div class="pf-intro__pic">
-    <img class="pf-intro__img" src="assets/img/intro.webp" width="1884" height="835" alt="" decoding="async">
-    <img class="pf-intro__cover pf-intro__cover--text" src="assets/img/intro.webp" alt="">
-    <img class="pf-intro__cover pf-intro__cover--crest" src="assets/img/intro.webp" alt="">
-  </div>
-  <p class="pf-intro__label">We see what is possible</p>
+  <!-- The La Casa Branka atrium (text in the picture); js/intro.js sets src to
+       the wide or the tall version, so only one is downloaded. -->
+  <img class="pf-intro__img" data-wide="assets/img/intro-wide.webp" data-tall="assets/img/intro-tall.webp" alt="">
+  <p class="pf-intro__label">La Casa Branka. We see what is possible</p>
 </div>
 <script src="js/intro.js"></script>
 
@@ -62,13 +61,34 @@
   <nav class="pf-rail" aria-label="Packages">
     <a class="pf-rail__item is-active" href="#pkg-1" data-target="pkg-1"><span class="pf-rail__label">Furnishing</span></a>
     <a class="pf-rail__item" href="#pkg-2" data-target="pkg-2"><span class="pf-rail__label">Basic Airbnb</span></a>
-    <a class="pf-rail__item" href="#pkg-3" data-target="pkg-3"><span class="pf-rail__label">Complete Airbnb</span></a>
-    <a class="pf-rail__item" href="#pkg-4" data-target="pkg-4"><span class="pf-rail__label">Renovation</span></a>
+    <a class="pf-rail__item" href="#pkg-3" data-target="pkg-3"><span class="pf-rail__label">Upscale Airbnb</span></a>
+    <a class="pf-rail__item" href="#pkg-4" data-target="pkg-4"><span class="pf-rail__label">Donna Branka</span></a>
   </nav>
 
 </header>
 
 <main id="top">
+
+  <!-- HERO (client 2026-10-04, ref: a services page with an image band whose
+       menu sits on the picture): the kitchen picture with the logo and the four
+       packages on it. The fixed header stays hidden while this is on screen
+       (html.hero-on, js/home.js), so the two never show at once. -->
+  <section class="pf-hero" aria-label="BLK Remodelling: four packages">
+    <img class="pf-hero__img" src="assets/img/hero-kitchen.webp" width="1916" height="666" alt="" fetchpriority="high">
+    <div class="pf-hero__top">
+      <a class="pf-hero__mark" href="#top">BLK<span>·</span>REMODELLING</a>
+      <span class="pf-hero__place">Ras Al Khaimah · UAE</span>
+    </div>
+    <!-- Three ways in (client 2026-10-04): Furnish -> package 01, Remodel ->
+         packages 02-04, Manage -> the property management site. -->
+    <nav class="pf-hero__nav" aria-label="What we do">
+      <a href="#pkg-1"><span class="pf-hero__name">Furnish</span><span class="pf-hero__n">01</span><span class="pf-hero__line">Furnishing &amp; styling</span></a>
+      <a href="#pkg-2"><span class="pf-hero__name">Remodel</span><span class="pf-hero__n">02</span><span class="pf-hero__line">Renovation &amp; transformation</span></a>
+      <!-- TODO: the property management site's address (client to send); then add
+           target="_blank" rel="noopener" so it opens in a new tab. -->
+      <a href="#" data-todo="manage-url"><span class="pf-hero__name">Manage <span class="pf-hero__ext" aria-hidden="true">&nearr;</span></span><span class="pf-hero__n">03</span><span class="pf-hero__line">Property management</span></a>
+    </nav>
+  </section>
 
   <!-- ROOM TRACK · one room behind the four packages (js/scroll-sequence.js).
        The layer is sticky across the whole track, and the package stages above
@@ -108,18 +128,18 @@
       </div>
     </div>
 
-  <!-- Package 01, Pure Furnishing -->
+  <!-- Package 01, Furnishing -->
   <section id="pkg-1" class="pf-pkg" style="--span: 2"
-           aria-label="Package 01, Pure Furnishing: an empty studio in Ras Al Khaimah with sea views fills with an upholstered bed and armchair.">
+           aria-label="Package 01, Furnishing: an empty studio in Ras Al Khaimah with sea views fills with an upholstered bed and armchair.">
     <div class="pf-stage">
       <div class="pf-page">
         <div class="pf-page__body">
-          <h1 class="pf-page__title">Pure Furnishing</h1>
-          <p class="pf-page__sub">Every renovation starts empty.</p>
+          <h1 class="pf-page__title">Furnishing</h1>
+          <p class="pf-page__sub">Every home starts empty.</p>
           <p class="pf-page__text">We furnish the empty shell, end to end.</p>
           <div class="pf-page__links">
-            <a class="pf-page__link pf-page__link--more" href="packages/pure-furnishing.html">More about the package <span aria-hidden="true">&rarr;</span></a>
-            <a class="pf-page__link" href="https://wa.me/971545979814" target="_blank" rel="noopener" data-choose="wa" data-wa-text="Hi BLK Remodelling, I'd like to know more about the Pure Furnishing package." aria-haspopup="menu">Ask on WhatsApp</a>
+            <a class="pf-page__link pf-page__link--more" href="packages/furnishing.html">More about the package <span aria-hidden="true">&rarr;</span></a>
+            <a class="pf-page__link" href="https://wa.me/971545979814" target="_blank" rel="noopener" data-choose="wa" data-wa-text="Hi BLK Remodelling, I'd like to know more about the Furnishing package." aria-haspopup="menu">Ask on WhatsApp</a>
           </div>
           <!-- Views of the studio: each thumbnail switches what the left-hand
                page shows (the bedroom animation, the dining clip, or a photo). -->
@@ -162,18 +182,18 @@
     </div>
   </section>
 
-  <!-- Package 03, Complete Airbnb -->
+  <!-- Package 03, Upscale Airbnb -->
   <section id="pkg-3" class="pf-pkg" style="--span: 2"
-           aria-label="Package 03, Complete Airbnb: the studio finished with a green feature wall, wood floor, leather armchair, throw and fresh towels.">
+           aria-label="Package 03, Upscale Airbnb: the studio finished with a green feature wall, wood floor, leather armchair, throw and fresh towels.">
     <div class="pf-stage">
       <div class="pf-page">
         <div class="pf-page__body">
-          <h2 class="pf-page__title">Complete Airbnb</h2>
-          <p class="pf-page__sub">Move-in is day one of bookings.</p>
-          <p class="pf-page__text">Linens to toiletries. Ready to list from day one.</p>
+          <h2 class="pf-page__title">Upscale Airbnb</h2>
+          <p class="pf-page__sub">The finer things, already in place.</p>
+          <p class="pf-page__text">Finer pieces, soft linens, every detail guests notice. Ready to list.</p>
           <div class="pf-page__links">
-            <a class="pf-page__link pf-page__link--more" href="packages/complete-airbnb.html">More about the package <span aria-hidden="true">&rarr;</span></a>
-            <a class="pf-page__link" href="https://wa.me/971545979814" target="_blank" rel="noopener" data-choose="wa" data-wa-text="Hi BLK Remodelling, I'd like to know more about the Complete Airbnb package." aria-haspopup="menu">Ask on WhatsApp</a>
+            <a class="pf-page__link pf-page__link--more" href="packages/upscale-airbnb.html">More about the package <span aria-hidden="true">&rarr;</span></a>
+            <a class="pf-page__link" href="https://wa.me/971545979814" target="_blank" rel="noopener" data-choose="wa" data-wa-text="Hi BLK Remodelling, I'd like to know more about the Upscale Airbnb package." aria-haspopup="menu">Ask on WhatsApp</a>
           </div>
           <ul class="pf-rooms" aria-label="Views of the studio">
             <li><button type="button" class="pf-room is-active" aria-pressed="true" data-view="bedroom" data-caption="Bedroom">
@@ -186,19 +206,20 @@
     </div>
   </section>
 
-  <!-- Package 04, Complete Renovation. The room behind it is clip 4: the studio
-       reconfigured, the camera turning to a new living corner. -->
+  <!-- Package 04, Donna Branka: the signature package, best seller. The room
+       behind it is clip 4, the studio finished, the camera turning to a new
+       living corner. -->
   <section id="pkg-4" class="pf-pkg" style="--span: 2.6"
-           aria-label="Package 04, Complete Renovation: the same studio reconfigured, with a new living corner, sofa, shelves and a reading lamp beside the bed.">
+           aria-label="Package 04, Donna Branka, our signature and best-selling package: the studio finished to the last detail, with a living corner, sofa, shelves and a reading lamp beside the bed.">
     <div class="pf-stage">
       <div class="pf-page">
         <div class="pf-page__body">
-          <h2 class="pf-page__title">Complete Renovation</h2>
-          <p class="pf-page__sub">We don&rsquo;t decorate. We rebuild.</p>
-          <p class="pf-page__text">Move a wall, split a room, rethink the layout.</p>
+          <h2 class="pf-page__title">Donna Branka <span class="pf-badge">Signature · Best seller</span></h2>
+          <p class="pf-page__sub">Our signature. Finished to the last detail.</p>
+          <p class="pf-page__text">Designed and styled by Branka. Nothing left to add.</p>
           <div class="pf-page__links">
-            <a class="pf-page__link pf-page__link--more" href="packages/complete-renovation.html">More about the package <span aria-hidden="true">&rarr;</span></a>
-            <a class="pf-page__link" href="https://wa.me/971545979814" target="_blank" rel="noopener" data-choose="wa" data-wa-text="Hi BLK Remodelling, I'd like to book a Complete Renovation consultation." aria-haspopup="menu">Ask on WhatsApp</a>
+            <a class="pf-page__link pf-page__link--more" href="packages/donna-branka.html">More about the package <span aria-hidden="true">&rarr;</span></a>
+            <a class="pf-page__link" href="https://wa.me/971545979814" target="_blank" rel="noopener" data-choose="wa" data-wa-text="Hi BLK Remodelling, I'd like to know more about the Donna Branka package." aria-haspopup="menu">Ask on WhatsApp</a>
           </div>
           <ul class="pf-rooms" aria-label="Views of the studio">
             <li><button type="button" class="pf-room is-active" aria-pressed="true" data-view="bedroom" data-caption="Bedroom">
@@ -440,10 +461,10 @@
         <div class="pf-about-services">
           <h3>Services</h3>
           <ul>
-            <li><a href="packages/pure-furnishing.html">Pure Furnishing</a></li>
+            <li><a href="packages/furnishing.html">Furnishing</a></li>
             <li><a href="packages/basic-airbnb.html">Basic Airbnb</a></li>
-            <li><a href="packages/complete-airbnb.html">Complete Airbnb</a></li>
-            <li><a href="packages/complete-renovation.html">Complete Renovation</a></li>
+            <li><a href="packages/upscale-airbnb.html">Upscale Airbnb</a></li>
+            <li><a href="packages/donna-branka.html">Donna Branka</a></li>
           </ul>
         </div>
         <a class="pf-about-arrow" href="https://calendly.com/blkremoddeling/30min" target="_blank" rel="noopener" aria-label="Book a session">&rarr;</a>

@@ -40,6 +40,7 @@
   var SMOOTHING = 0.14;         // share of the gap closed per animation frame
   var SNAP = 0.0005;            // snap when closer than this
   var AUTOPLAY_WAIT_MAX_MS = 4000;  // start playback even if frames are still loading
+  var REST_AFTER_INTRO_MS = 1500;   // the other clips load this long after the intro reveal
 
   var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   function clamp01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
@@ -396,8 +397,21 @@
 
     set.loadAll();
     var started = false, restStarted = false;
+    // Plays once a good part of the picture is on screen (the home page has
+    // a hero above the room, so on load the room can still be out of view).
     function play() {
-      setTimeout(function () { clip.playing = true; clip.lastNow = 0; self.wake(); }, delay);
+      whenVisible(function () {
+        setTimeout(function () { clip.playing = true; clip.lastNow = 0; self.wake(); }, delay);
+      });
+    }
+    function whenVisible(fn) {
+      if (!('IntersectionObserver' in window)) { fn(); return; }
+      var io = new IntersectionObserver(function (entries) {
+        if (!entries[entries.length - 1].isIntersecting) return;
+        io.disconnect();
+        fn();
+      }, { threshold: 0.35 });
+      io.observe(self.canvas);
     }
     function go() {
       if (started) return;
@@ -409,7 +423,16 @@
         document.addEventListener('seq:release', play, { once: true });
       } else play();
     }
-    function startRest() { if (!restStarted) { restStarted = true; then(); } }
+    // The other clips (~360 frames) wait while the intro is on: downloading
+    // them behind it stalled its frames (100 ms gaps, measured), so they start
+    // shortly after the intro has dissolved.
+    function startRest() {
+      if (restStarted) return;
+      restStarted = true;
+      if (document.documentElement.hasAttribute('data-seq-hold')) {
+        document.addEventListener('seq:release', function () { setTimeout(then, REST_AFTER_INTRO_MS); }, { once: true });
+      } else then();
+    }
     set.onLoad = function () {
       if (set.readyThrough(buffer)) go();
       if (set.loaded >= set.count) startRest();

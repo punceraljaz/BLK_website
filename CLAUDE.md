@@ -6,11 +6,17 @@ what is open. Last updated: 2026-10-04.
 
 ## 1. The business and the goal
 
-- BLK Remodelling, Ras Al Khaimah (RAK), UAE. Sells 4 packages:
-  1. **Pure Furnishing**: furnish an empty apartment.
-  2. **Basic Airbnb**: furniture + appliances.
-  3. **Complete Airbnb**: everything down to linens, towels, toiletries; rentable day one.
-  4. **Complete Renovation**: walls moved, rooms reconfigured. **Flagship, most profitable; the site should funnel people here.**
+- BLK Remodelling, Ras Al Khaimah (RAK), UAE. Sells 4 packages (**renamed 2026-10-04 by the client**; the
+  old names Pure Furnishing / Complete Airbnb / Complete Renovation appear in the dated notes below):
+  1. **Furnishing** (`packages/furnishing.html`): furnish an empty apartment. Clip 1.
+  2. **Basic Airbnb** (`basic-airbnb.html`): furniture + appliances. Clip 2.
+  3. **Upscale Airbnb** (`upscale-airbnb.html`): everything down to linens, towels, toiletries, plus finer
+     pieces ("The finer things, already in place."). Clip 3.
+  4. **Donna Branka** (`donna-branka.html`): the signature package, the most beautiful and most detailed,
+     finish-ready; **best seller**, marked with a "Signature · Best seller" badge (`.pf-badge`, site.css).
+     **The site should funnel people here.** Clip 4. There is no renovation package any more; the
+     package-04 floorplan (draws itself and moves a wall) is still shown under its text: ask the client.
+  Copy for 3 and 4 (home + package pages) is Claude's draft from the client's one-line descriptions.
 - Every package should push to booking an appointment (CTAs are WhatsApp links; the number `971500000000` is a **placeholder**).
 - Client's vision (from the very first prompt): an editorial, premium, **fullscreen** hero where
   **one studio room transforms stage by stage as you scroll**, with text beside it per package and a button
@@ -185,6 +191,11 @@ Source videos (outside the project):
   chain. All rows mark the current view. New player API in scroll-sequence.js: `start()`, `setActive()`,
   `playClip()`, `"play":"manual"`. Thumbs: `0N-bedroom-thumb.webp`, `01-dining-end-thumb.webp`,
   `0N-tv-end-thumb.webp`. Also on phones (since 2026-09-30): the thumbnail row sits under the link (3.4rem thumbs); over a LAN IP the TV chain uses the WebP frames (no WebCodecs on plain http), tested.
+- **Soft edges (2026-10-04, client: "no exact edges, everything blended into the page"):** `.pf-room-frame::after`
+  in css/home.css lays a still page-colour gradient over all four edges (`--feather` / `--feather-y` on
+  `.pf-room-frame`; phone 3.5rem / 3rem). NOT a CSS mask (masking the moving video cost ~7 fps), and it needs
+  `will-change: transform` (without it the gradient was repainted with the video: -3 to -5 fps). With both:
+  57.7-58.3 fps vs 57-59.5 without any fade (tools/measure.mjs, interleaved runs).
 - **Margin around the picture** (client: not to the left/bottom edge): `--room-inset` (desktop
   `clamp(1rem, 2.2vw, 2.25rem)` on left, top and bottom; phone = `--sc-gutter` on left, right and bottom).
   The picture's own sizes are `--view-left/-top/-w/-max-w/-h` (derived from `--spread-img-w`, `--room-max-w`,
@@ -249,6 +260,35 @@ Source videos (outside the project):
 - First the three per-m² tiers, then the whole `#pricing` section (heading, AED 49,500 / 63,000 examples, Ask for a
   quote) were removed. No prices on the site now. `.pf-tier*` / `.pf-example*` CSS is unused. Renovation package
   page no longer links to "price ranges". Test scripts updated (no 'pricing' id).
+
+## 3r. Hero image band above the packages (2026-10-04)
+
+- Client (ref: a services page whose menu sits on an image band): `section.pf-hero` at the top of `<main>`, before
+  `.pf-room-track`. Picture `assets/img/hero-kitchen.webp` (since 2026-10-04 Downloads\"Sunlit Mediterranean Kitchen Sanctuary.png", 1916×666, 305 KB; first version was "...Stone Kitchen Interior.png",
+  1957×804, Chrome-encoded q0.94, 249 KB; cropped from the top, `object-position: 60% 78%`). On it: logo + "Ras Al Khaimah · UAE" at the top, the four packages along
+  the bottom (`.pf-hero__nav`; since 2026-10-04 three items, 3 columns also on phones: FURNISH 01 "Furnishing & styling" → #pkg-1, REMODEL 02 "Renovation & transformation" → #pkg-2, MANAGE 03 ↗ "Property management" → the property management site, **href is a placeholder `#` (data-todo="manage-url"), waiting for the address**; hairline that fills in on hover). Desktop
+  height `clamp(18rem, 48svh, 36vw)` (client: shorter, twice), phone 44svh (min 21rem); small gap below it on desktop, none on phones. On phones the room layer's empty text zone then shows below the hero until package text appears (open question to the client).
+- The fixed header is hidden while the hero is on screen: `html.hero-on` (set in the head script when there is no
+  #hash, then kept by an IntersectionObserver in js/home.js). The hero is layered over package 01's fixed text and
+  package text only becomes current once package 01's top is in the top 18% of the screen (else it showed cut under the hero on phones).
+- The load clip (bed) now waits until its canvas is 35% on screen (`whenVisible`, js/scroll-sequence.js) as well
+  as for the intro release, so it no longer plays unseen below the hero.
+
+## 3q. Montserrat everywhere + lighter phone intro (2026-10-04)
+
+- **Type** (client: "big headlines like LA CASA BRANKA in the intro, everything smaller like WE SEE WHAT IS
+  POSSIBLE, more space, minimal clean modern"): one family, **Montserrat** 200–500 (Google Fonts link in
+  index.html and tools/build-packages.mjs; `--pf-display` = `--pf-text` in site.css). css/type.css: headlines
+  300 caps, letter-spacing 0.16em, line-height 1.5, smaller sizes than the serif; labels/links 400 caps
+  0.6rem, letter-spacing 0.3em; body 300, 0.86rem, line-height 1.95, muted; figures 200. No italics: `em` is a
+  lighter colour (ink-soft; package pages `--pf-accent-soft`). Bodoni Moda + Cormorant are no longer loaded
+  (the §3j type below is replaced; its palette still applies).
+- **Phone intro stutter** (client): measured on a simulated phone (390×844 @3x, CPU 4× slower, no WebCodecs
+  like a phone on the LAN IP): the hold had 8–9 frames in 1.2 s. Fixes, all in place: (1) js/intro.js starts
+  the intro only after DOMContentLoaded + the room player's init + one layout (`built`); (2) the room clip
+  starts at 70% of the dissolve (`RELEASE_AT`), not at its start; (3) `content-visibility: auto` on the
+  sections after the room and the footer (css/home.css), so their layout is skipped until they come near.
+  Result: hold 60–70 frames, zoom 64–69 frames with 3–7 small hiccups (was 18–38 with 10–16).
 
 ## 3j. Serif type + cool palette (2026-10-03, replaces 3h Inter Tight)
 
@@ -318,7 +358,22 @@ Source videos (outside the project):
 
 ## 3e. Intro (added 2026-10-03)
 
-**Current version (2026-10-03, last): the client's picture.** `assets/img/intro.webp` (from Downloads\
+**Current (2026-10-04, all screens): the La Casa Branka atrium.** Two versions of the picture, chosen by screen
+shape (`orientation: portrait`, same test in the head script and js/intro.js; only that one is downloaded):
+`assets/img/intro-wide.webp` (Desktop\"Sunlit Minimalist Atrium with Elegant Branding.png", 1676×939) and
+`assets/img/intro-tall.webp` (Desktop\"Sunlit Minimalist Atrium with Branded Typography.png", 941×1672). "LA CASA
+BRANKA / WE SEE WHAT IS POSSIBLE" is in the image. Encoded in Chrome at quality 0.97 (203 / 224 KB): ffmpeg's
+libwebp shifted the colours greyer, Chrome's encode matches the PNGs within 0.1/255. Larger originals would be
+sharper (the wide one is stretched ~15% on a 1920 screen, the tall one ~1.5x on a 3x phone).
+Client: "whole intro ~2 seconds, then the home page; keep the zoom transition". Timing (js/intro.js
+`TEXT_MS`/`DISSOLVE_MS`, css/intro.css `pfIntro*`): fade in 0.6 s while settling from scale 1.05 to 1 (1.2 s), at
+1.2 s glide forward into the opening (scale 1→1.1, 1.3 s, `transform-origin` = the opening, per orientation)
+while the overlay dissolves; measured on desktop and phone: ~23% of the picture left at 2.0 s, gone at 2.5 s,
+worst frame 17 ms. The old intro below (blur-wipe, `intro.webp`) was removed from the code.
+Also: while the intro is on, only clip 1 downloads; the other room clips start 1.5 s after the reveal
+(`REST_AFTER_INTRO_MS`, js/scroll-sequence.js), because downloading ~360 frames behind the intro caused 100 ms stalls.
+
+**Before 2026-10-04 (removed): the client's picture.** `assets/img/intro.webp` (from Downloads\
 "Minimalistična bež eleganca z grbom.png", 1884×835; the text "WE SEE WHAT IS POSSIBLE" and the crest are IN the
 image). 3 s total, then the page (client: "3 seconds, no more"): picture fades in (0.8 s); blurred copies of the
 picture cover the text and crest with feathered masks (hard clip boxes showed as rectangles) and are wiped
@@ -401,6 +456,11 @@ The head script preloads the picture. Everything below about the window-opening 
   hairline: "02 —— My approach", "Every project is *personal* to me." + vertical rule + the other two paragraphs
   (Branka's text verbatim, only split). Old `05-about.webp` no longer used.
 - Footer icons linked: Instagram `bnb_remodelling_apartments`, Facebook profile id 61593609083694, WhatsApp wa.me/971545979814.
+- **Dock buttons as pills (2026-10-04, client: oval, no sharp corners, nicer hover, a bit higher):** css/site.css
+  `.pf-dock a` border-radius 999px, 2.9rem tall (phone 3rem); hover (only on hover-capable devices) = lift 2px +
+  soft shadow + a fill growing from the centre (`::before`: ink on "Get in touch" so its text turns light, a warmer
+  brown on "Book a session") + the icon tilts. Bottom gap ~39px desktop / ~20px phone (was ~22 / ~11). Still no
+  backdrop blur. Scroll fps unchanged within noise (interleaved measure with/without the rounded clip).
 - **Contact dock** `.pf-dock` (fixed, bottom, every page position): "Get in touch" = `tel:+971545979814`,
   "Book a session" = `https://calendly.com/blkremoddeling/30min` (tracking params from the IG link removed).
   Desktop: centred pair; ≤600px: two halves of a bar. Footer has extra bottom padding so the dock never covers it.
@@ -410,7 +470,7 @@ The head script preloads the picture. Everything below about the window-opening 
   floor brown, Inter Tight caps, Cormorant title. `wheelMode: 'horizontal'` so the vertical wheel scrolls the page,
   not the strip (the original default hijacked it). Placeholder captions "[Location] · [Package] · [Duration]" left out.
   CTA under it = WhatsApp 971545979814 with the current photo's name in the message. Tests: `tools/test-gallery.mjs`.
-  **34 photos since 2026-10-02:** 25 added from `Desktop\PICS` (10–34, `tools/import-photos.mjs`: Chrome decodes so
+  **33 photos since 2026-10-04** (33-marble-bathroom removed: same shot as 19; the list in js/home.js names each file, so numbers can have gaps). **Was 34 since 2026-10-02:** 25 added from `Desktop\PICS` (10–34, `tools/import-photos.mjs`: Chrome decodes so
   EXIF rotation is right, 1600 px long edge + 480 px thumb, WebP). Duplicates (`tools/find-duplicates.mjs` + contact
   sheet): `20250711_165425 (1).jpg` byte-identical → deleted from PICS; `IMG-20260619-WA0213.jpg` = gallery 01 →
   not added (file left in PICS). Gallery is now ~5.4 MB, so StripGallery is only built when `#work-strip` is within
