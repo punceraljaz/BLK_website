@@ -84,6 +84,37 @@ html.intro-run { overflow: hidden; }
 @keyframes pfIntroBlurBack { from { opacity: 0; } to { opacity: 1; } }
 @keyframes pfIntroOut { 0% { opacity: 1; } 12% { opacity: 1; } 100% { opacity: 0; } }
 
+/* --- desktop (html.intro-desk, client 2026-10-04): the atrium picture -------
+   assets/img/intro-desk.webp (1676x939, "La Casa Branka / We see what is
+   possible" is part of the image), encoded in Chrome at quality 0.97 so the
+   colours match the PNG exactly. Opacity and transform only (GPU, smooth):
+     0-0.6 s   fades in while it settles from 1.05 to 1 (1.2 s, a camera coming
+               to rest)
+     1.2 s     glides forward into the opening (to 1.1, 1.3 s) as the whole
+               intro dissolves into the page; the room starts playing now */
+.pf-intro__desk { display: none; }
+html.intro-desk .pf-intro { background: var(--sc-canvas); }
+html.intro-desk .pf-intro__pic { display: none; }
+html.intro-desk .pf-intro__desk {
+  display: block; position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: 50% 50%;
+  transform-origin: 47% 55%;                  /* the opening at the end of the hall */
+  opacity: 0; will-change: transform, opacity;
+}
+html.intro-desk .pf-intro.is-in .pf-intro__desk {
+  animation: pfDeskFade 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) both,
+             pfDeskSettle 1.2s cubic-bezier(0.2, 0.6, 0.3, 1) both;
+}
+html.intro-desk .pf-intro.is-out { animation: pfDeskOut 1.3s cubic-bezier(0.45, 0, 0.25, 1) forwards; }
+html.intro-desk .pf-intro.is-out .pf-intro__desk {
+  opacity: 1;
+  animation: pfDeskPush 1.3s cubic-bezier(0.5, 0, 0.2, 1) forwards;
+}
+@keyframes pfDeskFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pfDeskSettle { from { transform: scale(1.05); } to { transform: scale(1); } }
+@keyframes pfDeskPush { from { transform: scale(1); } to { transform: scale(1.1); } }
+@keyframes pfDeskOut { 0% { opacity: 1; } 15% { opacity: 1; } 100% { opacity: 0; } }
+
 /* For screen readers only: the text is in the image. */
 .pf-intro__label {
   position: absolute; width: 1px; height: 1px; margin: 0; overflow: hidden;

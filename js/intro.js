@@ -10,7 +10,10 @@
   if (!intro || !root.classList.contains('intro-run')) return;
   // 3 s of text, then a 1.8 s dissolve (css .is-out: the words blur back, the
   // picture drifts closer and fades). A skip fades out quickly instead.
-  var TEXT_MS = 3000, DISSOLVE_MS = 1800, SKIP_FADE_MS = 450;
+  // Desktop (html.intro-desk, client: "2 seconds and it is the home page"):
+  // the picture for 1.2 s, then the 1.3 s zoom into the page (css/intro.css).
+  var desk = root.classList.contains('intro-desk');
+  var TEXT_MS = desk ? 1200 : 3000, DISSOLVE_MS = desk ? 1300 : 1800, SKIP_FADE_MS = 450;
   var timers = [], phase = 'wait', log = [];
   function mark(p) { phase = p; log.push(p + ' ' + Math.round(performance.now())); }
   function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
@@ -55,7 +58,8 @@
   // half-loaded); at most 1.2 s of waiting.
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
   scrollTo(0, 0);
-  var img = intro.querySelector('.pf-intro__img');
+  var img = intro.querySelector(desk ? '.pf-intro__desk' : '.pf-intro__img');
+  if (desk) img.src = img.getAttribute('data-src');
   var ready = img && img.decode ? img.decode().catch(function () {}) : Promise.resolve();
   Promise.race([ready, new Promise(function (r) { setTimeout(r, 1200); })]).then(function () {
     requestAnimationFrame(function () { requestAnimationFrame(start); });
