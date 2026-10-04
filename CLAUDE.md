@@ -329,18 +329,22 @@ Source videos (outside the project):
 
 ## 3e. Intro (added 2026-10-03)
 
-**Desktop since 2026-10-04 (≥901px wide, `html.intro-desk` set by the head script): the atrium picture**
-`assets/img/intro-desk.webp` (from Desktop\"Sunlit Minimalist Atrium with Elegant Branding.png", 1676×939, "LA CASA
-BRANKA / WE SEE WHAT IS POSSIBLE" is in the image; encoded in Chrome at quality 0.97, 203 KB: ffmpeg's libwebp
-shifted the colours greyer, Chrome's encode matches the PNG within 0.1/255). Client: "whole intro ~2 seconds, then
-the home page; keep the zoom transition". Timing (js/intro.js `TEXT_MS`/`DISSOLVE_MS`, css/intro.css `pfDesk*`):
-fade in 0.6 s while settling from scale 1.05 to 1 (1.2 s), at 1.2 s glide forward into the opening (scale 1→1.1,
-1.3 s) while the overlay dissolves; measured: 24% of the picture left at 2.0 s, gone at 2.5 s, smooth frames.
-`data-src` is set by js/intro.js only on desktop (phones never download it). Phones keep the version below.
+**Current (2026-10-04, all screens): the La Casa Branka atrium.** Two versions of the picture, chosen by screen
+shape (`orientation: portrait`, same test in the head script and js/intro.js; only that one is downloaded):
+`assets/img/intro-wide.webp` (Desktop\"Sunlit Minimalist Atrium with Elegant Branding.png", 1676×939) and
+`assets/img/intro-tall.webp` (Desktop\"Sunlit Minimalist Atrium with Branded Typography.png", 941×1672). "LA CASA
+BRANKA / WE SEE WHAT IS POSSIBLE" is in the image. Encoded in Chrome at quality 0.97 (203 / 224 KB): ffmpeg's
+libwebp shifted the colours greyer, Chrome's encode matches the PNGs within 0.1/255. Larger originals would be
+sharper (the wide one is stretched ~15% on a 1920 screen, the tall one ~1.5x on a 3x phone).
+Client: "whole intro ~2 seconds, then the home page; keep the zoom transition". Timing (js/intro.js
+`TEXT_MS`/`DISSOLVE_MS`, css/intro.css `pfIntro*`): fade in 0.6 s while settling from scale 1.05 to 1 (1.2 s), at
+1.2 s glide forward into the opening (scale 1→1.1, 1.3 s, `transform-origin` = the opening, per orientation)
+while the overlay dissolves; measured on desktop and phone: ~23% of the picture left at 2.0 s, gone at 2.5 s,
+worst frame 17 ms. The old intro below (blur-wipe, `intro.webp`) was removed from the code.
 Also: while the intro is on, only clip 1 downloads; the other room clips start 1.5 s after the reveal
 (`REST_AFTER_INTRO_MS`, js/scroll-sequence.js), because downloading ~360 frames behind the intro caused 100 ms stalls.
 
-**Phones (and the desktop version before 2026-10-04): the client's picture.** `assets/img/intro.webp` (from Downloads\
+**Before 2026-10-04 (removed): the client's picture.** `assets/img/intro.webp` (from Downloads\
 "Minimalistična bež eleganca z grbom.png", 1884×835; the text "WE SEE WHAT IS POSSIBLE" and the crest are IN the
 image). 3 s total, then the page (client: "3 seconds, no more"): picture fades in (0.8 s); blurred copies of the
 picture cover the text and crest with feathered masks (hard clip boxes showed as rectangles) and are wiped

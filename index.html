@@ -16,20 +16,19 @@
 <script>
   // Intro switch (js/intro.js), decided before the first paint: once per tab,
   // not under reduced motion, not when arriving at a #section; ?intro forces it.
-  // Desktop (min-width 901px, html.intro-desk) shows the atrium picture,
-  // narrower screens the original picture.
+  // The picture is chosen by the screen's shape: upright screens (phones)
+  // the tall atrium picture, others the wide one (js/intro.js uses the same test).
   // Safety: if the intro script never finishes, the page is released after 9 s.
   (function () {
     var d = document.documentElement, seen = null;
     try { seen = sessionStorage.getItem('pf-intro-seen'); } catch (e) {}
     var force = /[?&]intro\b/.test(location.search);
     if (!force && (seen || location.hash || matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
-    var desk = matchMedia('(min-width: 901px)').matches;
+    var tall = matchMedia('(orientation: portrait)').matches;
     d.classList.add('intro-run', 'intro-on');
-    if (desk) d.classList.add('intro-desk');
     d.setAttribute('data-seq-hold', '');
     var pre = document.createElement('link');           // the intro picture, first
-    pre.rel = 'preload'; pre.as = 'image'; pre.href = desk ? 'assets/img/intro-desk.webp' : 'assets/img/intro.webp';
+    pre.rel = 'preload'; pre.as = 'image'; pre.href = 'assets/img/intro-' + (tall ? 'tall' : 'wide') + '.webp';
     document.head.appendChild(pre);
     setTimeout(function () {
       if (!d.classList.contains('intro-run')) return;
@@ -47,16 +46,9 @@
 
 <!-- Intro (css/intro.css, js/intro.js), once per tab. -->
 <div class="pf-intro" aria-hidden="true">
-  <!-- The client's intro picture (text and crest are part of the image).
-       Two blurred copies cover the text and the crest at the start and are
-       wiped / faded away, so both sharpen out of the blur. -->
-  <div class="pf-intro__pic">
-    <img class="pf-intro__img" src="assets/img/intro.webp" width="1884" height="835" alt="" decoding="async">
-    <img class="pf-intro__cover pf-intro__cover--text" src="assets/img/intro.webp" alt="">
-    <img class="pf-intro__cover pf-intro__cover--crest" src="assets/img/intro.webp" alt="">
-  </div>
-  <!-- Desktop: the atrium picture ("La Casa Branka", text in the image); src set by js/intro.js. -->
-  <img class="pf-intro__desk" data-src="assets/img/intro-desk.webp" width="1676" height="939" alt="">
+  <!-- The La Casa Branka atrium (text in the picture); js/intro.js sets src to
+       the wide or the tall version, so only one is downloaded. -->
+  <img class="pf-intro__img" data-wide="assets/img/intro-wide.webp" data-tall="assets/img/intro-tall.webp" alt="">
   <p class="pf-intro__label">La Casa Branka. We see what is possible</p>
 </div>
 <script src="js/intro.js"></script>

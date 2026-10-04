@@ -1,12 +1,15 @@
-/* Home page intro (js/intro.js): the client's picture (assets/img/intro.webp,
-   1884x835: "WE SEE WHAT IS POSSIBLE" and a crest on beige with window
-   shadows, both part of the image). 3 s, then the page (client: "3 seconds,
-   no more, then the site"):
-     0-0.8 s  the picture fades in, text and crest hidden under blurred copies
-     0.3-2 s  the text sharpens left to right (a soft-edged wipe of its cover)
-     1.4-2.5  the crest sharpens (its cover fades)
-     3 s      the intro fades into the page (js/intro.js)
-   Positions of the text and crest are in % of the image (measured on it).
+/* Home page intro (js/intro.js), client 2026-10-04: the La Casa Branka
+   atrium, about 2 seconds, then the home page. "La Casa Branka / We see what
+   is possible" is part of the picture. Two versions of it, chosen by the
+   screen's shape (js/intro.js): wide screens assets/img/intro-wide.webp
+   (1676x939), upright screens (phones) assets/img/intro-tall.webp (941x1672).
+   Both encoded in Chrome at quality 0.97 so the colours match the PNGs
+   exactly (ffmpeg's encoder turned them greyer).
+   Opacity and transform only (the GPU animates them, smooth on any machine):
+     0-0.6 s   the picture fades in while it settles from 1.05 to 1 (1.2 s, a
+               camera coming to rest)
+     1.2 s     it glides forward into the opening (to 1.1, 1.3 s) as the whole
+               intro dissolves into the page; the room starts playing now
    <html> classes, set by the inline script in <head>:
      intro-run  the overlay is shown
      intro-on   the page chrome and package text wait (removed at the reveal) */
@@ -14,106 +17,33 @@
 .pf-intro { display: none; }
 html.intro-run .pf-intro {
   display: block; position: fixed; inset: 0; z-index: 200; overflow: hidden;
-  background: #DDD1C4;                 /* the picture's own edge colour */
+  background: var(--sc-canvas);
   cursor: default;
 }
 html.intro-run { overflow: hidden; }
 
-/* The picture's box: covers the screen at the image's own ratio, centred. */
-.pf-intro__pic {
-  position: absolute; left: 50%; top: 50%;
-  width: max(100vw, 100svh * 1884 / 835); aspect-ratio: 1884 / 835;
-  transform: translate(-50%, -50%);
-  opacity: 0;
-}
-/* Portrait screens: covering by height would cut the text off at the sides,
-   so the picture is sized to fit the text (~86% of the width) and its top and
-   bottom edges fade into the same beige. */
-@media (max-aspect-ratio: 1/1) {
-  .pf-intro__pic {
-    width: 275vw;
-    -webkit-mask-image: linear-gradient(transparent 0, #000 16%, #000 84%, transparent 100%);
-            mask-image: linear-gradient(transparent 0, #000 16%, #000 84%, transparent 100%);
-  }
-}
-.pf-intro__pic img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-
-/* Blurred copies over the text band and the crest, with feathered edges (a
-   hard-edged box showed as a rectangle where the window shadows cross the
-   text). Measured in the image: text x 35.1-65.1 %, y 40.1-43.4 %;
-   crest x 47.8-52.2 %, y 46.9-57.5 %. */
-@property --pf-wipe { syntax: '<percentage>'; inherits: false; initial-value: 38%; }
-.pf-intro__cover { filter: blur(10px); }
-.pf-intro__cover--text {
-  /* Horizontal: a soft edge that moves left to right (left of --pf-wipe the
-     cover is gone), fading out past the text's right end. Vertical: a band
-     around the text. The two masks are intersected. */
-  --pf-wipe: 38%;
-  -webkit-mask-image:
-    linear-gradient(90deg, transparent calc(var(--pf-wipe) - 7%), #000 var(--pf-wipe), #000 66.5%, transparent 69%),
-    linear-gradient(transparent 37%, #000 39%, #000 44.5%, transparent 46.5%);
-  -webkit-mask-composite: source-in;
-          mask-image:
-    linear-gradient(90deg, transparent calc(var(--pf-wipe) - 7%), #000 var(--pf-wipe), #000 66.5%, transparent 69%),
-    linear-gradient(transparent 37%, #000 39%, #000 44.5%, transparent 46.5%);
-          mask-composite: intersect;
-}
-.pf-intro__cover--crest {
-  -webkit-mask-image: radial-gradient(ellipse 4.5% 9% at 50% 52.2%, #000 65%, transparent 100%);
-          mask-image: radial-gradient(ellipse 4.5% 9% at 50% 52.2%, #000 65%, transparent 100%);
-}
-
-.pf-intro.is-in .pf-intro__pic { animation: pfIntroPic 1.2s cubic-bezier(0.25, 0.1, 0.25, 1) both; }
-.pf-intro.is-in .pf-intro__cover--text { animation: pfIntroWipe 1.9s cubic-bezier(0.4, 0, 0.2, 1) 0.25s both; }
-.pf-intro.is-in .pf-intro__cover--crest { animation: pfIntroFade 1.3s cubic-bezier(0.4, 0, 0.2, 1) 1.2s both; }
-@keyframes pfIntroPic { from { opacity: 0; } to { opacity: 1; } }
-@keyframes pfIntroWipe { from { --pf-wipe: 38%; } to { --pf-wipe: 76%; } }
-@keyframes pfIntroFade { from { opacity: 1; } to { opacity: 0; } }
-
-/* --- out: the words melt back into the blur while the picture drifts a hair
-   closer and dissolves into the page (1.8 s; opacity and transform only, a
-   full-screen blur would stutter on the client's laptop). ------------------- */
-.pf-intro.is-out { animation: pfIntroOut 1.8s cubic-bezier(0.37, 0, 0.63, 1) forwards; }
-.pf-intro.is-out .pf-intro__pic {
-  opacity: 1; animation: none;
-  transform: translate(-50%, -50%) scale(1.035);
-  transition: transform 1.8s cubic-bezier(0.3, 0, 0.2, 1);
-}
-.pf-intro.is-out .pf-intro__cover { animation: pfIntroBlurBack 0.9s cubic-bezier(0.4, 0, 0.2, 1) both; }
-.pf-intro.is-out .pf-intro__cover--text { --pf-wipe: 38%; }   /* the whole band blurs back */
-@keyframes pfIntroBlurBack { from { opacity: 0; } to { opacity: 1; } }
-@keyframes pfIntroOut { 0% { opacity: 1; } 12% { opacity: 1; } 100% { opacity: 0; } }
-
-/* --- desktop (html.intro-desk, client 2026-10-04): the atrium picture -------
-   assets/img/intro-desk.webp (1676x939, "La Casa Branka / We see what is
-   possible" is part of the image), encoded in Chrome at quality 0.97 so the
-   colours match the PNG exactly. Opacity and transform only (GPU, smooth):
-     0-0.6 s   fades in while it settles from 1.05 to 1 (1.2 s, a camera coming
-               to rest)
-     1.2 s     glides forward into the opening (to 1.1, 1.3 s) as the whole
-               intro dissolves into the page; the room starts playing now */
-.pf-intro__desk { display: none; }
-html.intro-desk .pf-intro { background: var(--sc-canvas); }
-html.intro-desk .pf-intro__pic { display: none; }
-html.intro-desk .pf-intro__desk {
-  display: block; position: absolute; inset: 0; width: 100%; height: 100%;
+.pf-intro__img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
   object-fit: cover; object-position: 50% 50%;
   transform-origin: 47% 55%;                  /* the opening at the end of the hall */
   opacity: 0; will-change: transform, opacity;
 }
-html.intro-desk .pf-intro.is-in .pf-intro__desk {
-  animation: pfDeskFade 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) both,
-             pfDeskSettle 1.2s cubic-bezier(0.2, 0.6, 0.3, 1) both;
+@media (orientation: portrait) {
+  .pf-intro__img { transform-origin: 54% 52%; }  /* the same opening in the tall picture */
 }
-html.intro-desk .pf-intro.is-out { animation: pfDeskOut 1.3s cubic-bezier(0.45, 0, 0.25, 1) forwards; }
-html.intro-desk .pf-intro.is-out .pf-intro__desk {
+.pf-intro.is-in .pf-intro__img {
+  animation: pfIntroFade 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) both,
+             pfIntroSettle 1.2s cubic-bezier(0.2, 0.6, 0.3, 1) both;
+}
+.pf-intro.is-out { animation: pfIntroOut 1.3s cubic-bezier(0.45, 0, 0.25, 1) forwards; }
+.pf-intro.is-out .pf-intro__img {
   opacity: 1;
-  animation: pfDeskPush 1.3s cubic-bezier(0.5, 0, 0.2, 1) forwards;
+  animation: pfIntroPush 1.3s cubic-bezier(0.5, 0, 0.2, 1) forwards;
 }
-@keyframes pfDeskFade { from { opacity: 0; } to { opacity: 1; } }
-@keyframes pfDeskSettle { from { transform: scale(1.05); } to { transform: scale(1); } }
-@keyframes pfDeskPush { from { transform: scale(1); } to { transform: scale(1.1); } }
-@keyframes pfDeskOut { 0% { opacity: 1; } 15% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes pfIntroFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pfIntroSettle { from { transform: scale(1.05); } to { transform: scale(1); } }
+@keyframes pfIntroPush { from { transform: scale(1); } to { transform: scale(1.1); } }
+@keyframes pfIntroOut { 0% { opacity: 1; } 15% { opacity: 1; } 100% { opacity: 0; } }
 
 /* For screen readers only: the text is in the image. */
 .pf-intro__label {
