@@ -1,0 +1,80 @@
+/* Typography (2026-10-03, client references "Content by Kenna" and "Rowen"):
+   a classic high-contrast serif, set small, with a lot of air around it.
+     display   Bodoni Moda 400, wide capitals (headlines, the logo)
+     text      Cormorant Garamond 400-500 (body, labels); its italic for
+               accent words, as in "Wedding — Content"
+     labels    tiny spaced capitals in Cormorant 500
+   Loaded LAST on every page, so these rules win over older ones. One family
+   pair everywhere (also the About sheet, which had a monospace), so the
+   family is set with !important on all text. The intro picture's own
+   lettering is part of the image and is not affected.
+   Previous version (Inter Tight, Saint Laurent style): archive/type.inter.css. */
+
+body, body :where(*:not(svg):not(svg *)) { font-family: var(--pf-text) !important; }
+.site-bar__mark, .pf-page__sub, .pf-display, .pf-h2, .pf-work__title, .pf-about-quote,
+.pf-figure__num, .pk-title, .pk-h2, .pk-figs b, .pk-next__big strong,
+.pf-example__price, .pf-tier__price, .pf-about-name, .pf-site-foot__brand {
+  font-family: var(--pf-display) !important;
+}
+body { font-size: 17px; }                       /* Cormorant runs small: a touch up */
+
+/* --- italics back: accent words in normal case, like "Wedding" -------------- */
+em { font-style: italic; text-transform: none !important; letter-spacing: 0.01em !important; font-family: var(--pf-text) !important; }
+
+/* --- headlines: Bodoni capitals, wide, small -------------------------------- */
+.pf-page__sub, .pf-display, .pf-h2, .pf-work__title, .pf-about-quote,
+.pk-title, .pk-h2, .pk-next__big strong {
+  font-weight: 400; text-transform: uppercase; letter-spacing: 0.06em; line-height: 1.12;
+}
+.pf-page__sub      { font-size: clamp(1.35rem, 0.9rem + 1vw, 1.95rem); max-width: 14em; }
+.pf-display        { font-size: clamp(1.6rem, 1rem + 1.6vw, 2.5rem); }
+.pf-h2             { font-size: clamp(1.25rem, 0.95rem + 0.9vw, 1.8rem); }
+.pf-about-quote    { font-size: clamp(1.2rem, 0.9rem + 0.9vw, 1.7rem); max-width: 24em; }
+.pf-work__title    { font-size: clamp(1.25rem, 0.95rem + 0.9vw, 1.8rem); }
+.pk-title          { font-size: clamp(1.7rem, 1.1rem + 1.6vw, 2.6rem); }
+.pk-h2             { font-size: clamp(1.25rem, 0.95rem + 0.9vw, 1.8rem); }
+.pk-next__big strong { font-size: clamp(1.4rem, 1rem + 1.2vw, 2.1rem); }
+
+/* --- the logo and small capitals ----------------------------------------- */
+.site-bar__mark    { font-weight: 400; font-size: 0.92rem; letter-spacing: 0.16em; }
+.pf-rail__label    { font-weight: 500; font-size: 0.74rem; letter-spacing: 0.16em; }
+.pf-page__title    { font-weight: 500; font-size: 0.78rem; letter-spacing: 0.22em; }
+.pf-site-foot__brand { font-weight: 400; letter-spacing: 0.18em; }
+.pf-kicker, .pf-about-kicker, .pk-label, .pf-tier__name, .pf-place__where, .pf-quote figcaption,
+.pf-page__link, .pf-textlink, .pk-link, .pf-dock a, .pk-btn, .pf-work__link, .pf-about-link,
+.pf-choose__head, .pf-choose a span {
+  font-weight: 500 !important; letter-spacing: 0.2em !important;
+}
+.pf-page__link, .pf-dock a, .pk-btn, .pk-link, .pf-textlink { font-size: 0.7rem !important; }
+.pf-place__name    { font-weight: 500; font-size: 1.15rem; text-transform: uppercase; letter-spacing: 0.14em; }
+.pf-why__know span { font-weight: 500; font-size: 1.05rem; font-style: italic; text-transform: none; letter-spacing: 0.01em; }
+.pf-about-title    { font-weight: 500; letter-spacing: 0.08em; }
+
+/* --- figures: Bodoni, light and modest ------------------------------------ */
+.pf-figure__num, .pk-figs b { font-weight: 400; letter-spacing: 0.01em; font-size: clamp(2.2rem, 1.4rem + 2.2vw, 3.6rem); }
+.pf-example__price, .pf-tier__price { font-weight: 400; letter-spacing: 0.02em; }
+.pf-tier__price { font-size: clamp(1.3rem, 1rem + 0.8vw, 1.75rem); white-space: nowrap; }
+
+/* --- body: Cormorant, readable ------------------------------------------- */
+.pf-page__text, .pf-lead, .pf-body, .pf-about-text p, .pk-intro, .pk-note, .pk-col p, .pk-steps p,
+.pf-tier__list, .pf-figure__label, .pf-place__units, .pk-list li, .pf-about-desc p, .pf-about-services li {
+  font-weight: 500;
+}
+.pf-lead, .pk-lead { font-size: clamp(1.15rem, 1rem + 0.4vw, 1.35rem); line-height: 1.45; }
+.pf-quote blockquote { font-style: italic; font-weight: 500; font-size: 1.15rem; line-height: 1.5; }
+.pf-tier__scope, .pf-work__cta p, .pf-figures-note, .pk-figs-note { font-style: italic; }
+.pk-col h3, .pk-steps h3 { font-weight: 500; font-size: 1.3rem; font-style: italic; letter-spacing: 0; }
+
+/* --- About sheet: same type as the rest of the site ----------------------- */
+/* Labels like every kicker on the site (tiny spaced caps, muted); values in
+   ink at body size; the description like the other body text. */
+.pf-about { font-size: 1rem !important; line-height: 1.5 !important; }
+.pf-about-up, .pf-about-info h3 {
+  font-size: 0.7rem !important; font-weight: 500 !important; letter-spacing: 0.2em !important;
+  text-transform: uppercase; color: var(--sc-ink-soft);
+}
+.pf-about-info h3 { margin-bottom: 1.1rem !important; }
+.pf-about-row p { font-size: 1rem; }
+.pf-about-desc p { font-size: 1rem; line-height: 1.7; color: var(--sc-ink-soft); max-width: 38em; }
+.pf-about-desc p + p { margin-top: 0.9em; }
+.pf-about-services li { font-size: 1rem; line-height: 1.7; }

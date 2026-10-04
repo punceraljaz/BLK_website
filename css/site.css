@@ -1,0 +1,204 @@
+/* Shared by index.html and the package pages (packages/*.html):
+   palette, header bar + package rail, the contact dock with its number
+   chooser, and the footer. Load after scrollcraft.css (it overrides that
+   file's :root palette). Moved out of index.html on 2026-10-02. */
+
+:root {
+  /* Palette (2026-10-03, client references: "Smoke #D1D1CC", "Mahogany
+     #351D14", a cool greige, a grey-tile bathroom): cooler beiges, mahogany
+     as the one dark accent.
+     Before (warm stone): bg #E8E1D7, surface #F1ECE5, ink #28231F, muted
+     #81786F, line #B7ADA1, accent #5A372A, floor #462C24. */
+  --sc-canvas:      #E3E1DB;
+  --sc-surface:     #EDECE8;
+  --sc-ink:         #2B221E;
+  --sc-ink-soft:    #7D7872;
+  --sc-accent:      #351D14;
+  --sc-accent-ink:  #EDECE8;
+  --pf-line:        #BEBAB2;
+  --pf-accent-soft: #98928A;
+  --sc-hairline:        color-mix(in oklab, var(--pf-line) 60%, transparent);
+  --sc-hairline-strong: var(--pf-line);
+  /* One treatment for all project photography (room, views, thumbnails,
+     gallery, package pages; not the About portrait, which the client wants
+     unfiltered): a little less colour and contrast, plus a faint warm tint
+     laid over it (a pseudo-element where the markup allows). */
+  --pf-photo-filter: saturate(0.78) contrast(0.96) brightness(0.98);
+  --pf-photo-tint:   rgba(110, 106, 98, 0.05);   /* cooler than before */
+  /* The dark bands (gallery, footer): mahogany. */
+  --pf-floor:       #351D14;
+
+  /* Type (2026-10-03, client references "Content by Kenna", "Rowen"): a
+     classic high-contrast serif, small, lots of air. Bodoni Moda for the
+     headlines in wide capitals; Cormorant Garamond for everything else,
+     with its italic for accent words. css/type.css sets the hierarchy. */
+  --pf-display:      "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+  --pf-text:         "Cormorant Garamond", "Cormorant", Garamond, Georgia, serif;
+  --pf-sans:         var(--pf-text);
+  --sc-font-display: var(--pf-display);
+  --sc-font-text:    var(--pf-text);
+  --pf-serif:        var(--pf-text);
+}
+
+/* ------------------------------------------------------------- nav bar -- */
+.site-bar {
+  position: fixed; inset: 0 0 auto 0; z-index: var(--sc-z-chrome);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: var(--sc-4) var(--sc-gutter);
+  /* The page lays out under a 4.75rem bar (room top, package pages); kept
+     explicitly since "Book a Visit" (which set the height) was removed. */
+  min-height: 4.75rem; box-sizing: border-box;
+  /* Plain ivory, no rule under it: the client asked for no unneeded lines. */
+  background: var(--sc-canvas);
+}
+.site-bar__mark {
+  font-family: var(--pf-serif); font-weight: 500;
+  font-size: 0.95rem; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--sc-ink); text-decoration: none;
+}
+/* Header in the same quiet serif as the packages. */
+.site-bar .pf-cta--ghost {
+  font-family: var(--pf-serif); font-weight: 500; font-size: 0.8rem;
+  letter-spacing: 0.2em; padding: 0.4em 0;
+  border: 0; background: none;               /* text only, no box */
+}
+.site-bar .pf-cta--ghost:hover { background: none; opacity: 0.6; }
+.site-bar__mark span { color: var(--sc-accent); }
+
+/* Package rail: lives inside the fixed header, not floating over the
+   page, so it can never collide with a heading below. Real in-page
+   navigation (each dot jumps to that package) and the one piece of
+   chrome present for the whole scroll, so the four packages read as
+   one ladder. Hidden below 1000px; each act's own eyebrow carries the
+   same "Package 0X" wayfinding on narrower screens. */
+/* Centred on the bar itself (not by space-between), so it stays put now
+   that the bar holds only the logo and this. */
+/* Quieter (2026-10-03): smaller, less tracking, muted; the active item is
+   only darker, no weight or underline. */
+.pf-rail {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: clamp(1.25rem, 2.2vw, 2.25rem);
+}
+.pf-rail__item {
+  position: relative; display: flex; align-items: center; gap: var(--sc-2);
+  text-decoration: none;
+}
+.pf-rail__label {
+  font-family: var(--pf-serif); font-size: 0.76rem; font-weight: 500;
+  letter-spacing: 0.12em; text-transform: uppercase; white-space: nowrap;
+  color: var(--pf-accent-soft);
+  transition: color var(--sc-d-fast) var(--sc-ease-out);
+}
+.pf-rail__item:hover .pf-rail__label { color: var(--sc-ink); }
+.pf-rail__item.is-active .pf-rail__label { color: var(--sc-ink); }
+@media (max-width: 1000px) { .pf-rail { display: none; } }
+
+/* ------------------------------------------------------ contact dock -- */
+/* Two buttons fixed to the bottom of the screen on every scroll position:
+   call, and book a session on Calendly. Desktop: a pair centred at the
+   bottom; phones: two halves of one bar across the bottom. */
+.pf-dock {
+  position: fixed; z-index: var(--sc-z-chrome);
+  left: 50%; bottom: clamp(0.9rem, 2.4vh, 1.5rem); transform: translateX(-50%);
+  display: flex; gap: 0.6rem;
+  font-family: "Inter Tight", system-ui, sans-serif;
+}
+/* Editorial controls, not app buttons (2026-10-03): a 2px corner instead of
+   a pill, lower, no shadow, same height for both. */
+.pf-dock a {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.55rem;
+  min-height: 2.6rem; padding: 0 1.3rem; border-radius: 2px; box-sizing: border-box;
+  font-size: 0.64rem; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase;
+  text-decoration: none; white-space: nowrap;
+  transition: background var(--sc-d-fast) var(--sc-ease-out), border-color var(--sc-d-fast) var(--sc-ease-out), color var(--sc-d-fast) var(--sc-ease-out);
+}
+.pf-dock a:focus-visible { outline: 1px solid var(--sc-ink); outline-offset: 3px; }
+.pf-dock svg { width: 14px; height: 14px; flex: none; stroke-width: 1.3; }
+/* Solid, no backdrop blur: the button floats over the room video, and
+   re-blurring the moving video behind it every frame caused 50-100 ms
+   hitches on the client's laptop (Iris Xe), measured with
+   tools/measure-lag.mjs: 17 slow frames per pass with the blur, 2 without. */
+.pf-dock__call {
+  background: var(--sc-surface); color: var(--sc-ink);
+  border: 1px solid var(--pf-line);
+}
+.pf-dock__call:hover { border-color: var(--sc-ink); }
+/* Number chooser: "Get in touch" and the WhatsApp links open this small
+   menu with both phone numbers (script "Number chooser"). */
+.pf-choose {
+  position: fixed; z-index: calc(var(--sc-z-chrome) + 1);
+  min-width: 15.5rem; padding: 0.5rem;
+  background: var(--sc-canvas); color: var(--sc-ink);
+  border: 1px solid var(--pf-line); border-radius: 3px;
+  box-shadow: 0 10px 30px rgb(40 35 31 / 0.08);
+  font-family: "Inter Tight", system-ui, sans-serif; font-weight: 300;
+  opacity: 0; transform: translateY(6px); pointer-events: none;
+  transition: opacity 180ms var(--sc-ease-out), transform 180ms var(--sc-ease-out);
+}
+.pf-choose.is-open { opacity: 1; transform: none; pointer-events: auto; }
+.pf-choose__head {
+  margin: 0; padding: 0.55rem 0.75rem 0.4rem;
+  font-size: 0.62rem; font-weight: 400; letter-spacing: 0.26em; text-transform: uppercase; color: var(--sc-ink-soft);
+}
+.pf-choose a {
+  display: flex; align-items: center; justify-content: space-between; gap: 1.5rem;
+  padding: 0.75rem; border-radius: 2px;
+  color: var(--sc-ink); text-decoration: none; font-size: 1rem; letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.pf-choose a span { font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--sc-ink-soft); }
+.pf-choose a:hover, .pf-choose a:focus-visible { background: color-mix(in oklab, var(--sc-ink) 7%, transparent); outline: none; }
+
+/* Primary: the accent. A faint light edge keeps it readable over the dark
+   About band and footer. */
+.pf-dock__book { background: var(--sc-accent); color: var(--sc-surface); border: 1px solid color-mix(in oklab, var(--sc-surface) 22%, var(--sc-accent)); }
+.pf-dock__book:hover { background: color-mix(in oklab, var(--sc-accent) 82%, var(--sc-ink)); }
+@media (max-width: 600px) {
+  .pf-dock { left: var(--sc-gutter); right: var(--sc-gutter); transform: none; bottom: calc(0.7rem + env(safe-area-inset-bottom)); gap: 0.5rem; }
+  .pf-dock a { flex: 1; padding: 0 0.6rem; letter-spacing: 0.14em; font-size: 0.62rem; }
+}
+/* Room under the dock at the very end of the page, so it never covers the footer text. */
+footer.pf-site-foot { padding-bottom: calc(var(--sc-8) + 4.5rem); }
+
+/* ---------------------------------------------------------- site foot -- */
+/* The floor colour, continued: #462C24 was sampled directly from the
+   parquet at her feet, so the fade above walks straight into this
+   without a seam. */
+.pf-site-foot {
+  background: var(--pf-floor);
+  padding: var(--sc-8) var(--sc-gutter);
+}
+.pf-site-foot__inner {
+  max-width: 40rem; margin-inline: auto;
+  display: flex; flex-direction: column; align-items: center;
+  gap: var(--sc-5); text-align: center;
+}
+.pf-site-foot__brand {
+  font-family: var(--sc-font-display); font-weight: 700;
+  font-size: var(--sc-t-sm); letter-spacing: var(--sc-track-wide);
+  text-transform: uppercase; color: var(--sc-surface);
+}
+.pf-social { display: flex; gap: var(--sc-5); }
+.pf-social a {
+  display: flex; align-items: center; justify-content: center;
+  width: 2.4rem; height: 2.4rem; border-radius: 50%;
+  border: 1px solid color-mix(in oklab, var(--sc-surface) 30%, transparent);
+  color: var(--sc-surface);
+  transition: border-color var(--sc-d-fast) var(--sc-ease-out),
+              background var(--sc-d-fast) var(--sc-ease-out);
+}
+.pf-social a:hover {
+  border-color: color-mix(in oklab, var(--sc-surface) 60%, transparent);
+  background: color-mix(in oklab, var(--sc-surface) 10%, transparent);
+}
+.pf-social svg { width: 18px; height: 18px; }
+.pf-site-foot__contact {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: var(--sc-2) var(--sc-6);
+  font-family: "Inter Tight", system-ui, sans-serif; font-weight: 300; font-size: 0.95rem;
+}
+.pf-site-foot__contact a { color: var(--sc-surface); text-decoration: none; }
+.pf-site-foot__contact a:hover { opacity: 0.7; }
+.pf-site-foot__copy {
+  font-size: var(--sc-t-xs); letter-spacing: var(--sc-track-normal);
+  color: color-mix(in oklab, var(--sc-surface) 55%, transparent);
+}

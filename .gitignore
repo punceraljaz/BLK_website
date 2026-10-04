@@ -1,0 +1,14 @@
+# Test output: screenshots, frame dumps, comparisons (6+ GB). Local only.
+lab/
+
+# Client preview screenshots. Local only.
+primeri/
+
+# Installed by `npm install` (playwright-core, used by tools/).
+node_modules/
+
+# Editor / server leftovers
+*.log
+*.tmp.*
+.DS_Store
+Thumbs.db

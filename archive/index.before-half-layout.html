@@ -1,0 +1,988 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BLK Remodelling · four ways into a rental-ready apartment</title>
+<meta name="description" content="BLK Remodelling furnishes, equips and rebuilds apartments in Ras Al Khaimah, from a bare shell to a fully reconfigured, rental-ready home.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23161009'/><path d='M9 22V10h5.2c2.6 0 4.2 1.3 4.2 3.5 0 1.5-.8 2.5-2 3 1.5.4 2.5 1.5 2.5 3.2 0 2.5-1.8 3.8-4.5 3.8H9zm3-7h2c1 0 1.6-.5 1.6-1.3S15 12.4 14 12.4h-2v2.3zm0 4.7h2.3c1.1 0 1.8-.5 1.8-1.5s-.7-1.4-1.8-1.4H12v2.9z' fill='%23C1502E'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/scrollcraft.css">
+<link rel="stylesheet" href="../css/scroll-sequence.css">
+<link rel="preload" as="image" href="../assets/frames/room/0001.webp" type="image/webp">
+<style>
+  :root {
+    /* Light theme, dialled back from a bright cream to a muted, dusty
+       stone: the near-white pass read as glossy and flat instead of
+       luxurious. A quiet, low-chroma neutral holds attention on the
+       photography and the copy instead of the page itself. */
+    --sc-canvas:      #DCD5C6;
+    --sc-surface:     #D0C8B8;
+    --sc-ink:         #27231D;
+    --sc-ink-soft:    #6E6555;
+    --sc-accent:      #63512F;
+    --sc-accent-ink:  #F6F1E5;
+    /* Sampled directly from the parquet in the About Us photo, so the
+       closing section and the footer beneath it share one exact colour. */
+    --pf-floor:       #462C24;
+
+    --sc-font-display: "Archivo", system-ui, sans-serif;
+    --sc-font-text:    "Geist", system-ui, sans-serif;
+  }
+
+  /* Bold, tight, uppercase display type — matches the reference brief:
+     a heavy grotesk set in caps, not the engine's default mid-weight. */
+  .sc-display {
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: var(--sc-track-tight);
+  }
+
+  /* ------------------------------------------------------------- nav bar -- */
+  .site-bar {
+    position: fixed; inset: 0 0 auto 0; z-index: var(--sc-z-chrome);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: var(--sc-4) var(--sc-gutter);
+    background: color-mix(in oklab, var(--sc-canvas) 72%, transparent);
+    backdrop-filter: blur(10px) saturate(1.1);
+    border-bottom: 1px solid color-mix(in oklab, var(--sc-ink) 10%, transparent);
+  }
+  .site-bar__mark {
+    font-family: var(--sc-font-display); font-weight: 700;
+    font-size: var(--sc-t-sm); letter-spacing: var(--sc-track-wide);
+    text-transform: uppercase; color: var(--sc-ink); text-decoration: none;
+  }
+  .site-bar__mark span { color: var(--sc-accent); }
+
+  /* --------------------------------------------------------------- button -- */
+  /* Understated luxury mark, not an app button: a hairline border in the
+     accent, tracked-out small caps, near-transparent fill. Weight comes
+     from restraint, not saturation or size. */
+  .pf-cta {
+    display: inline-flex; align-items: center; gap: var(--sc-2);
+    padding: 0.85em 1.6em;
+    border-radius: var(--sc-r-sm);
+    background: color-mix(in oklab, var(--sc-accent) 9%, transparent);
+    color: var(--sc-accent);
+    border: 1px solid color-mix(in oklab, var(--sc-accent) 45%, transparent);
+    font-family: var(--sc-font-text); font-weight: 600;
+    font-size: var(--sc-t-xs); letter-spacing: var(--sc-track-wide);
+    text-transform: uppercase;
+    text-decoration: none; white-space: nowrap;
+    transition: border-color var(--sc-d-fast) var(--sc-ease-out),
+                background var(--sc-d-fast) var(--sc-ease-out),
+                color var(--sc-d-fast) var(--sc-ease-out);
+  }
+  .pf-cta:hover   { background: color-mix(in oklab, var(--sc-accent) 16%, transparent); border-color: var(--sc-accent); }
+  .pf-cta:active  { transform: scale(0.98); }
+  .pf-cta:focus-visible { outline: 1px solid var(--sc-accent); outline-offset: 3px; }
+  .pf-cta--ghost {
+    background: transparent; color: var(--sc-ink);
+    border: 1px solid color-mix(in oklab, var(--sc-ink) 26%, transparent);
+  }
+  .pf-cta--ghost:hover { border-color: color-mix(in oklab, var(--sc-ink) 55%, transparent); background: color-mix(in oklab, var(--sc-ink) 6%, transparent); }
+  .pf-cta--big { padding: 1em 2.2em; font-size: var(--sc-t-xs); letter-spacing: var(--sc-track-wide); }
+
+  /* ------------------------------------------------------------- act copy -- */
+  /* A tight card behind the text, not a gradient wash across the photo.
+     The old approach scrimmed 60-90% of the frame to guarantee contrast
+     under the copy column; that hid most of the picture. This backs only
+     the text itself, so the photo stays fully visible everywhere else. */
+  .pf-copy-head { max-width: 30rem; }
+  /* No panel edge: a frosted, lightened pool sits behind the text and
+     feathers out to nothing through a radial mask, so the text reads on any
+     photo without a visible box. */
+  .pf-photo-card {
+    display: inline-block;
+    max-width: 23rem;
+    isolation: isolate;
+  }
+  .pf-photo-card::before {
+    content: ""; position: absolute; z-index: -1;
+    inset: -3.5rem -4.5rem;
+    background: color-mix(in oklab, var(--sc-canvas) 82%, transparent);
+    backdrop-filter: blur(24px) saturate(1.05);
+    -webkit-backdrop-filter: blur(24px) saturate(1.05);
+    /* Box-shaped: two linear fades intersected give a rectangle whose four
+       edges feather out, instead of a round pool. */
+    --feather: 2.75rem;
+    -webkit-mask-image:
+      linear-gradient(to right, transparent, #000 var(--feather), #000 calc(100% - var(--feather)), transparent),
+      linear-gradient(to bottom, transparent, #000 var(--feather), #000 calc(100% - var(--feather)), transparent);
+    -webkit-mask-composite: source-in;
+            mask-image:
+      linear-gradient(to right, transparent, #000 var(--feather), #000 calc(100% - var(--feather)), transparent),
+      linear-gradient(to bottom, transparent, #000 var(--feather), #000 calc(100% - var(--feather)), transparent);
+            mask-composite: intersect;
+    pointer-events: none;
+  }
+  .pf-photo-card .sc-display--md { font-size: clamp(1.5rem, 0.9rem + 1.6vw, 2.25rem); }
+  .pf-photo-card .sc-body { font-size: var(--sc-t-sm); line-height: 1.5; margin-top: var(--sc-2); color: var(--sc-ink); opacity: 0.78; }
+  .pf-photo-card .pf-eyebrow { margin-bottom: var(--sc-2); font-size: 0.68rem; }
+  .pf-photo-card p:has(> .pf-cta) { margin-top: var(--sc-5) !important; }
+  .pf-photo-card .pf-cta { padding: 0.6rem 1rem; font-size: 0.7rem; }
+  .pf-eyebrow {
+    display: block; margin-bottom: var(--sc-3);
+    font-family: var(--sc-font-text); font-size: var(--sc-t-xs);
+    letter-spacing: var(--sc-track-wide); text-transform: uppercase;
+    color: var(--sc-accent);
+  }
+
+  /* ------------------------------------------------------ room track -- */
+  /* One sticky room layer behind packages 01-02. margin-bottom cancels its
+     own height so the first package starts at the same top; the package
+     stages (z-index above it) are transparent, so only their text moves.
+     The room starts under the nav bar instead of behind it, so the whole
+     frame is visible (at 16:10 desktop the remaining area is almost exactly
+     the clip's own 1.75:1, so cover barely crops). */
+  .pf-room-track { position: relative; }
+  .pf-room-layer {
+    position: sticky; top: 0; z-index: 0;
+    height: 100vh; height: 100svh;
+    margin-bottom: -100vh; margin-bottom: -100svh;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .pf-room-layer > .pf-room-layer__poster,
+  .pf-room-layer > .seq__canvas {
+    position: absolute; left: 0; width: 100%;
+    top: 4.75rem; height: calc(100% - 4.75rem);
+  }
+  .pf-room-layer__poster { object-fit: cover; }
+  .pf-room-layer > .seq__canvas { display: block; }
+  /* Test only (?box): the room in a centred box a quarter of the screen. */
+  .room-box .pf-room-layer > .pf-room-layer__poster,
+  .room-box .pf-room-layer > .seq__canvas {
+    left: 25vw; width: 50vw;
+    top: calc(4.75rem + (100% - 4.75rem) / 4); height: calc((100% - 4.75rem) / 2);
+  }
+  .pf-fps {
+    position: fixed; left: 0.75rem; bottom: 0.75rem; z-index: 50;
+    padding: 0.35rem 0.6rem; border-radius: 0.3rem;
+    background: rgb(0 0 0 / 0.75); color: #fff;
+    font: 600 0.75rem/1.2 ui-monospace, monospace;
+  }
+
+  .pf-rooms {
+    position: absolute; z-index: var(--sc-z-copy);
+    right: var(--sc-gutter); bottom: clamp(1.5rem, 5vh, 3rem);
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-direction: column; gap: var(--sc-2);
+  }
+  .pf-room {
+    position: relative; display: block; width: 5.75rem; padding: 0;
+    border: 0; border-radius: 3px; background: none;
+    cursor: pointer; overflow: hidden;
+    box-shadow: 0 4px 14px rgb(0 0 0 / 0.14);
+    outline: 1px solid color-mix(in oklab, #fff 45%, transparent); outline-offset: 2px;
+    opacity: 0.72;
+    transition: opacity 240ms, outline-color 240ms, transform 240ms var(--sc-ease-out);
+  }
+  .pf-room img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
+  .pf-room span {
+    position: absolute; inset: auto 0 0 0; padding: 0.9rem 0.45rem 0.3rem;
+    background: linear-gradient(to top, rgb(20 17 13 / 0.6), transparent);
+    color: #F6F1E5; font-size: 0.55rem; text-align: left;
+    letter-spacing: 0.14em; text-transform: uppercase;
+  }
+  .pf-room { cursor: zoom-in; }
+  .pf-room:hover { opacity: 1; outline-color: #fff; transform: translateX(-2px); }
+
+  .pf-lightbox {
+    border: 0; padding: 0; background: transparent; overflow: visible;
+    max-width: 92vw; max-height: 92vh;
+  }
+  .pf-lightbox::backdrop { background: rgb(20 17 13 / 0.85); backdrop-filter: blur(4px); }
+  .pf-lightbox figure { margin: 0; }
+  .pf-lightbox img { display: block; max-width: 92vw; max-height: 84vh; border-radius: var(--sc-r-md); }
+  .pf-lightbox figcaption {
+    margin-top: var(--sc-3); text-align: center; color: #F6F1E5;
+    font-size: var(--sc-t-xs); letter-spacing: var(--sc-track-wide); text-transform: uppercase;
+  }
+  .pf-lightbox__close {
+    position: absolute; top: -2.5rem; right: 0; padding: 0.3rem;
+    background: none; border: 0; color: #F6F1E5; cursor: pointer;
+    font-size: var(--sc-t-xs); letter-spacing: var(--sc-track-wide); text-transform: uppercase;
+  }
+  .pf-room:focus-visible { outline-color: var(--sc-accent); }
+
+  /* Phones: the copy card spans the bottom, so the stack moves to the top
+     right, under the nav bar, and shrinks. */
+  @media (max-width: 700px) {
+    .pf-rooms { top: calc(4.75rem + var(--sc-3)); bottom: auto; gap: var(--sc-2); }
+    .pf-room { width: 4rem; }
+    .pf-room span { font-size: 0.48rem; padding: 0.6rem 0.3rem 0.2rem; letter-spacing: 0.08em; }
+  }
+
+  /* ------------------------------------------------------ act 2: icon row -- */
+  .pf-icons {
+    display: flex; gap: var(--sc-6); margin-top: var(--sc-7);
+  }
+  .pf-icon { display: flex; flex-direction: column; align-items: center; gap: var(--sc-2); }
+  .pf-icon svg { width: 28px; height: 28px; color: var(--sc-ink); }
+  .pf-icon span { font-size: var(--sc-t-xs); color: var(--sc-ink-soft); letter-spacing: var(--sc-track-wide); text-transform: uppercase; }
+
+  /* ---------------------------------------------------- the through-line -- */
+  /* Blueprint-grid texture: the one recurring motif tying every act
+     together, photographed or not. Small scale inside the act-4 picture
+     card, large scale as a full-bleed backdrop on acts without a photo. */
+  .pf-blueprint-grid {
+    position: absolute; inset: 0; pointer-events: none; opacity: 0.22;
+    background-image:
+      repeating-linear-gradient(0deg, color-mix(in oklab, var(--sc-ink) 5%, transparent) 0 1px, transparent 1px 64px),
+      repeating-linear-gradient(90deg, color-mix(in oklab, var(--sc-ink) 5%, transparent) 0 1px, transparent 1px 64px);
+  }
+
+  /* Package rail: lives inside the fixed header, not floating over the
+     page, so it can never collide with a heading below. Real in-page
+     navigation (each dot jumps to that package) and the one piece of
+     chrome present for the whole scroll, so the four packages read as
+     one ladder. Hidden below 1000px; each act's own eyebrow carries the
+     same "Package 0X" wayfinding on narrower screens. */
+  .pf-rail {
+    display: flex; align-items: center; gap: var(--sc-6);
+  }
+  .pf-rail__item {
+    position: relative; display: flex; align-items: center; gap: var(--sc-2);
+    text-decoration: none;
+  }
+  .pf-rail__item::before {
+    content: ""; width: 6px; height: 6px; border-radius: 50%; flex: none;
+    border: 1px solid color-mix(in oklab, var(--sc-ink) 35%, transparent);
+    background: transparent;
+    transition: border-color var(--sc-d-fast) var(--sc-ease-out), background var(--sc-d-fast) var(--sc-ease-out);
+  }
+  .pf-rail__label {
+    font-family: var(--sc-font-text); font-size: var(--sc-t-xs);
+    letter-spacing: var(--sc-track-wide); text-transform: uppercase; white-space: nowrap;
+    color: color-mix(in oklab, var(--sc-ink) 42%, transparent);
+    transition: color var(--sc-d-fast) var(--sc-ease-out);
+  }
+  .pf-rail__item:hover .pf-rail__label { color: var(--sc-ink); }
+  .pf-rail__item.is-active .pf-rail__label { color: var(--sc-accent); }
+  .pf-rail__item.is-active::before { border-color: var(--sc-accent); background: var(--sc-accent); }
+  @media (max-width: 1000px) { .pf-rail { display: none; } }
+
+  /* --------------------------------------------------- act 4: floorplan -- */
+  .pf-act4-row {
+    display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+    gap: var(--sc-8); align-items: center;
+    width: min(58rem, 92vw);
+  }
+  @media (max-width: 860px) {
+    .pf-act4-row { grid-template-columns: 1fr; width: min(24rem, 92vw); gap: var(--sc-6); }
+  }
+  .pf-plan-wrap {
+    position: relative; width: 100%; max-width: 20rem; margin-inline: auto;
+    /* Framed like a printed sheet, not floating linework: a border and a
+       quiet card behind it, matching the picture card beside it. */
+    border: 1px solid var(--sc-hairline-strong);
+    border-radius: var(--sc-r-md);
+    background: color-mix(in oklab, var(--sc-canvas) 92%, transparent);
+    padding: 1.1rem;
+    filter: drop-shadow(0 16px 32px rgb(0 0 0 / 0.12));
+    /* Every timing below reads off these. Each raw fraction (0..1 across
+       its own window) is run through a smoothstep so motion eases in
+       and out instead of moving at constant linear speed — the "seamless"
+       cue is the easing curve, not the geometry. */
+    --t-shell:     clamp(0, calc(var(--sc-p, 0) / 0.35), 1);
+    --t-shell-e:   calc(var(--t-shell) * var(--t-shell) * (3 - 2 * var(--t-shell)));
+    --t-wall:      clamp(0, calc((var(--sc-p, 0) - 0.32) / 0.3), 1);
+    --t-wall-e:    calc(var(--t-wall) * var(--t-wall) * (3 - 2 * var(--t-wall)));
+    --t-door:      clamp(0, calc((var(--sc-p, 0) - 0.56) / 0.12), 1);
+    --t-fixt:      clamp(0, calc((var(--sc-p, 0) - 0.5) / 0.22), 1);
+    --t-fixt-e:    calc(var(--t-fixt) * var(--t-fixt) * (3 - 2 * var(--t-fixt)));
+    --t-furn:      clamp(0, calc((var(--sc-p, 0) - 0.74) / 0.24), 1);
+    --t-furn-e:    calc(var(--t-furn) * var(--t-furn) * (3 - 2 * var(--t-furn)));
+  }
+  .pf-plan-wrap svg { width: 100%; aspect-ratio: 19 / 10; overflow: visible; display: block; }
+  .pf-plan line, .pf-plan path {
+    fill: none; stroke: var(--sc-ink); stroke-width: 3;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+  /* Thin, drafted lines, not bold bands — sophistication here comes from
+     restraint and fine detail, the way the actual floor plan is drawn. */
+  .pf-plan .plan-shell,
+  .pf-plan .plan-wall-new {
+    stroke-width: 1.5;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
+  }
+  .pf-plan .plan-shell {
+    stroke-dasharray: var(--len-shell, 1400);
+    stroke-dashoffset: calc(var(--len-shell, 1400) * (1 - var(--t-shell-e)));
+  }
+  .pf-plan .plan-glass {
+    stroke: color-mix(in oklab, var(--sc-ink) 45%, transparent);
+    stroke-width: 0.9;
+    opacity: var(--t-shell-e);
+  }
+  .pf-plan .plan-wall-new {
+    stroke: var(--sc-accent);
+    stroke-dasharray: var(--len-wall, 260);
+    stroke-dashoffset: calc(var(--len-wall, 260) * (1 - var(--t-wall-e)));
+    /* A whisper of glow, not a bold one: still the one highlighted
+       moment on the page — the one enclosed room a renovation built,
+       kept in proportion with everything else here being fine line work. */
+    filter: drop-shadow(0 0 calc(var(--t-wall-e) * 2px) color-mix(in oklab, var(--sc-accent) 50%, transparent));
+  }
+  .pf-plan .plan-door,
+  .pf-plan .plan-entry path {
+    stroke-width: 1.1;
+  }
+  .pf-plan .plan-door { opacity: var(--t-door); }
+  .pf-plan .plan-entry { opacity: var(--t-door); }
+  .pf-plan .plan-entry__arrow { fill: var(--sc-ink); stroke: none; }
+  /* Bath fixtures and the shower's hatched wet-room floor, drawn in as
+     the accent wall finishes standing. */
+  .pf-plan .plan-fixtures,
+  .pf-plan .plan-shower {
+    opacity: var(--t-fixt-e);
+  }
+  .pf-plan .plan-fixtures rect,
+  .pf-plan .plan-fixtures circle,
+  .pf-plan .plan-fixtures ellipse {
+    stroke: var(--sc-ink); stroke-width: 1.1; fill: none;
+  }
+  .pf-plan .plan-shower__box {
+    stroke: color-mix(in oklab, var(--sc-ink) 45%, transparent);
+    stroke-width: 1; fill: none;
+  }
+  .pf-plan .plan-shower__hatch {
+    stroke: color-mix(in oklab, var(--sc-ink) 30%, transparent);
+    stroke-width: 0.7;
+  }
+  .pf-plan .plan-shower circle {
+    stroke: var(--sc-ink); stroke-width: 1; fill: none;
+  }
+  /* Furniture and the kitchen run: the proof this is a lived-in plan,
+     not a diagram, all arriving last, together. */
+  .pf-plan .plan-bed,
+  .pf-plan .plan-rug,
+  .pf-plan .plan-triangle,
+  .pf-plan .plan-sofa,
+  .pf-plan .plan-dining-real,
+  .pf-plan .plan-kitchen,
+  .pf-plan .plan-balcony {
+    opacity: var(--t-furn-e);
+    transform: translateY(calc((1 - var(--t-furn-e)) * 5px));
+  }
+  .pf-plan .plan-bed rect,
+  .pf-plan .plan-bed path,
+  .pf-plan .plan-sofa rect,
+  .pf-plan .plan-sofa path,
+  .pf-plan .plan-dining-real rect,
+  .pf-plan .plan-kitchen rect,
+  .pf-plan .plan-balcony circle {
+    stroke: var(--sc-ink);
+    stroke-width: 1.1;
+    fill: none;
+  }
+  .pf-plan .plan-balcony__chair {
+    stroke: var(--sc-ink); stroke-width: 1; fill: none;
+  }
+  .pf-plan .plan-balcony path {
+    stroke: color-mix(in oklab, var(--sc-ink) 45%, transparent);
+    stroke-width: 0.8;
+  }
+  .pf-plan .plan-bed__pillow { fill: color-mix(in oklab, var(--sc-canvas) 60%, transparent); }
+  .pf-plan .plan-rug rect {
+    stroke: color-mix(in oklab, var(--sc-ink) 50%, transparent);
+    stroke-width: 1; fill: none;
+  }
+  .pf-plan .plan-rug path {
+    stroke: color-mix(in oklab, var(--sc-ink) 32%, transparent);
+    stroke-width: 0.7;
+  }
+  .pf-plan .plan-triangle {
+    stroke: color-mix(in oklab, var(--sc-ink) 45%, transparent);
+    stroke-width: 1;
+  }
+  .pf-plan .plan-kitchen circle {
+    stroke: var(--sc-ink); stroke-width: 1; fill: none;
+  }
+  .pf-plan .plan-kitchen__detail {
+    stroke: color-mix(in oklab, var(--sc-ink) 40%, transparent);
+    stroke-width: 0.8;
+  }
+  .pf-plan .plan-room-labels { opacity: var(--t-furn-e); }
+  .plan-room-label {
+    fill: var(--sc-ink-soft); stroke: none;
+    font-family: var(--sc-font-text); font-size: 8px;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    text-anchor: middle;
+  }
+  .plan-room-label--accent { fill: var(--sc-accent); }
+  .plan-room-label--accent { fill: var(--sc-accent); }
+
+  /* ------------------------------------------- act 4: progress placeholder -- */
+  /* No renovation-in-progress photo exists yet. A styled placeholder card,
+     not a stock photo, keeps the honest-swap-later contract from the earlier
+     acts: replace .pf-progress-wrap's contents with a real <img> once BLK
+     has a shot, or a kie.ai-generated one. */
+  .pf-progress-wrap {
+    position: relative; width: 100%; max-width: 22rem; margin-inline: auto;
+    aspect-ratio: 4 / 3; overflow: hidden;
+    border-radius: var(--sc-r-md);
+    border: 1px solid var(--sc-hairline-strong);
+    background: linear-gradient(155deg, var(--sc-surface) 0%, var(--sc-canvas) 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: var(--sc-3); text-align: center; padding: var(--sc-5);
+  }
+  .pf-progress-wrap::before {
+    content: ""; position: absolute; inset: 0; opacity: 0.6;
+    background-image:
+      repeating-linear-gradient(0deg, color-mix(in oklab, var(--sc-ink) 5%, transparent) 0 1px, transparent 1px 26px),
+      repeating-linear-gradient(90deg, color-mix(in oklab, var(--sc-ink) 5%, transparent) 0 1px, transparent 1px 26px);
+  }
+  .pf-progress-badge {
+    position: relative; width: 3.4rem; height: 3.4rem; border-radius: 50%;
+    border: 1px solid color-mix(in oklab, var(--sc-accent) 45%, transparent);
+    display: flex; align-items: center; justify-content: center; color: var(--sc-accent);
+  }
+  .pf-progress-badge svg { width: 24px; height: 24px; }
+  .pf-progress-caption {
+    position: relative; font-family: var(--sc-font-display); font-weight: 600;
+    font-size: var(--sc-t-sm); color: var(--sc-ink);
+  }
+  .pf-progress-tag {
+    position: relative; font-family: var(--sc-font-text); font-size: var(--sc-t-xs);
+    letter-spacing: var(--sc-track-wide); text-transform: uppercase; color: var(--sc-ink-soft);
+  }
+
+  .pf-close {
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+    text-align: center; gap: var(--sc-6);
+    padding: 8rem var(--sc-gutter) 6rem;
+  }
+  @media (max-width: 860px) {
+    .pf-close { padding: 6rem var(--sc-gutter) 2.5rem; gap: var(--sc-4); }
+    .pf-act4-row { gap: var(--sc-5); }
+    .pf-act4-row .pf-plan-wrap,
+    .pf-act4-row .pf-progress-wrap { max-width: 15rem; }
+  }
+  .pf-close .sc-body { max-width: 42ch; }
+  .pf-foot {
+    position: absolute; inset: auto 0 0 0; z-index: var(--sc-z-copy);
+    display: flex; justify-content: space-between; gap: var(--sc-4);
+    padding: var(--sc-6) var(--sc-gutter);
+    font-size: var(--sc-t-xs); color: var(--sc-ink-soft);
+  }
+
+  @media (max-width: 700px) {
+    .pf-icons { gap: var(--sc-4); flex-wrap: wrap; }
+    .pf-foot { flex-direction: column; gap: var(--sc-2); }
+  }
+
+  /* -------------------------------------------------------- act 5: about -- */
+  /* Not pinned, not cropped, and not scrolled-through either: the whole
+     portrait, head to floor, sized to fit inside one screen at once. A
+     narrower frame than full width is the trade-off for showing all of
+     her without cropping — the frame's own background continues the
+     photo's wall-to-floor gradient into the letterboxed margin, and
+     fades on all four sides blend the photo into it, so the edge of the
+     image is never a hard rectangle. */
+  .pf-about { position: relative; }
+  .pf-about-media {
+    position: relative; min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding-block: 6vh;
+    background: linear-gradient(to bottom,
+      var(--sc-canvas) 0%, var(--sc-canvas) 22%,
+      color-mix(in oklab, var(--sc-canvas) 55%, var(--pf-floor) 45%) 68%,
+      var(--pf-floor) 100%);
+  }
+  .pf-about-frame {
+    position: relative; line-height: 0; display: inline-block;
+  }
+  .pf-about-photo {
+    display: block;
+    max-height: 88vh; max-width: 94vw;
+    width: auto; height: auto;
+  }
+  /* Long, gentle fades on every side: top into the page's own canvas
+     tone (the "invisible" transition in), bottom into the floor colour
+     sampled straight from the photo, sides into the same wall-to-floor
+     gradient the frame's own background already carries. */
+  .pf-about-fade-top,
+  .pf-about-fade-bottom,
+  .pf-about-fade-left,
+  .pf-about-fade-right {
+    position: absolute; pointer-events: none;
+  }
+  .pf-about-fade-top {
+    inset: 0 0 auto 0; height: 34%;
+    background: linear-gradient(to bottom,
+      var(--sc-canvas) 0%,
+      color-mix(in oklab, var(--sc-canvas) 65%, transparent) 35%,
+      color-mix(in oklab, var(--sc-canvas) 25%, transparent) 68%,
+      transparent 100%);
+  }
+  .pf-about-fade-bottom {
+    inset: auto 0 0 0; height: 30%;
+    background: linear-gradient(to bottom,
+      transparent 0%,
+      color-mix(in oklab, var(--pf-floor) 30%, transparent) 40%,
+      color-mix(in oklab, var(--pf-floor) 72%, transparent) 75%,
+      var(--pf-floor) 100%);
+  }
+  .pf-about-fade-left {
+    inset: 0 auto 0 0; width: 16%;
+    background: linear-gradient(to right,
+      color-mix(in oklab, var(--sc-canvas) 55%, var(--pf-floor) 45%) 0%,
+      transparent 100%);
+    opacity: 0.6;
+  }
+  .pf-about-fade-right {
+    inset: 0 0 0 auto; width: 16%;
+    background: linear-gradient(to left,
+      color-mix(in oklab, var(--sc-canvas) 55%, var(--pf-floor) 45%) 0%,
+      transparent 100%);
+    opacity: 0.6;
+  }
+  .pf-about-copy {
+    position: absolute; top: 6%; left: 0; right: 0; z-index: var(--sc-z-copy);
+    display: flex; flex-direction: column; align-items: center;
+    gap: var(--sc-4); text-align: center; padding-inline: var(--sc-gutter);
+    /* .pf-about-frame sets line-height:0 to collapse the gap under the
+       inline <img>; that inherits into any text placed inside it too,
+       stacking wrapped lines on top of each other unless reset here. */
+    line-height: var(--sc-leading-body);
+  }
+  .pf-about-heading {
+    font-family: var(--sc-font-text); font-weight: 500;
+    font-size: var(--sc-t-xl); letter-spacing: var(--sc-track-wide);
+    text-transform: uppercase; color: var(--sc-ink);
+  }
+  .pf-about-sub {
+    max-width: 34ch; margin: 0; font-size: var(--sc-t-sm);
+    color: var(--sc-ink-soft);
+  }
+
+  /* ---------------------------------------------------------- site foot -- */
+  /* The floor colour, continued: #462C24 was sampled directly from the
+     parquet at her feet, so the fade above walks straight into this
+     without a seam. */
+  .pf-site-foot {
+    background: var(--pf-floor);
+    padding: var(--sc-8) var(--sc-gutter);
+  }
+  .pf-site-foot__inner {
+    max-width: 40rem; margin-inline: auto;
+    display: flex; flex-direction: column; align-items: center;
+    gap: var(--sc-5); text-align: center;
+  }
+  .pf-site-foot__brand {
+    font-family: var(--sc-font-display); font-weight: 700;
+    font-size: var(--sc-t-sm); letter-spacing: var(--sc-track-wide);
+    text-transform: uppercase; color: #F4EDE1;
+  }
+  .pf-social { display: flex; gap: var(--sc-5); }
+  .pf-social a {
+    display: flex; align-items: center; justify-content: center;
+    width: 2.4rem; height: 2.4rem; border-radius: 50%;
+    border: 1px solid color-mix(in oklab, #F4EDE1 30%, transparent);
+    color: #F4EDE1;
+    transition: border-color var(--sc-d-fast) var(--sc-ease-out),
+                background var(--sc-d-fast) var(--sc-ease-out);
+  }
+  .pf-social a:hover {
+    border-color: color-mix(in oklab, #F4EDE1 60%, transparent);
+    background: color-mix(in oklab, #F4EDE1 10%, transparent);
+  }
+  .pf-social svg { width: 18px; height: 18px; }
+  .pf-site-foot__copy {
+    font-size: var(--sc-t-xs); letter-spacing: var(--sc-track-normal);
+    color: color-mix(in oklab, #F4EDE1 55%, transparent);
+  }
+
+</style>
+</head>
+<body>
+
+<span data-sc-progress></span>
+<!-- No .sc-grain overlay: its noise sat over the room video and dulled it.
+     Packages 1-3 have no data-sc-drift: the drift rewrote --sc-canvas on the
+     root every frame, restyling and repainting the whole page (and the
+     frosted glow) during the room animation, for a colour change hidden
+     under the full-screen room anyway. -->
+
+<header class="site-bar">
+  <a class="site-bar__mark" href="#top">BLK<span>·</span>REMODELLING</a>
+
+  <!-- Persistent package rail: the through-line across all four acts. Real
+       in-page navigation (each dot jumps to that package), not a decorative
+       01/06 counter. It lives inside the fixed header so it can never
+       collide with page content below. -->
+  <nav class="pf-rail" aria-label="Packages">
+    <a class="pf-rail__item is-active" href="#pkg-1" data-target="pkg-1"><span class="pf-rail__label">Furnishing</span></a>
+    <a class="pf-rail__item" href="#pkg-2" data-target="pkg-2"><span class="pf-rail__label">Basic Airbnb</span></a>
+    <a class="pf-rail__item" href="#pkg-3" data-target="pkg-3"><span class="pf-rail__label">Complete Airbnb</span></a>
+    <a class="pf-rail__item" href="#pkg-4" data-target="pkg-4"><span class="pf-rail__label">Renovation</span></a>
+  </nav>
+
+  <a class="pf-cta pf-cta--ghost" href="https://wa.me/971500000000?text=Hi%20BLK%20Remodelling%2C%20I%27d%20like%20to%20book%20a%20visit.">Book a Visit</a>
+</header>
+
+<main id="top">
+
+  <!-- ROOM TRACK · one room behind packages 01-03 (scroll-sequence.js,
+       SequenceChain). The layer is sticky across the whole track, and the
+       package stages above it are transparent, so the text scrolls over a
+       single continuous room:
+         clip 1 plays on page load   (empty -> furnished, package 01)
+         clip 2 scrubs with scroll   (furnished -> styled, package 01 -> 02)
+         clip 3 scrubs with scroll   (styled -> complete Airbnb, 02 -> 03)
+       To extend the story, move the next package inside the track and add
+       its clip to the chain. -->
+  <div class="pf-room-track">
+    <div class="pf-room-layer" aria-hidden="true"
+         data-seq-chain='[
+           {"path":"../assets/frames/room/",  "count":122, "video":true, "play":"load", "fps":24, "delay":150, "buffer":40},
+           {"path":"../assets/frames/room2/", "count":121, "video":true, "play":"scroll", "from":"#pkg-1", "to":"#pkg-2", "blend":8},
+           {"path":"../assets/frames/room3/", "count":121, "video":true, "play":"scroll", "from":"#pkg-2", "to":"#pkg-3", "blend":8}
+         ]'>
+      <img class="pf-room-layer__poster" src="../assets/frames/room/0001.webp" width="1904" height="1088" alt="">
+      <canvas class="seq__canvas"></canvas>
+    </div>
+
+  <!-- ACT 1 · Recognition · Package 01, Pure Furnishing · device: kinetic (greet) -->
+  <section id="pkg-1" data-sc-act="pin" data-sc-span="2"
+           aria-label="Package 01, Pure Furnishing: an empty studio in Ras Al Khaimah with sea views fills with an upholstered bed and armchair.">
+    <div data-sc-stage>
+      <!-- Room previews: each opens its full photo in a lightbox. -->
+      <ul class="pf-rooms" aria-label="More rooms">
+        <li><button type="button" class="pf-room" data-full="../assets/img/01-furnishing-dining.webp" data-caption="Dining"
+              data-alt="The dining corner of the furnished studio: a small table, two chairs and a storage unit beside the sea-view window.">
+          <img src="../assets/img/01-furnishing-dining-thumb.webp" alt=""><span>Dining</span></button></li>
+        <li><button type="button" class="pf-room" data-full="../assets/img/01-furnishing-kitchen.webp" data-caption="Kitchen"
+              data-alt="The studio kitchen: cream cabinets, a stainless sink and a freestanding electric cooker.">
+          <img src="../assets/img/01-furnishing-kitchen-thumb.webp" alt=""><span>Kitchen</span></button></li>
+        <li><button type="button" class="pf-room" data-full="../assets/img/01-furnishing-bathroom.webp" data-caption="Bathroom"
+              data-alt="The studio bathroom: wall-hung basin and toilet, with a frosted-glass shower screen.">
+          <img src="../assets/img/01-furnishing-bathroom-thumb.webp" alt=""><span>Bathroom</span></button></li>
+      </ul>
+      <div class="sc-copy sc-copy--lead pf-copy-head pf-photo-card">
+        <div data-sc-in>
+          <span class="pf-eyebrow">Package 01 &middot; Pure Furnishing</span>
+          <h1 class="sc-display sc-display--md">Every renovation starts empty.</h1>
+          <p class="sc-body">Buy the shell. We furnish it end to end, so the apartment you hand back is ready to live in from the first day.</p>
+          <p style="margin-top: var(--sc-6);">
+            <a class="pf-cta" href="https://wa.me/971500000000?text=Hi%20BLK%20Remodelling%2C%20I%27d%20like%20to%20know%20more%20about%20the%20Pure%20Furnishing%20package.">Ask about Furnishing</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACT 2 · Confidence · Package 02, Basic Airbnb · device: reveal -->
+  <!-- The room behind this act is the track layer above (clip 2's last frame). -->
+  <section id="pkg-2" data-sc-act="pin" data-sc-span="2"
+           aria-label="Package 02, Basic Airbnb: the same studio, now with bedding, curtains, lamps and wall art.">
+    <div data-sc-stage>
+      <div class="sc-copy sc-copy--trail pf-copy-head pf-photo-card">
+        <div data-sc-in>
+          <span class="pf-eyebrow">Package 02 &middot; Basic Airbnb</span>
+          <h2 class="sc-display sc-display--md">Furnished. Fitted. Functioning.</h2>
+          <p class="sc-body">Sofas, beds and wardrobes, then the appliances that make it livable from day one.</p>
+          <div class="pf-icons" data-sc-in data-sc-stagger="60" aria-hidden="true">
+            <div class="pf-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="2" width="14" height="20" rx="1.5"/><line x1="5" y1="10" x2="19" y2="10"/><line x1="8" y1="6" x2="8" y2="6.5"/><line x1="8" y1="14" x2="8" y2="14.5"/></svg><span>Fridge</span></div>
+            <div class="pf-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="12" cy="13" r="5"/><circle cx="12" cy="13" r="1.6"/><line x1="7" y1="6.5" x2="8.4" y2="6.5"/></svg><span>Washer</span></div>
+            <div class="pf-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="12" rx="1.5"/><line x1="9" y1="21" x2="15" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg><span>TV</span></div>
+            <div class="pf-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="6" width="18" height="8" rx="1.5"/><line x1="7" y1="14" x2="6" y2="18"/><line x1="17" y1="14" x2="18" y2="18"/></svg><span>AC</span></div>
+          </div>
+          <p style="margin-top: var(--sc-6);">
+            <a class="pf-cta" href="https://wa.me/971500000000?text=Hi%20BLK%20Remodelling%2C%20I%27d%20like%20to%20know%20more%20about%20the%20Basic%20Airbnb%20package.">Ask about Basic Airbnb</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACT 3 · Ease · Package 03, Complete Airbnb · device: reveal.
+       The room behind this act is the track layer (clip 3's last frame). -->
+  <section id="pkg-3" data-sc-act="pin" data-sc-span="2.6"
+           aria-label="Package 03, Complete Airbnb: the studio finished with a green feature wall, wood floor, leather armchair, throw and fresh towels.">
+    <div data-sc-stage>
+      <div class="sc-copy sc-copy--lead pf-copy-head pf-photo-card">
+      <div data-sc-in>
+        <span class="pf-eyebrow">Package 03 &middot; Complete Airbnb</span>
+        <h2 class="sc-display sc-display--md">Move-in is day one of bookings.</h2>
+        <p class="sc-body">Nothing left to buy. From bath towels to the welcome basket, the unit is ready to list the day we hand over the keys.</p>
+        <div class="pf-icons" data-sc-in data-sc-stagger="60" aria-hidden="true">
+          <div class="pf-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="6" width="16" height="13" rx="2"/><line x1="4" y1="12" x2="20" y2="12"/></svg><span>Linens</span></div>
+          <div class="pf-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><line x1="6" y1="3" x2="6" y2="11"/><line x1="9" y1="3" x2="9" y2="11"/><path d="M6 11 Q7.5 13 9 11"/><line x1="7.5" y1="13" x2="7.5" y2="21"/><ellipse cx="16.5" cy="6.5" rx="2.2" ry="3.5"/><line x1="16.5" y1="10" x2="16.5" y2="21"/></svg><span>Kitchenware</span></div>
+          <div class="pf-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="7" width="6" height="14" rx="2"/><rect x="10.5" y="3" width="3" height="4" rx="1"/></svg><span>Toiletries</span></div>
+          <div class="pf-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6" cy="12" r="4"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="17" y1="12" x2="17" y2="16"/><line x1="20" y1="12" x2="20" y2="15"/></svg><span>Turnkey</span></div>
+        </div>
+        <p style="margin-top: var(--sc-6);">
+          <a class="pf-cta" href="https://wa.me/971500000000?text=Hi%20BLK%20Remodelling%2C%20I%27d%20like%20to%20know%20more%20about%20the%20Complete%20Airbnb%20package.">Ask about Complete Airbnb</a>
+        </p>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  </div><!-- /.pf-room-track -->
+
+  <!-- ACT 4 · Ambition · PEAK · Package 04, Complete Renovation · signature move + close -->
+  <section id="pkg-4" data-sc-act="pin" data-sc-span="4" data-sc-drift="#DCD5C6">
+    <div data-sc-stage class="pf-close" data-sc-spotlight
+         style="background: radial-gradient(120% 90% at 50% 20%, var(--sc-surface) 0%, var(--sc-canvas) 62%);">
+      <div class="pf-blueprint-grid" aria-hidden="true"></div>
+      <div class="pf-copy-head" style="max-width: 40rem;" data-sc-in>
+        <span class="pf-eyebrow">Package 04 &middot; Complete Renovation</span>
+        <h2 class="sc-display sc-display--md">We don&rsquo;t decorate. We rebuild.</h2>
+        <p class="sc-body" style="margin-inline: auto;">Move a wall. Split a room. Turn one studio into a layout that actually works for how you live.</p>
+      </div>
+
+      <div class="pf-act4-row">
+        <div class="pf-plan-wrap" aria-hidden="true">
+          <svg class="pf-plan" viewBox="0 0 380 200" xmlns="http://www.w3.org/2000/svg">
+            <!-- Traced from the unit's actual floor plan: balcony, open
+                 sleep area, bath + separate shower, open kitchen run,
+                 entry. Not a generic reference — this is the real layout. -->
+            <path class="plan-shell" d="M12,12 H370 V188 H12 Z" />
+            <!-- balcony glass line: an existing sliding door, not new
+                 construction, so it stays plain ink, not accent -->
+            <g class="plan-glass">
+              <line x1="53" y1="14" x2="53" y2="186" />
+              <line x1="57" y1="14" x2="57" y2="186" />
+            </g>
+            <!-- balcony furniture: two lounge chairs facing a round table -->
+            <g class="plan-balcony">
+              <rect x="19" y="34" width="24" height="15" rx="3" transform="rotate(58 31 41.5)" class="plan-balcony__chair" />
+              <rect x="19" y="140" width="24" height="15" rx="3" transform="rotate(-58 31 147.5)" class="plan-balcony__chair" />
+              <circle cx="31" cy="94" r="12" />
+              <path d="M20,83 42,105 M42,83 20,105" />
+            </g>
+            <!-- interior partitions drawn in accent: the bath/shower block
+                 is the one enclosed construction in an otherwise open plan -->
+            <path class="plan-wall-new" d="M267,12 V96 H370 M328,12 V96" />
+            <path class="plan-door" d="M267,52 a22,22 0 0 1 22,22" stroke-dasharray="2.5 2.5" />
+            <!-- entry door, far right wall -->
+            <g class="plan-entry">
+              <path d="M370,106 a30,30 0 0 0 -30,30" stroke-dasharray="2.5 2.5" />
+              <path d="M370,106 L370,136" />
+              <path d="M362,121 l8,-4 v8 z" class="plan-entry__arrow" />
+            </g>
+            <!-- bed, against the top wall, with nightstands -->
+            <g class="plan-bed">
+              <rect x="96" y="16" width="68" height="38" rx="2" />
+              <path d="M96,29 H164" />
+              <rect x="103" y="19" width="22" height="9" rx="2.5" class="plan-bed__pillow" />
+              <rect x="135" y="19" width="22" height="9" rx="2.5" class="plan-bed__pillow" />
+              <rect x="85" y="21" width="9" height="13" rx="1.5" />
+              <rect x="166" y="21" width="9" height="13" rx="1.5" />
+            </g>
+            <!-- decorative rug, patterned, centred below the bed -->
+            <g class="plan-rug">
+              <rect x="112" y="66" width="36" height="30" />
+              <path d="M112,66 148,96 M148,66 112,96 M112,81 H148 M130,66 V96" />
+            </g>
+            <!-- hatched triangular feature against the top wall, right of
+                 the bed — traced as drawn, a built detail of this unit -->
+            <path class="plan-triangle" d="M170,16 H262 V58 Z" />
+            <!-- sofa, bottom-left of the open area -->
+            <g class="plan-sofa">
+              <rect x="24" y="148" width="88" height="32" rx="3" />
+              <path d="M48,148 V180 M72,148 V180 M96,148 V180" />
+            </g>
+            <!-- dining table with a chair at each end -->
+            <g class="plan-dining-real">
+              <rect x="142" y="154" width="48" height="20" rx="2" />
+              <rect x="124" y="157" width="14" height="14" rx="6" />
+              <rect x="194" y="157" width="14" height="14" rx="6" />
+            </g>
+            <!-- bath: vanity and toilet -->
+            <g class="plan-fixtures">
+              <rect x="277" y="19" width="20" height="11" rx="2" />
+              <circle cx="287" cy="24.5" r="3.4" />
+              <ellipse cx="312" cy="78" rx="7" ry="6" />
+              <rect x="306" y="84" width="12" height="8" rx="1.5" />
+            </g>
+            <!-- shower: hatched wet-room floor, drain mark -->
+            <g class="plan-shower">
+              <rect x="330" y="14" width="38" height="80" class="plan-shower__box" />
+              <path class="plan-shower__hatch" d="M330,24 350,14 M330,34 368,14.5 M330,44 368,24 M330,54 368,34 M330,64 368,44 M330,74 368,54 M330,84 368,64 M330,94 368,74 M338,94 368,84 M358,94 368,94" />
+              <circle cx="349" cy="22" r="2.6" />
+            </g>
+            <!-- kitchen run: fridge, sink, hob, cabinet, along the bottom
+                 wall — open to the room, no partition, as drawn -->
+            <g class="plan-kitchen">
+              <rect x="258" y="152" width="26" height="34" />
+              <rect x="288" y="152" width="30" height="34" />
+              <path d="M293,158 H313 M296,164 H310 M293,152 V186" class="plan-kitchen__detail" />
+              <rect x="322" y="152" width="26" height="34" />
+              <circle cx="330" cy="160" r="2.6" /><circle cx="341" cy="160" r="2.6" />
+              <circle cx="330" cy="171" r="2.6" /><circle cx="341" cy="171" r="2.6" />
+              <rect x="352" y="152" width="18" height="34" />
+              <path d="M352,152 370,186 M370,152 352,186" class="plan-kitchen__detail" />
+            </g>
+            <!-- room labels, set in the same coordinate space as the walls -->
+            <g class="plan-room-labels">
+              <text x="33" y="102" class="plan-room-label" transform="rotate(-90 33 102)">Balcony</text>
+              <text x="130" y="135" class="plan-room-label">Sleep area</text>
+              <text x="287" y="45" class="plan-room-label plan-room-label--accent">Bath</text>
+              <text x="349" y="45" class="plan-room-label plan-room-label--accent">Sh.</text>
+              <text x="313" y="145" class="plan-room-label">Kitchen</text>
+              <text x="352" y="112" class="plan-room-label" text-anchor="middle">Ent.</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="pf-progress-wrap" data-sc-in>
+          <div class="pf-progress-badge" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="14" height="6" rx="2"/>
+              <line x1="10" y1="9" x2="10" y2="14"/>
+              <path d="M10 14 h7 v7"/>
+            </svg>
+          </div>
+          <span class="pf-progress-caption">A studio, mid-renovation</span>
+          <span class="pf-progress-tag">Site photo coming soon</span>
+        </div>
+      </div>
+
+      <a class="pf-cta pf-cta--big" href="https://wa.me/971500000000?text=Hi%20BLK%20Remodelling%2C%20I%27d%20like%20to%20book%20a%20Complete%20Renovation%20consultation."
+         data-sc-magnet="0.26">Book the Renovation Consult</a>
+
+      <footer class="pf-foot">
+        <span>BLK Remodelling &middot; Ras Al Khaimah, UAE</span>
+        <span>WhatsApp +971 50 000 0000 (placeholder)</span>
+      </footer>
+    </div>
+  </section>
+
+  <!-- ACT 5 · About Us · the whole portrait, head to floor, at its own
+       natural height. Not pinned or cropped: it fades in from the page's
+       canvas tone and fades out into the floor's own colour, which is
+       also the footer below it. -->
+  <section class="pf-about" id="about">
+    <div class="pf-about-media">
+      <div class="pf-about-frame">
+        <img class="pf-about-photo" src="../assets/img/05-about.webp" width="1800" height="2400"
+             alt="A portrait of the person behind BLK Remodelling, seated in a finished apartment.">
+        <div class="pf-about-fade-top" aria-hidden="true"></div>
+        <div class="pf-about-fade-bottom" aria-hidden="true"></div>
+        <div class="pf-about-fade-left" aria-hidden="true"></div>
+        <div class="pf-about-fade-right" aria-hidden="true"></div>
+        <div class="pf-about-copy" data-sc-in>
+          <span class="pf-about-heading">About Us</span>
+          <p class="pf-about-sub">Ras Al Khaimah&rsquo;s renovation studio: furnishing, fitting and rebuilding apartments, end to end.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pf-site-foot">
+  <div class="pf-site-foot__inner">
+    <span class="pf-site-foot__brand">BLK&middot;Remodelling</span>
+    <nav class="pf-social" aria-label="Social media">
+      <a href="#" aria-label="Instagram" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.3" cy="6.7" r="1" fill="currentColor" stroke="none"/></svg>
+      </a>
+      <a href="#" aria-label="Facebook" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.5 21v-7h2.3l.4-3h-2.7V9.2c0-.9.2-1.5 1.5-1.5h1.4V5.1C16.9 5 16 5 15 5c-2.2 0-3.5 1.3-3.5 3.9V11H9v3h2.5v7Z"/></svg>
+      </a>
+      <a href="#" aria-label="WhatsApp" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 21a9 9 0 1 0-7.8-4.5L3 21l4.7-1.2A9 9 0 0 0 12 21Z"/><path d="M8.6 9.2c0 4 3.2 7.2 7.2 7.2.5 0 1-.5.9-1.1-.1-.7-1.9-1.6-2.3-1.4-.3.1-.5.6-.9.6-.7 0-2.4-1.4-2.6-2.5-.1-.3.5-.6.7-.9.2-.3-.5-2-1.2-2.2-.6-.1-.8.3-.8.3Z" fill="currentColor" stroke="none"/></svg>
+      </a>
+    </nav>
+    <span class="pf-site-foot__copy">&copy; 2026 BLK Remodelling &middot; Ras Al Khaimah, UAE</span>
+  </div>
+</footer>
+
+<script>
+  // Signature move support: measure the two hand-drawn floorplan paths once
+  // so CSS can drive their stroke-dashoffset from the act's own --sc-p
+  // (see devices.md: "anything the kit does not cover, drive from CSS with
+  // calc() against that variable"). No per-frame JS; the engine already
+  // writes --sc-p every frame, calc() does the rest.
+  window.addEventListener('DOMContentLoaded', function () {
+    var shell = document.querySelector('.plan-shell');
+    var wall = document.querySelector('.plan-wall-new');
+    if (shell) shell.style.setProperty('--len-shell', shell.getTotalLength());
+    if (wall) wall.style.setProperty('--len-wall', wall.getTotalLength());
+  });
+</script>
+<script>
+  // Package rail: highlights whichever act is crossing the viewport centre.
+  // A -48%/-48% rootMargin collapses the observer's trigger zone to a thin
+  // band at mid-screen, so exactly one act is "active" at a time.
+  (function () {
+    var items = Array.prototype.slice.call(document.querySelectorAll('.pf-rail__item'));
+    var sections = Array.prototype.slice.call(document.querySelectorAll('main section[id]'));
+    if (!items.length || !sections.length) return;
+    var byId = {};
+    items.forEach(function (it) { byId[it.dataset.target] = it; });
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var match = byId[entry.target.id];
+        if (!match) return;
+        items.forEach(function (it) { it.classList.toggle('is-active', it === match); });
+      });
+    }, { threshold: 0, rootMargin: '-48% 0px -48% 0px' });
+    sections.forEach(function (s) { io.observe(s); });
+  })();
+
+  // Room previews: open the full photo in a native <dialog>. Click anywhere,
+  // the Close button, or Esc dismisses it.
+  (function () {
+    var btns = document.querySelectorAll('.pf-room');
+    if (!btns.length) return;
+    var box = document.createElement('dialog');
+    box.className = 'pf-lightbox';
+    box.innerHTML = '<button type="button" class="pf-lightbox__close">Close &times;</button>'
+                  + '<figure><img alt=""><figcaption></figcaption></figure>';
+    document.body.appendChild(box);
+    var img = box.querySelector('img'), cap = box.querySelector('figcaption');
+    Array.prototype.forEach.call(btns, function (btn) {
+      btn.addEventListener('click', function () {
+        img.src = btn.dataset.full;
+        img.alt = btn.dataset.alt;
+        cap.textContent = btn.dataset.caption;
+        box.showModal();
+      });
+    });
+    box.addEventListener('click', function () { box.close(); });
+  })();
+</script>
+<script src="../js/scrollcraft.js"></script>
+<script src="../js/scroll-sequence.js"></script>
+<script>ScrollCraft.mount(document.body);</script>
+<script>
+  // Test aids, off unless asked for in the address:
+  //   ?box  the room plays in a centred box a quarter of the screen (with ?fps)
+  //   ?fps  corner readout: frames per second and how frames are decoded
+  (function () {
+    var q = location.search;
+    if (!/[?&](box|fps)\b/.test(q)) return;
+    if (/[?&]box\b/.test(q)) {
+      document.documentElement.classList.add('room-box');
+      window.dispatchEvent(new Event('resize'));   // canvas re-measures itself
+    }
+    var badge = document.createElement('div');
+    badge.className = 'pf-fps';
+    document.body.appendChild(badge);
+    var frames = 0, worst = 0, last = performance.now(), prev = last;
+    (function tick(now) {
+      frames++; worst = Math.max(worst, now - prev); prev = now;
+      if (now - last >= 1000) {
+        var s = document.querySelector('[data-seq-chain]').__seq;
+        var mode = s && s.clips.every(function (c) { return c.set.useVideo; }) ? 'GPU video' : 'slike (CPU)';
+        badge.textContent = Math.round(frames * 1000 / (now - last)) + ' fps · najdaljša ' +
+          Math.round(worst) + ' ms · ' + mode + (location.protocol === 'file:' ? ' · file://' : '');
+        frames = 0; worst = 0; last = now;
+      }
+      requestAnimationFrame(tick);
+    })(last);
+  })();
+</script>
+</body>
+</html>
