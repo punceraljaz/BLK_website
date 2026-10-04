@@ -51,6 +51,10 @@
 
   var chains = [];
   function wakeAll() { for (var i = 0; i < chains.length; i++) chains[i].wake(); }
+  function relayoutAll() {
+    for (var i = 0; i < chains.length; i++) chains[i].tops = null;
+    wakeAll();
+  }
 
   /* Frames are downloaded as compressed data (all of them, ~100 KB each) but
      only a small window around the playhead is kept decoded: VideoFrames
@@ -307,13 +311,12 @@
     });
     window.addEventListener('load', relayout);
     if (window.ResizeObserver) {
-      // The page can also resize the canvas itself (e.g. a wider room for one
-      // package); keep the drawing buffer matched to its displayed size.
-      // Resized directly in the observer callback (after layout, before
-      // paint) so the redraw lands in the same frame as the new size.
+      // Keep the drawing buffer matched to the canvas's displayed size.
+      // Runs directly in the callback (after layout, before paint) so the
+      // redraw lands in the same frame as the new size.
       new ResizeObserver(function () { self.resize(); }).observe(this.canvas);
-      // The page's height changes (fonts, the gallery): positions may move.
-      new ResizeObserver(relayout).observe(document.body);
+      // Body height changes are handled by a single shared observer in init()
+      // rather than one per chain, so only one tops-invalidation fires.
     }
     if (el.getAttribute('data-seq-assist') === 'smooth') {
       this.bindSmoothWheel();
@@ -751,6 +754,7 @@
 
   SequenceChain.prototype.tick = function (now) {
     this.raf = 0;
+    if (!this.started) return;   // lazy chain: nothing to do until start() is called
     var busy = this.update(now);
     if (this.active) {
       this.prepare();
@@ -764,6 +768,12 @@
     Array.prototype.forEach.call(document.querySelectorAll('[data-seq-chain]'), function (el) {
       if (!el.__seq) el.__seq = new SequenceChain(el);
     });
+    // One shared observer for document.body instead of one per chain.
+    // The page height changes when fonts load or the gallery builds itself;
+    // invalidating tops on all chains at once avoids duplicate relayouts.
+    if (window.ResizeObserver && chains.length > 0) {
+      new ResizeObserver(relayoutAll).observe(document.body);
+    }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
