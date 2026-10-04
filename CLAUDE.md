@@ -264,7 +264,7 @@ Source videos (outside the project):
 ## 3r. Hero image band above the packages (2026-10-04)
 
 - Client (ref: a services page whose menu sits on an image band): `section.pf-hero` at the top of `<main>`, before
-  `.pf-room-track`. Picture `assets/img/hero-kitchen.webp` (Downloads\"Sunlit Minimalist Stone Kitchen Interior.png",
+  `.pf-room-track`. Picture `assets/img/hero-kitchen.webp` (since 2026-10-04 Downloads\"Sunlit Mediterranean Kitchen Sanctuary.png", 1916×666, 305 KB; first version was "...Stone Kitchen Interior.png",
   1957×804, Chrome-encoded q0.94, 249 KB; cropped from the top, `object-position: 60% 78%`). On it: logo + "Ras Al Khaimah · UAE" at the top, the four packages along
   the bottom (`.pf-hero__nav`; since 2026-10-04 three items, 3 columns also on phones: FURNISH 01 "Furnishing & styling" → #pkg-1, REMODEL 02 "Renovation & transformation" → #pkg-2, MANAGE 03 ↗ "Property management" → the property management site, **href is a placeholder `#` (data-todo="manage-url"), waiting for the address**; hairline that fills in on hover). Desktop
   height `clamp(18rem, 48svh, 36vw)` (client: shorter, twice), phone 44svh (min 21rem); small gap below it on desktop, none on phones. On phones the room layer's empty text zone then shows below the hero until package text appears (open question to the client).

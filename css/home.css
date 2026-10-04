@@ -17,10 +17,11 @@
   position: absolute; inset: 0; width: 100%; height: 100%;
   object-fit: cover; object-position: 60% 78%;   /* crop from the top, keep the counter and stools */
 }
-/* A soft shade behind the light text, top and bottom only. */
+/* A soft shade behind the light text, top and bottom only (the picture is
+   bright, so the bottom one is fairly strong and reaches up behind the items). */
 .pf-hero::after {
   content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(to bottom, rgb(36 27 22 / 0.30) 0, transparent 24%, transparent 52%, rgb(36 27 22 / 0.52) 100%);
+  background: linear-gradient(to bottom, rgb(36 27 22 / 0.46) 0, rgb(36 27 22 / 0.12) 20%, transparent 32%, transparent 38%, rgb(36 27 22 / 0.42) 70%, rgb(36 27 22 / 0.62) 100%);
 }
 .pf-hero__top, .pf-hero__nav { position: absolute; z-index: 1; left: 0; right: 0; padding-inline: var(--sc-gutter); }
 .pf-hero__top {
@@ -34,7 +35,7 @@
 .pf-hero__place { font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.8; }
 .pf-hero__nav {
   bottom: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.5rem clamp(1.5rem, 3vw, 3.5rem); padding-bottom: clamp(2rem, 7vh, 4rem);
+  gap: 1.5rem clamp(1.5rem, 3vw, 3.5rem); padding-bottom: clamp(1.75rem, 6vh, 3.5rem);
 }
 /* Each item: a hairline that fills in on hover, name and number on one
    line, a short line of text under them. */
@@ -46,11 +47,19 @@
     linear-gradient(rgb(246 243 238 / 0.4), rgb(246 243 238 / 0.4)) 0 0 / 100% 1px no-repeat;
   transition: background-size 0.7s var(--sc-ease-out);
 }
-.pf-hero__name { font-size: 0.64rem; font-weight: 400; letter-spacing: 0.3em; text-transform: uppercase; white-space: nowrap; }
-.pf-hero__n { font-size: 0.6rem; letter-spacing: 0.2em; opacity: 0.7; }
+/* Client: the three titles bigger and easier to see. */
+.pf-hero__name {
+  font-size: clamp(1rem, 0.7rem + 0.6vw, 1.3rem); font-weight: 400; letter-spacing: 0.26em;
+  text-transform: uppercase; white-space: nowrap;
+  text-shadow: 0 1px 14px rgb(36 27 22 / 0.35);
+}
+.pf-hero__n { font-size: 0.68rem; letter-spacing: 0.2em; opacity: 0.8; white-space: nowrap; }
+.pf-hero__ext { font-size: 0.7em; letter-spacing: 0; opacity: 0.85; vertical-align: 0.15em; }
+.pf-hero__mark { font-size: 0.82rem; font-weight: 500; text-shadow: 0 1px 3px rgb(36 27 22 / 0.35), 0 1px 16px rgb(36 27 22 / 0.45); }
 .pf-hero__line {
   grid-column: 1 / -1; max-width: 21em;
-  font-size: 0.76rem; font-weight: 300; line-height: 1.75; letter-spacing: 0.03em; opacity: 0.78;
+  font-size: 0.84rem; font-weight: 400; line-height: 1.7; letter-spacing: 0.04em; opacity: 0.88;
+  text-shadow: 0 1px 10px rgb(36 27 22 / 0.35);
   transition: opacity 0.5s var(--sc-ease-out);
 }
 .pf-hero__nav a:hover { background-size: 100% 1px, 100% 1px; }
@@ -60,8 +69,9 @@
   .pf-hero { height: 44svh; min-height: 21rem; margin-bottom: 0; }
   .pf-hero__place { display: none; }
   .pf-hero__nav { gap: 1.4rem 1rem; padding-bottom: 1.75rem; }
-  .pf-hero__line { font-size: 0.68rem; line-height: 1.6; }
-  .pf-hero__name { font-size: 0.58rem; letter-spacing: 0.24em; }
+  .pf-hero__line { font-size: 0.7rem; line-height: 1.55; }
+  .pf-hero__name { font-size: 0.78rem; letter-spacing: 0.2em; }
+  .pf-hero__n { display: none; }                  /* no room for the numbers */
 }
 /* The fixed header waits until the hero has scrolled away. */
 .site-bar { transition: opacity 0.6s ease, transform 0.7s var(--sc-ease-out); }
