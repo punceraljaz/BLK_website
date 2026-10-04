@@ -62,9 +62,9 @@
   white-space: nowrap;                         /* the package name on one line */
   color: var(--sc-ink);
 }
-.pf-page__sub { margin: clamp(1.25rem, 3vh, 2rem) 0 0; color: var(--sc-ink); text-wrap: balance; }
+.pf-page__sub { margin: clamp(1.6rem, 4vh, 2.6rem) 0 0; color: var(--sc-ink); text-wrap: balance; }
 .pf-page__text {
-  margin: clamp(1.75rem, 4vh, 2.5rem) 0 0; max-width: 16rem;
+  margin: clamp(2rem, 4.5vh, 2.9rem) 0 0; max-width: 18rem;
   font-size: 0.95rem; line-height: 1.65; color: var(--sc-ink-soft);
 }
 /* Small caps links, muted; a 1px line draws in under them on hover
@@ -354,6 +354,13 @@ html.view-tv .pf-tv-view { opacity: 1; }
    room layer and package 04's fixed text, so they slide over both like a
    curtain. */
 .pf-flow, .pf-story, .pf-about, .pf-work { position: relative; z-index: calc(var(--sc-z-copy) + 1); }
+/* They are far below the first screen: the browser skips their layout and
+   painting until they come near (the first layout of the whole page was the
+   heaviest work during the intro on phones). "auto" in the size remembers
+   each section's real height once it has been shown. */
+.pf-flow, .pf-story, .pf-about, .pf-work, .pf-site-foot {
+  content-visibility: auto; contain-intrinsic-size: auto 100vw auto 900px;
+}
 .pf-story {
   background: var(--sc-canvas);
   padding: clamp(5rem, 14vh, 9rem) var(--sc-gutter);

@@ -261,6 +261,22 @@ Source videos (outside the project):
   quote) were removed. No prices on the site now. `.pf-tier*` / `.pf-example*` CSS is unused. Renovation package
   page no longer links to "price ranges". Test scripts updated (no 'pricing' id).
 
+## 3q. Montserrat everywhere + lighter phone intro (2026-10-04)
+
+- **Type** (client: "big headlines like LA CASA BRANKA in the intro, everything smaller like WE SEE WHAT IS
+  POSSIBLE, more space, minimal clean modern"): one family, **Montserrat** 200–500 (Google Fonts link in
+  index.html and tools/build-packages.mjs; `--pf-display` = `--pf-text` in site.css). css/type.css: headlines
+  300 caps, letter-spacing 0.16em, line-height 1.5, smaller sizes than the serif; labels/links 400 caps
+  0.6rem, letter-spacing 0.3em; body 300, 0.86rem, line-height 1.95, muted; figures 200. No italics: `em` is a
+  lighter colour (ink-soft; package pages `--pf-accent-soft`). Bodoni Moda + Cormorant are no longer loaded
+  (the §3j type below is replaced; its palette still applies).
+- **Phone intro stutter** (client): measured on a simulated phone (390×844 @3x, CPU 4× slower, no WebCodecs
+  like a phone on the LAN IP): the hold had 8–9 frames in 1.2 s. Fixes, all in place: (1) js/intro.js starts
+  the intro only after DOMContentLoaded + the room player's init + one layout (`built`); (2) the room clip
+  starts at 70% of the dissolve (`RELEASE_AT`), not at its start; (3) `content-visibility: auto` on the
+  sections after the room and the footer (css/home.css), so their layout is skipped until they come near.
+  Result: hold 60–70 frames, zoom 64–69 frames with 3–7 small hiccups (was 18–38 with 10–16).
+
 ## 3j. Serif type + cool palette (2026-10-03, replaces 3h Inter Tight)
 
 - Client refs "Content by Kenna", "Rowen" (type) and "Smoke #D1D1CC / Mahogany #351D14", grey-tile bathroom (colour).

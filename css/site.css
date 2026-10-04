@@ -27,12 +27,11 @@
   /* The dark bands (gallery, footer): mahogany. */
   --pf-floor:       #351D14;
 
-  /* Type (2026-10-03, client references "Content by Kenna", "Rowen"): a
-     classic high-contrast serif, small, lots of air. Bodoni Moda for the
-     headlines in wide capitals; Cormorant Garamond for everything else,
-     with its italic for accent words. css/type.css sets the hierarchy. */
-  --pf-display:      "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
-  --pf-text:         "Cormorant Garamond", "Cormorant", Garamond, Georgia, serif;
+  /* Type (2026-10-04, client: "like the lettering in the intro"): one light,
+     wide geometric sans, Montserrat, for everything. css/type.css sets the
+     hierarchy. */
+  --pf-display:      "Montserrat", "Helvetica Neue", Arial, sans-serif;
+  --pf-text:         "Montserrat", "Helvetica Neue", Arial, sans-serif;
   --pf-sans:         var(--pf-text);
   --sc-font-display: var(--pf-display);
   --sc-font-text:    var(--pf-text);

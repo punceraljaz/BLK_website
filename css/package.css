@@ -8,7 +8,7 @@ body { background: var(--sc-canvas); color: var(--sc-ink); }
   padding-top: 4.75rem;                         /* under the fixed header */
   font-variant-numeric: lining-nums;
 }
-.pk em { font-style: italic; color: var(--sc-accent); }
+.pk em { font-style: normal; color: var(--pf-accent-soft); }
 
 .pk-label {
   display: flex; align-items: center; gap: 1.1rem; margin: 0;
