@@ -88,6 +88,7 @@
   html.room-wide { --spread-img-w: 62vw; }
   html.room-wide .pf-page { padding-inline: clamp(2rem, 3.5vw, 4rem); }
   .pf-room-frame { transition: clip-path 0.9s cubic-bezier(0.65, 0, 0.35, 1); }
+  .pf-room-frame::after { transition: width 0.9s cubic-bezier(0.65, 0, 0.35, 1); }
   .pf-room-frame > .pf-room-layer__poster,
   .pf-room-frame .seq__canvas { transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1); }
   .pf-page { transition: left 0.9s cubic-bezier(0.65, 0, 0.35, 1), padding 0.9s cubic-bezier(0.65, 0, 0.35, 1); }
@@ -134,6 +135,23 @@
   position: absolute; left: var(--view-left); top: var(--view-top);
   width: var(--view-max-w); height: var(--view-h);
   clip-path: inset(0 calc(var(--view-max-w) - var(--view-w)) 0 0);
+  /* --feather: how far in the soft edge reaches (see ::after below). */
+  --feather: clamp(2.5rem, 8vw, 8rem);
+  --feather-y: clamp(2rem, 9vh, 6rem);
+}
+/* No hard edge (client 2026-10-04): the picture fades into the page on all
+   four sides. Done with a still gradient in the page colour laid over the
+   edges, not a CSS mask: masking the moving video cost ~7 fps (58-60 ->
+   51-53, tools/measure.mjs). will-change keeps the gradient on its own layer,
+   painted once; without it it was repainted with the video (-3 to -5 fps).
+   Two layers (across and down), so the corners fade softest. As wide as the
+   visible picture, so it follows the wider room on package 04. */
+.pf-room-frame::after {
+  content: ""; position: absolute; z-index: 2; top: 0; bottom: 0; left: 0;
+  width: calc(var(--view-w) + 2px); pointer-events: none; will-change: transform;   /* +2px: no hairline at the clip edge */
+  background:
+    linear-gradient(to right, var(--sc-canvas), transparent var(--feather), transparent calc(100% - var(--feather)), var(--sc-canvas)),
+    linear-gradient(to bottom, var(--sc-canvas), transparent var(--feather-y), transparent calc(100% - var(--feather-y)), var(--sc-canvas));
 }
 .pf-room-frame > .pf-room-layer__poster,
 .pf-room-frame .seq__canvas {
@@ -217,6 +235,7 @@ html.view-tv .pf-tv-view { opacity: 1; }
     --view-max-w: var(--view-w);
     --view-h: calc(var(--m-img-h) - var(--room-inset));
   }
+  .pf-room-frame { --feather: 3.5rem; --feather-y: 3rem; }
   .pf-page {
     left: 0; top: 4.75rem; bottom: var(--m-img-h);
     padding: clamp(1.5rem, 5svh, 3rem) var(--sc-gutter) var(--sc-4);

@@ -191,6 +191,11 @@ Source videos (outside the project):
   chain. All rows mark the current view. New player API in scroll-sequence.js: `start()`, `setActive()`,
   `playClip()`, `"play":"manual"`. Thumbs: `0N-bedroom-thumb.webp`, `01-dining-end-thumb.webp`,
   `0N-tv-end-thumb.webp`. Also on phones (since 2026-09-30): the thumbnail row sits under the link (3.4rem thumbs); over a LAN IP the TV chain uses the WebP frames (no WebCodecs on plain http), tested.
+- **Soft edges (2026-10-04, client: "no exact edges, everything blended into the page"):** `.pf-room-frame::after`
+  in css/home.css lays a still page-colour gradient over all four edges (`--feather` / `--feather-y` on
+  `.pf-room-frame`; phone 3.5rem / 3rem). NOT a CSS mask (masking the moving video cost ~7 fps), and it needs
+  `will-change: transform` (without it the gradient was repainted with the video: -3 to -5 fps). With both:
+  57.7-58.3 fps vs 57-59.5 without any fade (tools/measure.mjs, interleaved runs).
 - **Margin around the picture** (client: not to the left/bottom edge): `--room-inset` (desktop
   `clamp(1rem, 2.2vw, 2.25rem)` on left, top and bottom; phone = `--sc-gutter` on left, right and bottom).
   The picture's own sizes are `--view-left/-top/-w/-max-w/-h` (derived from `--spread-img-w`, `--room-max-w`,
