@@ -6,11 +6,17 @@ what is open. Last updated: 2026-10-04.
 
 ## 1. The business and the goal
 
-- BLK Remodelling, Ras Al Khaimah (RAK), UAE. Sells 4 packages:
-  1. **Pure Furnishing**: furnish an empty apartment.
-  2. **Basic Airbnb**: furniture + appliances.
-  3. **Complete Airbnb**: everything down to linens, towels, toiletries; rentable day one.
-  4. **Complete Renovation**: walls moved, rooms reconfigured. **Flagship, most profitable; the site should funnel people here.**
+- BLK Remodelling, Ras Al Khaimah (RAK), UAE. Sells 4 packages (**renamed 2026-10-04 by the client**; the
+  old names Pure Furnishing / Complete Airbnb / Complete Renovation appear in the dated notes below):
+  1. **Furnishing** (`packages/furnishing.html`): furnish an empty apartment. Clip 1.
+  2. **Basic Airbnb** (`basic-airbnb.html`): furniture + appliances. Clip 2.
+  3. **Upscale Airbnb** (`upscale-airbnb.html`): everything down to linens, towels, toiletries, plus finer
+     pieces ("The finer things, already in place."). Clip 3.
+  4. **Donna Branka** (`donna-branka.html`): the signature package, the most beautiful and most detailed,
+     finish-ready; **best seller**, marked with a "Signature · Best seller" badge (`.pf-badge`, site.css).
+     **The site should funnel people here.** Clip 4. There is no renovation package any more; the
+     package-04 floorplan (draws itself and moves a wall) is still shown under its text: ask the client.
+  Copy for 3 and 4 (home + package pages) is Claude's draft from the client's one-line descriptions.
 - Every package should push to booking an appointment (CTAs are WhatsApp links; the number `971500000000` is a **placeholder**).
 - Client's vision (from the very first prompt): an editorial, premium, **fullscreen** hero where
   **one studio room transforms stage by stage as you scroll**, with text beside it per package and a button

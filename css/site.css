@@ -192,3 +192,15 @@ footer.pf-site-foot { padding-bottom: calc(var(--sc-8) + 4.5rem); }
   font-size: var(--sc-t-xs); letter-spacing: var(--sc-track-normal);
   color: color-mix(in oklab, var(--sc-surface) 55%, transparent);
 }
+
+/* ------------------------------------------------------- package badge -- */
+/* "Signature · Best seller" on Donna Branka (home page title, package page):
+   tiny spaced capitals in the accent, in a hairline frame. */
+.pf-badge {
+  display: inline-block; margin: 0 0 0 0.9em; padding: 0.45em 0.8em 0.4em;
+  border: 1px solid color-mix(in oklab, var(--sc-accent) 45%, transparent);
+  color: var(--sc-accent);
+  font-size: 0.62rem; font-weight: 500; line-height: 1; letter-spacing: 0.2em;
+  text-transform: uppercase; white-space: nowrap; vertical-align: 0.15em;
+}
+p.pf-badge { margin: 1.25rem 0 0; }

@@ -120,7 +120,7 @@ for (const [dev, opts] of Object.entries(DEVICES)) {
   // package pages
   R.pages = {};
   const pctx = await browser.newContext(opts);
-  for (const slug of ['pure-furnishing', 'basic-airbnb', 'complete-airbnb', 'complete-renovation']) {
+  for (const slug of ['furnishing', 'basic-airbnb', 'upscale-airbnb', 'donna-branka']) {
     const pp = await pctx.newPage();
     const pw = watch(pp);
     await pp.goto(url + `packages/${slug}.html`, { waitUntil: 'load' });
