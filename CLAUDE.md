@@ -210,7 +210,7 @@ Source videos (outside the project):
   `.pk-extra img[src*="/img/"]`). View thumbs regenerated from the new end frames. Seams SSIM 0.94–0.99.
 - Screenshots for the client are in `primeri/` (`corador-*`, `katalog-*`, `clean-*` = current).
 - `zazeni-streznik.cmd` (double-click): starts the server if needed and prints the phone URL
-  (http://<LAN IP>:4500; the IP changes per network, was 192.168.178.29 on 2026-09-30). Over plain http
+  (http://<LAN IP>:4500; the IP changes per network, was 192.168.178.29 on 2026-09-30, 192.168.20.155 on 2026-10-04). Over plain http
   on a LAN IP WebCodecs is unavailable (secure context only), so phones there use the WebP frames.
 - Performance note: on battery the laptop/Chrome caps at exactly 30 fps (worst frame 34 ms) for every
   layout; measure on mains power. Likely why the client saw ~20 fps.

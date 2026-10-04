@@ -49,12 +49,11 @@
 }
 /* Client: the three titles bigger and easier to see. */
 .pf-hero__name {
-  font-size: clamp(1rem, 0.7rem + 0.6vw, 1.3rem); font-weight: 400; letter-spacing: 0.26em;
+  font-size: clamp(1rem, 0.7rem + 0.6vw, 1.3rem); font-weight: 400; letter-spacing: 0.42em;
   text-transform: uppercase; white-space: nowrap;
   text-shadow: 0 1px 14px rgb(36 27 22 / 0.35);
 }
 .pf-hero__n { font-size: 0.68rem; letter-spacing: 0.2em; opacity: 0.8; white-space: nowrap; }
-.pf-hero__ext { font-size: 0.7em; letter-spacing: 0; opacity: 0.85; vertical-align: 0.15em; }
 .pf-hero__mark { font-size: 0.82rem; font-weight: 500; text-shadow: 0 1px 3px rgb(36 27 22 / 0.35), 0 1px 16px rgb(36 27 22 / 0.45); }
 .pf-hero__line {
   grid-column: 1 / -1; max-width: 21em;
@@ -70,7 +69,7 @@
   .pf-hero__place { display: none; }
   .pf-hero__nav { gap: 1.4rem 1rem; padding-bottom: 1.75rem; }
   .pf-hero__line { font-size: 0.7rem; line-height: 1.55; }
-  .pf-hero__name { font-size: 0.78rem; letter-spacing: 0.2em; }
+  .pf-hero__name { font-size: min(0.78rem, 3.1vw); letter-spacing: 0.42em; }  /* same spacing as desktop; shrinks a little on narrow phones so MANAGE fits */
   .pf-hero__n { display: none; }                  /* no room for the numbers */
 }
 /* The fixed header waits until the hero has scrolled away. */
@@ -193,6 +192,20 @@ html.hero-on .site-bar { opacity: 0; transform: translateY(-100%); pointer-event
   --view-top: calc(100svh - var(--room-edge) - var(--view-h));
 }
 .pf-room-track { position: relative; }
+/* Lead line between the hero and the room (client 2026-10-04): fills the
+   band above the picture (the track's first --view-top), left on the
+   gutter like the hero items. Hidden once a package's text is current, so
+   the two never overlap on phones. */
+.pf-lede {
+  position: absolute; z-index: 1; top: 0; left: 0; right: 0;
+  height: var(--view-top);
+  display: flex; flex-direction: column; justify-content: center;
+  padding-inline: var(--sc-gutter); padding-bottom: var(--room-inset);
+  transition: opacity 0.6s var(--sc-ease-out);
+}
+.pf-lede__title { margin: 0; max-width: 34em; color: var(--sc-ink); text-wrap: balance; }
+.pf-lede__text { margin: 0.6rem 0 0; max-width: 40em; text-wrap: balance; }
+html:has(.pf-pkg.is-current) .pf-lede { opacity: 0; pointer-events: none; }
 .pf-room-layer {
   position: sticky; top: 0; z-index: 0;
   height: 100vh; height: 100svh;
