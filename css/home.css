@@ -9,13 +9,13 @@
 .pf-hero {
   z-index: calc(var(--sc-z-copy) + 1);        /* over package 01's fixed text: it is uncovered as the hero leaves */
   position: relative; overflow: hidden;
-  height: clamp(26rem, 86svh, 64vw);
-  margin-bottom: clamp(3rem, 12vh, 8rem);
+  height: clamp(22rem, 64svh, 46vw);          /* client: shorter, the top cut away */
+  margin-bottom: clamp(1.5rem, 5vh, 3.5rem);
   color: #F6F3EE;
 }
 .pf-hero__img {
   position: absolute; inset: 0; width: 100%; height: 100%;
-  object-fit: cover; object-position: 60% 50%;
+  object-fit: cover; object-position: 60% 78%;   /* crop from the top, keep the counter and stools */
 }
 /* A soft shade behind the light text, top and bottom only. */
 .pf-hero::after {
@@ -57,7 +57,7 @@
 .pf-hero__nav a:hover .pf-hero__line { opacity: 1; }
 .pf-hero a:focus-visible { outline: 1px solid #F6F3EE; outline-offset: 6px; }
 @media (max-width: 900px) {
-  .pf-hero { height: 70svh; margin-bottom: clamp(2rem, 7vh, 4rem); }
+  .pf-hero { height: 56svh; margin-bottom: 0; }
   .pf-hero__place { display: none; }
   .pf-hero__nav { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.4rem 1.25rem; padding-bottom: 1.75rem; }
   .pf-hero__line { font-size: 0.68rem; line-height: 1.6; }

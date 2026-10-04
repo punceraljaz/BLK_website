@@ -75,7 +75,7 @@
       if (d < bestD) { bestD = d; best = el; }
     });
     if (after && after.getBoundingClientRect().top < innerHeight * 0.5) best = null;
-    if (els[0].getBoundingClientRect().top > innerHeight * 0.3) best = null;   // the hero is still in the way
+    if (els[0].getBoundingClientRect().top > innerHeight * 0.18) best = null;   // the hero is still in the way
     if (best === current) return;
     if (current) {
       var old = current;
