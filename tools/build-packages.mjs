@@ -27,16 +27,13 @@ const QUOTES = [
 const PACKAGES = [
   {
     slug: 'furnishing', n: '01', name: 'Furnishing', titleHtml: '<em>Furnishing</em>',
-    lead: 'Every home starts empty. We furnish it, from bare floor to finished room.',
-    points: ['Furniture for every room', 'Curtains, lights, art and plants', 'Delivery and assembly', 'Styled, ready to move in'],
-    moreQ: 'Want the appliances too?',
+    lead: 'Every home starts empty. We deliver and assemble the essential furniture, so it is liveable from day one.',
+    points: ['The essential furniture', 'Bed, wardrobe and a bedside chair', 'Delivery and assembly', 'Liveable from day one'],
+    moreQ: 'Want decoration, appliances and linens too?',
     heroAlt: 'The studio furnished: an upholstered bed and an armchair by the sea-view window.',
     included: [
-      ['Layout and style', 'A plan for every room and one calm look throughout.'],
-      ['Furniture for every room', 'Bed, wardrobe, sofa, dining table and chairs.'],
-      ['Decoration', 'Curtains, lights, art, shelves and plants.'],
+      ['Essential furniture', 'Bed, wardrobe and a bedside chair: the basics for every room.'],
       ['Delivery and assembly', 'We receive, carry in and build everything.'],
-      ['Placement and styling', 'Every piece set where it works best.'],
       ['One contact', 'From the first visit to the handover.'],
     ],
     before: F + 'room/0001.webp', after: F + 'room/0122.webp',
@@ -49,17 +46,20 @@ const PACKAGES = [
   },
   {
     slug: 'basic-airbnb', n: '02', name: 'Basic Airbnb', titleHtml: 'Basic <em>Airbnb</em>',
-    lead: 'Furnished. Fitted. Functioning. Ready for a guest or tenant to move in.',
-    points: ['Everything in Furnishing', 'Kitchen appliances and washing machine', 'TV and air conditioning', 'Installed and tested'],
-    moreQ: 'Linens, towels and kitchenware too?',
+    lead: 'Furnished. Fitted. Ready to host. A guest can arrive and feel at home from day one.',
+    points: ['Everything in Furnishing', 'Appliances, TV and air conditioning', 'Linens, towels and kitchenware', 'Toiletries and first-stay essentials'],
+    moreQ: 'Finer pieces and listing photos too?',
     heroAlt: 'The studio with bedding, curtains, bedside lamps and wall art.',
     included: [
-      ['Everything in Furnishing', 'Layout, furniture, decoration, delivery and assembly.'],
+      ['Essential furniture', 'Bed, wardrobe and bedside chair, delivered and assembled.'],
+      ['Decoration', 'Curtains, lights, art and plants.'],
       ['Kitchen appliances', 'Fridge, oven, hob and dishwasher.'],
       ['Washing machine', 'Installed and tested.'],
       ['TV', 'Mounted or placed, connected and working.'],
       ['Air conditioning', 'Checked and serviced, with the drainage.'],
-      ['Installation and testing', 'Every appliance running before we hand over.'],
+      ['Bed linen and towels', 'Everything a guest needs from the first night.'],
+      ['Kitchenware', 'Plates, glasses, cutlery, pots and pans.'],
+      ['Toiletries and first-stay essentials', 'The basics guests expect to find.'],
     ],
     before: F + 'room2/0001.webp', after: F + 'room2/0121.webp',
     extra: [[F + 'tv2/0121.webp', 'TV corner']],
@@ -69,15 +69,15 @@ const PACKAGES = [
   {
     slug: 'upscale-airbnb', n: '03', name: 'Upscale Airbnb', titleHtml: 'Upscale <em>Airbnb</em>',
     lead: 'The finer things, already in place. Ready to photograph, list and book.',
-    points: ['Everything in Basic Airbnb', 'Finer furniture and lighting', 'Linens, towels, kitchenware, toiletries', 'A photo shoot for the listing'],
+    points: ['Everything in Basic Airbnb', 'Finer furniture and decoration', 'Premium linens, towels and toiletries', 'A photo shoot for the listing'],
     moreQ: 'The signature finish, chosen by Branka?',
     heroAlt: 'The studio finished with a green feature wall, wood floor, leather armchair, throw and fresh towels.',
     included: [
-      ['Everything in Basic Airbnb', 'Furniture, decoration, appliances, delivery and installation.'],
-      ['Finer pieces', 'Upgraded furniture, lighting and decoration throughout.'],
-      ['Bed linen and towels', 'With throws and cushions, ready for the first guest.'],
-      ['Kitchenware', 'Plates, glasses, cutlery, pots and pans.'],
-      ['Toiletries and first-stay essentials', 'The small things guests notice when they are missing.'],
+      ['Everything in Basic Airbnb', 'Furniture, decoration, appliances, linens, kitchenware and toiletries.'],
+      ['Finer furniture and decoration', 'Every piece upgraded: better materials, more considered styling.'],
+      ['Premium bed linen and towels', 'Higher-quality fabrics and more layers: the difference guests feel.'],
+      ['Premium kitchenware', 'Better plates, glasses and utensils that match the feel of the apartment.'],
+      ['Premium toiletries', 'The kind guests photograph and mention in reviews.'],
       ['Styling for the listing', 'Every room set up to look its best in photos.'],
       ['Professional photo shoot', 'Pictures that make guests stop swiping.'],
       ['A reliable host, if you need one', 'We help you find a property manager to run it.'],
@@ -246,6 +246,7 @@ ${footer()}
 
 <script src="../js/site.js"></script>
 <script src="../js/consent.js"></script>
+<script src="../js/meta-pixel.js"></script>
 <script src="../js/package.js"></script>
 </body>
 </html>
