@@ -58,3 +58,46 @@
   addEventListener('scroll', close, { passive: true });
   addEventListener('resize', close);
 })();
+
+// Before/after compare sliders
+document.querySelectorAll('.pk-compare').forEach(function (el) {
+  function set(clientX) {
+    var r = el.getBoundingClientRect();
+    var p = Math.max(0.04, Math.min(0.96, (clientX - r.left) / r.width));
+    el.style.setProperty('--p', (p * 100).toFixed(1) + '%');
+  }
+  var active = false;
+
+  // Hint: pure JS animation so it never conflicts with the drag inline style
+  var hintRaf = null;
+  var hintTimer = setTimeout(function () {
+    var start = null, dur = 2000;
+    function ease(t) { return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t; }
+    function frame(ts) {
+      if (active) return;
+      if (!start) start = ts;
+      var t = Math.min(1, (ts - start) / dur);
+      // 0→40%: slide to 18%, 40→60%: hold, 60→100%: slide back to 50%
+      var p = t < 0.4 ? 50 - 32 * ease(t / 0.4)
+            : t < 0.6 ? 18
+            : 18 + 32 * ease((t - 0.6) / 0.4);
+      el.style.setProperty('--p', p.toFixed(1) + '%');
+      if (t < 1) { hintRaf = requestAnimationFrame(frame); }
+      else { el.style.removeProperty('--p'); }
+    }
+    hintRaf = requestAnimationFrame(frame);
+  }, 800);
+
+  el.addEventListener('pointerdown', function (e) {
+    e.preventDefault();
+    clearTimeout(hintTimer);
+    if (hintRaf) { cancelAnimationFrame(hintRaf); hintRaf = null; }
+    active = true;
+    el.setPointerCapture(e.pointerId);
+    set(e.clientX);
+  });
+  el.addEventListener('dragstart', function (e) { e.preventDefault(); });
+  el.addEventListener('pointermove', function (e) { if (active) set(e.clientX); });
+  el.addEventListener('pointerup', function () { active = false; });
+  el.addEventListener('pointercancel', function () { active = false; });
+});

@@ -12,19 +12,16 @@ const PACKAGES = [
   {
     slug: 'furnishing', n: '01', name: 'Furnishing', titleHtml: '<em>Furnishing</em>',
     lead: 'Every home starts empty.',
-    intro: 'You have the keys to an empty apartment. We furnish it from bare floor to finished room: we choose the pieces, deliver them, assemble them and set up every room, so you walk into a home rather than a shell.',
+    intro: 'You have the keys to an empty apartment. We deliver and assemble the essential furniture so it is liveable from day one — nothing more, nothing less.',
     hero: F + 'room/0122.webp', heroAlt: 'The studio furnished: an upholstered bed and an armchair by the sea-view window.',
     included: [
-      ['Layout and style', 'A plan for every room and one calm look throughout.'],
-      ['Furniture for every room', 'Bed, wardrobe, sofa, dining table and chairs.'],
-      ['Decoration', 'Curtains, lights, art, shelves and plants.'],
+      ['Essential furniture', 'Bed, wardrobe and a bedside chair — the basics for every room.'],
       ['Delivery and assembly', 'We receive, carry in and build everything.'],
-      ['Placement and styling', 'Every piece set where it works best.'],
       ['One contact', 'From the first visit to the handover.'],
     ],
     notIncluded: [
-      ['Appliances', 'basic-airbnb', 'Basic Airbnb'],
-      ['Linens, towels and kitchenware', 'upscale-airbnb', 'Upscale Airbnb'],
+      ['Decoration, curtains, lights, art and plants', 'basic-airbnb', 'Basic Airbnb'],
+      ['Appliances, linens, towels and kitchenware', 'basic-airbnb', 'Basic Airbnb'],
     ],
     who: [
       ['You just got the keys', 'A new, empty unit and no time to furnish it piece by piece.'],
@@ -41,24 +38,26 @@ const PACKAGES = [
   },
   {
     slug: 'basic-airbnb', n: '02', name: 'Basic Airbnb', titleHtml: 'Basic <em>Airbnb</em>',
-    lead: 'Furnished. Fitted. Functioning.',
-    intro: 'Everything in Furnishing, plus the appliances that make an apartment work: the kitchen, the laundry, the screen and the air conditioning. A guest or tenant can move in and live there; the finishing touches for short stays stay with you.',
+    lead: 'Furnished. Fitted. Ready to host.',
+    intro: 'Everything in Furnishing, plus the appliances, linens, towels, kitchenware and toiletries that make an apartment work. A guest can arrive and feel at home from day one.',
     hero: F + 'room2/0121.webp', heroAlt: 'The studio with bedding, curtains, bedside lamps and wall art.',
     included: [
-      ['Everything in Furnishing', 'Layout, furniture, decoration, delivery and assembly.'],
+      ['Essential furniture', 'Bed, wardrobe and bedside chair, delivered and assembled.'],
       ['Kitchen appliances', 'Fridge, oven, hob and dishwasher.'],
       ['Washing machine', 'Installed and tested.'],
       ['TV', 'Mounted or placed, connected and working.'],
       ['Air conditioning', 'Checked and serviced, with the drainage.'],
-      ['Installation and testing', 'Every appliance running before we hand over.'],
+      ['Bed linen and towels', 'Everything a guest needs from the first night.'],
+      ['Kitchenware', 'Plates, glasses, cutlery, pots and pans.'],
+      ['Toiletries and first-stay essentials', 'The basics guests expect to find.'],
     ],
     notIncluded: [
-      ['Linens, towels, kitchenware and toiletries', 'upscale-airbnb', 'Upscale Airbnb'],
+      ['Finer, upgraded versions of everything — premium furniture, décor and listing photos', 'upscale-airbnb', 'Upscale Airbnb'],
     ],
     who: [
-      ['You will host it yourself', 'You want a working apartment and prefer to choose the linens and kitchenware yourself.'],
-      ['You rent long-term', 'A fully equipped apartment lets faster and to better tenants.'],
-      ['You are testing the market', 'Start short-term rentals without paying for every last detail up front.'],
+      ['You want it ready to rent', 'A fully equipped apartment from furniture to towels — nothing left for you to source.'],
+      ['You rent long-term', 'A complete, comfortable apartment lets faster and to better tenants.'],
+      ['You are testing the market', 'Start short-term rentals with everything in place, without paying for premium upgrades up front.'],
     ],
     before: F + 'room2/0001.webp', after: F + 'room2/0121.webp',
     extra: [[F + 'tv2/0121.webp', 'TV corner']],
@@ -70,11 +69,11 @@ const PACKAGES = [
     intro: 'Everything a short-term rental needs, a step up. Finer furniture, lighting and decoration, plus the more than 200 details guests notice, from plates and glasses to soft towels, linens and toiletries. We hand over an apartment that is ready to photograph, list and book.',
     hero: F + 'room3/0121.webp', heroAlt: 'The studio finished with a green feature wall, wood floor, leather armchair, throw and fresh towels.',
     included: [
-      ['Everything in Basic Airbnb', 'Furniture, decoration, appliances, delivery and installation.'],
-      ['Finer pieces', 'Upgraded furniture, lighting and decoration throughout.'],
-      ['Bed linen and towels', 'With throws and cushions, ready for the first guest.'],
-      ['Kitchenware', 'Plates, glasses, cutlery, pots and pans.'],
-      ['Toiletries and first-stay essentials', 'The small things guests notice when they are missing.'],
+      ['Everything in Basic Airbnb', 'Furniture, decoration, appliances, linens, kitchenware and toiletries.'],
+      ['Finer furniture and décor', 'Every piece upgraded: better materials, more considered styling.'],
+      ['Premium bed linen and towels', 'Higher-quality fabrics, more layers — the difference guests feel.'],
+      ['Premium kitchenware', 'Better plates, glasses and utensils that match the feel of the apartment.'],
+      ['Premium toiletries', 'The kind guests photograph and mention in reviews.'],
       ['Styling for the listing', 'Every room set up to look its best in photos.'],
       ['Professional photo shoot', 'Pictures that make guests stop swiping.'],
       ['A reliable host, if you need one', 'We help you find a property manager to run it.'],
@@ -174,10 +173,19 @@ ${p.badge ? `      <p class="pf-badge">${p.badge}</p>\n` : ''}      <h1 class="p
         <a class="pk-link" href="https://wa.me/971545979814" target="_blank" rel="noopener" data-choose="wa" data-wa-text="${esc(waText)}" aria-haspopup="menu">Ask on WhatsApp <span aria-hidden="true">&rarr;</span></a>
       </div>
     </div>
-    <figure class="pk-hero__media">
-      <img src="${p.hero}" width="1904" height="1088" alt="${esc(p.heroAlt)}">
-      <figcaption>The studio after ${p.name}</figcaption>
-    </figure>
+    <div class="pk-compare pk-hero__compare">
+      <img class="pk-compare__after" src="${p.after}" width="1904" height="1088" alt="After ${esc(p.name)}." draggable="false">
+      <div class="pk-compare__before">
+        <img src="${p.before}" width="1904" height="1088" alt="Before ${esc(p.name)}." draggable="false">
+      </div>
+      <div class="pk-compare__bar" aria-hidden="true">
+        <div class="pk-compare__knob">
+          <svg viewBox="0 0 32 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="12,2 6,7 12,12"/><polyline points="20,2 26,7 20,12"/></svg>
+        </div>
+      </div>
+      <span class="pk-compare__lbl pk-compare__lbl--b">Before</span>
+      <span class="pk-compare__lbl pk-compare__lbl--a">After</span>
+    </div>
   </section>
 
   <section class="pk-sec" aria-labelledby="inc-h">
@@ -218,17 +226,12 @@ ${p.figures ? `
     <p class="pk-figs-note">Based on our experience with the apartments we have remodelled.</p>
   </section>
 ` : ''}
-  <section class="pk-sec" aria-labelledby="ba-h">
-    ${label(p.figures ? '04' : '03', 'Before &amp; after')}
-    <h2 class="pk-h2" id="ba-h" style="margin-top:clamp(2rem,6vh,3.5rem)">The same studio, <em>${p.slug === 'furnishing' ? 'filled' : p.slug === 'donna-branka' ? 'perfected' : 'finished'}</em></h2>
-    <div class="pk-ba">
-      <figure><img src="${p.before}" width="1904" height="1088" loading="lazy" alt="Before ${esc(p.name)}."><figcaption>Before</figcaption></figure>
-      <figure><img src="${p.after}" width="1904" height="1088" loading="lazy" alt="After ${esc(p.name)}."><figcaption>After</figcaption></figure>
-    </div>
-${p.extra.length ? `    <div class="pk-extra" style="--n:${Math.max(p.extra.length, 2)}">
+${p.extra.length ? `  <section class="pk-sec">
+    ${label(p.figures ? '04' : '03', 'Views')}
+    <div class="pk-extra" style="--n:${Math.max(p.extra.length, 2)}; margin-top:clamp(2.5rem,7vh,4rem)">
 ${p.extra.map(([src, cap]) => `      <figure><img src="${src}" loading="lazy" alt="${esc(cap)}."><figcaption>${cap}</figcaption></figure>`).join('\n')}
-    </div>` : ''}
-  </section>
+    </div>
+  </section>` : ''}
 
   <section class="pk-sec" aria-labelledby="how-h">
     ${label(p.figures ? '05' : '04', 'How it works')}

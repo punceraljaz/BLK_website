@@ -25,8 +25,8 @@ em { font-style: normal; color: var(--sc-ink-soft); }
 .pf-display        { font-size: clamp(1.25rem, 0.85rem + 1vw, 1.9rem); }
 .pf-h2             { font-size: clamp(1rem, 0.8rem + 0.55vw, 1.4rem); }
 .pf-work__title    { font-size: clamp(1rem, 0.8rem + 0.55vw, 1.4rem); }
-.pk-title          { font-size: clamp(1.4rem, 0.95rem + 1.2vw, 2.1rem); }
-.pk-h2             { font-size: clamp(1rem, 0.8rem + 0.55vw, 1.4rem); }
+.pk-title          { font-size: clamp(2rem, 1.3rem + 2.4vw, 3.4rem); }
+.pk-h2             { font-size: clamp(1.6rem, 1rem + 1.6vw, 2.8rem); font-weight: 400; }
 .pk-next__big strong { font-size: clamp(1.15rem, 0.85rem + 0.85vw, 1.65rem); }
 
 /* --- the logo and tiny spaced capitals (like the intro subtitle) ------------ */
