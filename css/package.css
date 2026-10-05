@@ -39,11 +39,12 @@ body { background: var(--sc-canvas); color: var(--sc-ink); }
 .pk-lead { margin: 0.9rem 0 0; max-width: 26rem; color: var(--sc-ink-soft); }
 .pk-points {
   list-style: none; margin: clamp(1.5rem, 4vh, 2.25rem) 0 clamp(1.75rem, 4.5vh, 2.5rem); padding: 0;
-  max-width: 26rem; border-top: 1px solid var(--sc-hairline);
+  max-width: 26rem;
+  display: grid; grid-template-columns: 1fr 1fr;
 }
 .pk-points li {
-  padding: 0.7rem 0; border-bottom: 1px solid var(--sc-hairline);
-  font-size: 0.9rem; line-height: 1.5; letter-spacing: 0.03em; color: var(--sc-ink);
+  padding: 0.75rem 0.5rem 0.75rem 0; border-top: 1px solid var(--sc-hairline);
+  font-size: 0.82rem; line-height: 1.6; letter-spacing: 0.04em; color: var(--sc-ink-soft);
 }
 
 /* Before / after: the after picture is clipped from the left to --pos
@@ -90,7 +91,12 @@ body { background: var(--sc-canvas); color: var(--sc-ink); }
 .pk-note { margin: 0.8rem 0 0; font-size: 0.86rem; color: var(--sc-ink-soft); }
 
 /* What's included: a list on hairlines */
-.pk-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--sc-hairline); }
+.pk-list {
+  list-style: none; margin: clamp(1.5rem, 4vh, 2.5rem) 0 0; padding: 0;
+  border-top: 1px solid var(--sc-hairline);
+  display: grid; grid-template-columns: repeat(var(--n, 1), 1fr);
+  column-gap: clamp(2rem, 5vw, 4rem);
+}
 .pk-list li {
   display: grid; grid-template-columns: 2.4rem 1fr; gap: 0.5rem;
   padding: 0.85rem 0; border-bottom: 1px solid var(--sc-hairline);
@@ -119,6 +125,37 @@ body { background: var(--sc-canvas); color: var(--sc-ink); }
 .pk-extra img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
 .pk-extra img[src*="/img/"] { filter: var(--pf-photo-filter); }   /* video frames are graded at export */
 .pk-extra figcaption { margin-top: 0.7rem; font-size: 0.6rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--sc-ink-soft); }
+
+/* Who it's for: three-column card grid. */
+.pk-cols {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1.5rem, 4vw, 4rem); margin-top: clamp(2rem, 6vh, 3.5rem);
+}
+.pk-col__n { display: block; margin-bottom: 1rem; font-size: 0.66rem; letter-spacing: 0.16em; color: var(--sc-ink-soft); }
+.pk-col h3 { margin: 0; }
+.pk-col p { margin: 0.6rem 0 0; }
+
+/* How it works: numbered steps as an ordered list. */
+.pk-steps {
+  list-style: none; margin: clamp(2rem, 5vh, 3rem) 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(1.5rem, 3vw, 3rem); border-top: 1px solid var(--sc-hairline);
+}
+.pk-steps li { padding-top: 1.25rem; }
+.pk-steps li > span { display: block; margin-bottom: 0.9rem; font-size: 0.66rem; letter-spacing: 0.16em; color: var(--sc-ink-soft); }
+.pk-steps h3 { margin: 0; }
+.pk-steps p { margin: 0.6rem 0 0; }
+
+/* Bottom CTA (Book a session + Ask on WhatsApp). */
+.pk-actions { display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; margin-top: clamp(2rem, 5vh, 3rem); }
+.pk-btn {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  padding: 0 1.6rem; height: 2.9rem; border-radius: 999px;
+  background: var(--sc-accent); color: var(--pal-cream); text-decoration: none;
+  transition: opacity var(--sc-d-fast) var(--sc-ease-out);
+}
+.pk-btn svg { width: 1rem; height: 1rem; flex-shrink: 0; }
+.pk-btn:hover { opacity: 0.85; }
 
 /* Next step: figures (Airbnb packages), three short quotes, the buttons. */
 .pk-figs { list-style: none; margin: clamp(2rem, 5vh, 3rem) 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sc-6); }
@@ -153,7 +190,7 @@ body { background: var(--sc-canvas); color: var(--sc-ink); }
   .pk-ba figcaption { padding-inline: var(--sc-gutter); }
   .pk-ba__tag { top: 0.75rem; left: var(--sc-gutter); }
   .pk-ba__tag--after { left: auto; right: var(--sc-gutter); }
-  .pk-sec__grid, .pk-figs, .pk-quotes { grid-template-columns: 1fr; }
+  .pk-list, .pk-figs, .pk-quotes, .pk-cols, .pk-steps { grid-template-columns: 1fr; }
   .pk-figs { gap: var(--sc-5); }
   .pk-more { max-width: none; }
   .pk-extra { grid-template-columns: 1fr 1fr; }
