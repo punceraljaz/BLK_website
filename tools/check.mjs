@@ -40,9 +40,14 @@ async function scrollToId(page, id, extra = 0) {
   await page.waitForTimeout(1600);
 }
 
+// The cookie banner (js/consent.js) would cover the dock and footer in a fresh
+// profile: store a choice first, as a returning visitor would have.
+const NO_BANNER = () => { try { localStorage.setItem('blk-consent', JSON.stringify({ v: 1, t: Date.now(), necessary: true, analytics: false, marketing: false })); } catch (e) {} };
+
 for (const [dev, opts] of Object.entries(DEVICES)) {
   const R = report[dev] = {};
   const ctx = await browser.newContext(opts);
+  await ctx.addInitScript(NO_BANNER);
   const page = await ctx.newPage();
   const w = watch(page);
   await page.goto(url + '#top', { waitUntil: 'load' });
@@ -98,6 +103,7 @@ for (const [dev, opts] of Object.entries(DEVICES)) {
 
   // intro: forced with ?intro, releases the room at ~3 s; a second run is skipped by a click
   const ictx = await browser.newContext(opts);
+  await ictx.addInitScript(NO_BANNER);
   const ip = await ictx.newPage();
   const iw = watch(ip);
   await ip.goto(url + '?intro', { waitUntil: 'load' });
@@ -119,6 +125,7 @@ for (const [dev, opts] of Object.entries(DEVICES)) {
   // package pages
   R.pages = {};
   const pctx = await browser.newContext(opts);
+  await pctx.addInitScript(NO_BANNER);
   for (const slug of ['furnishing', 'basic-airbnb', 'upscale-airbnb', 'donna-branka']) {
     const pp = await pctx.newPage();
     const pw = watch(pp);
