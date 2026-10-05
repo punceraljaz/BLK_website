@@ -173,10 +173,9 @@
   // Desktop\PICS, converted by tools/import-photos.mjs; 33 (same shot as 19) removed.
   // Order (client 2026-10-04): photos that look like the same apartment are
   // kept at least three apart, and no two bathrooms sit side by side.
+  // The strip loops, so the list is a circle: it starts at the work corner
+  // (client 2026-10-05: open on that view), same neighbours as before.
   var PHOTOS = [
-    ['01-living-dining', 'Living & Dining'], ['14-living-dining', 'Living & Dining'], ['22-guest-bathroom', 'Guest Bathroom'],
-    ['05-master-bedroom', 'Master Bedroom'], ['07-vanity-detail', 'Vanity Detail'], ['16-bedroom', 'Bedroom'],
-    ['32-vanity-detail', 'Vanity Detail'], ['06-bedroom', 'Bedroom'], ['08-bathroom', 'Bathroom'],
     ['17-work-corner', 'Work Corner'], ['34-guest-bathroom', 'Guest Bathroom'], ['09-living-room', 'Living Room'],
     ['25-bathroom-vanity', 'Bathroom Vanity'], ['18-open-plan-living', 'Open-Plan Living'], ['03-studio-living', 'Studio — Living'],
     ['10-living-room', 'Living Room'], ['28-bathroom', 'Bathroom'], ['24-living-dining', 'Living & Dining'],
@@ -184,7 +183,10 @@
     ['26-master-bedroom', 'Master Bedroom'], ['21-living-room', 'Living Room'], ['02-guest-bathroom', 'Guest Bathroom'],
     ['29-studio-bedroom', 'Studio — Bedroom'], ['27-living-detail', 'Living Detail'], ['31-living-room', 'Living Room'],
     ['11-bathroom', 'Bathroom'], ['13-kitchen', 'Kitchen'], ['30-hallway', 'Hallway'],
-    ['15-bathtub', 'Bathtub'], ['23-studio', 'Studio'], ['19-marble-bathroom', 'Marble Bathroom']
+    ['15-bathtub', 'Bathtub'], ['23-studio', 'Studio'], ['19-marble-bathroom', 'Marble Bathroom'],
+    ['01-living-dining', 'Living & Dining'], ['14-living-dining', 'Living & Dining'], ['22-guest-bathroom', 'Guest Bathroom'],
+    ['05-master-bedroom', 'Master Bedroom'], ['07-vanity-detail', 'Vanity Detail'], ['16-bedroom', 'Bedroom'],
+    ['32-vanity-detail', 'Vanity Detail'], ['06-bedroom', 'Bedroom'], ['08-bathroom', 'Bathroom']
   ];
   var items = PHOTOS.map(function (p) {
     var base = 'assets/gallery/' + p[0];

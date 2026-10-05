@@ -35,14 +35,13 @@
 }
 .pf-hero__place { font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.8; }
 .pf-hero__nav {
-  bottom: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));   /* the four packages + Manage */
-  gap: 1.5rem clamp(1rem, 2.2vw, 2.5rem); padding-bottom: clamp(1.75rem, 6vh, 3.5rem);
+  bottom: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem clamp(1.5rem, 3vw, 3.5rem); padding-bottom: clamp(1.75rem, 6vh, 3.5rem);
 }
-/* Each item: a hairline that fills in on hover, the number, the name, a
-   short line of text under them (number above the name: five columns leave
-   no room for it beside the name). */
+/* Each item: a hairline that fills in on hover, name and number on one
+   line, a short line of text under them. */
 .pf-hero__nav a {
-  display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; gap: 0.6rem;
+  display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 1rem 0.75rem;
   padding-top: 1.15rem; color: inherit; text-decoration: none;
   background:
     linear-gradient(#F6F3EE, #F6F3EE) 0 0 / 0 1px no-repeat,
@@ -51,14 +50,14 @@
 }
 /* Client: the three titles bigger and easier to see. */
 .pf-hero__name {
-  font-size: clamp(0.78rem, 0.5rem + 0.45vw, 1rem); font-weight: 400; letter-spacing: 0.3em;
+  font-size: clamp(0.88rem, 0.62rem + 0.5vw, 1.1rem); font-weight: 400; letter-spacing: 0.42em;
   text-transform: uppercase; white-space: nowrap;
   text-shadow: 0 1px 14px rgb(36 27 22 / 0.35);
 }
-.pf-hero__n { order: -1; font-size: 0.68rem; letter-spacing: 0.2em; opacity: 0.8; white-space: nowrap; }
+.pf-hero__n { font-size: 0.68rem; letter-spacing: 0.2em; opacity: 0.8; white-space: nowrap; }
 .pf-hero__mark { font-size: 0.82rem; font-weight: 500; text-shadow: 0 1px 3px rgb(36 27 22 / 0.35), 0 1px 16px rgb(36 27 22 / 0.45); }
 .pf-hero__line {
-  max-width: 21em;
+  grid-column: 1 / -1; max-width: 21em;
   font-size: 0.84rem; font-weight: 400; line-height: 1.7; letter-spacing: 0.04em; opacity: 0.88;
   text-shadow: 0 1px 10px rgb(36 27 22 / 0.35);
   transition: opacity 0.5s var(--sc-ease-out);
@@ -70,13 +69,9 @@
   :root { --hero-gap: 0px; }
   .pf-hero { height: 44svh; min-height: 21rem; }
   .pf-hero__place { display: none; }
-  /* Five items: a list, one per line, name left and its line right. The list
-     reaches up into the bright part of the picture: the shade starts higher. */
-  .pf-hero::after { background: linear-gradient(to bottom, rgb(36 27 22 / 0.46) 0, rgb(36 27 22 / 0.12) 16%, rgb(36 27 22 / 0.2) 28%, rgb(36 27 22 / 0.48) 50%, rgb(36 27 22 / 0.62) 100%); }
-  .pf-hero__nav { grid-template-columns: minmax(0, 1fr); gap: 0; padding-bottom: 1.25rem; }
-  .pf-hero__nav a { grid-template-columns: auto minmax(0, 1fr); align-items: baseline; gap: 1rem; padding: 0.7rem 0; }
-  .pf-hero__line { justify-self: end; text-align: right; font-size: 0.7rem; line-height: 1.4; }
-  .pf-hero__name { font-size: min(0.68rem, 2.9vw); letter-spacing: 0.3em; }
+  .pf-hero__nav { gap: 1.4rem 1rem; padding-bottom: 1.75rem; }
+  .pf-hero__line { font-size: 0.7rem; line-height: 1.55; }
+  .pf-hero__name { font-size: min(0.68rem, 2.8vw); letter-spacing: 0.42em; }  /* same spacing as desktop; shrinks a little on narrow phones so MANAGE fits */
   .pf-hero__n { display: none; }                  /* no room for the numbers */
 }
 /* The fixed header waits until the hero has scrolled away. */
@@ -193,7 +188,7 @@ html.hero-on .site-bar { opacity: 0; transform: translateY(-100%); pointer-event
   html.room-wide { --spread-img-w: 62vw; }
   html.room-wide .pf-page { padding-inline: clamp(2rem, 3.5vw, 4rem); }
   .pf-room-frame { transition: clip-path 0.9s cubic-bezier(0.65, 0, 0.35, 1); }
-  .pf-room-frame::after { transition: width 0.9s cubic-bezier(0.65, 0, 0.35, 1); }
+  .pf-room-frame::before { transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1); }
   .pf-room-frame > .pf-room-layer__poster,
   .pf-room-frame .seq__canvas { transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1); }
   .pf-page { transition: left 0.9s cubic-bezier(0.65, 0, 0.35, 1), padding 0.9s cubic-bezier(0.65, 0, 0.35, 1); }
@@ -223,8 +218,8 @@ html.hero-on .site-bar { opacity: 0; transform: translateY(-100%); pointer-event
 }
 .pf-room-track { position: relative; }
 /* Lead line between the hero and the room (client 2026-10-04): the
-   sentence on the left (the four packages moved up into the hero, client
-   2026-10-04). It fills the band from the
+   sentence on the left, the four packages as a small index on the right,
+   starting where the package text column starts. It fills the band from the
    hero's bottom edge to the picture's top (the hero gap + the track's first
    --view-top), scrolls away with the page and fades once a package's own
    text is current, so the two never overlap. Phones: stacked, see below. */
@@ -239,11 +234,31 @@ html.hero-on .site-bar { opacity: 0; transform: translateY(-100%); pointer-event
 .pf-lede__intro { padding-right: clamp(1.5rem, 4vw, 4rem); }
 .pf-lede .pf-lede__title { margin: 0; max-width: 30em; font-size: clamp(1.05rem, 0.85rem + 0.5vw, 1.4rem); color: var(--sc-ink); text-wrap: balance; }
 .pf-lede__text { margin: 0.6rem 0 0; max-width: 34em; text-wrap: balance; }
+/* The index: one row of four, each package under a hairline that darkens on hover
+   (like the hero items), number and name on one line, a few words under. */
+.pf-lede__list {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.1rem clamp(1rem, 2vw, 2rem);
+}
+.pf-lede__list a {
+  display: grid; grid-template-columns: auto; align-items: baseline;
+  padding-top: 0.8rem; color: var(--sc-ink); text-decoration: none;
+  background:
+    linear-gradient(var(--sc-ink), var(--sc-ink)) 0 0 / 0 1px no-repeat,
+    linear-gradient(var(--pf-line), var(--pf-line)) 0 0 / 100% 1px no-repeat;
+  transition: background-size 0.7s var(--sc-ease-out);
+}
+.pf-lede__list a:hover { background-size: 100% 1px, 100% 1px; }
+.pf-lede__list a:focus-visible { outline: 1px solid var(--sc-ink); outline-offset: 4px; }
+.pf-lede__n { margin-bottom: 0.55rem; font-size: 0.6rem; font-weight: 300; letter-spacing: 0.2em; color: var(--sc-ink-soft); }
+.pf-lede__name { font-size: 0.66rem; font-weight: 400; letter-spacing: 0.26em; text-transform: uppercase; white-space: nowrap; }
+.pf-lede__what { margin-top: 0.35rem; font-size: 0.74rem; line-height: 1.5; font-weight: 300; color: var(--sc-ink-soft); }
 html:has(.pf-pkg.is-current) .pf-lede { opacity: 0; pointer-events: none; }
 @media (max-width: 900px) {
   /* Client 2026-10-04: right under the hero picture, not centred in the band. */
   .pf-lede { grid-template-columns: minmax(0, 1fr); align-content: start; padding-top: 2rem; }
   .pf-lede__intro { padding-right: 0; }
+  .pf-lede__list { display: none; }   /* client 2026-10-04: no 01-04 list on phones, only the sentence */
 }
 .pf-room-layer {
   position: sticky; top: 0; z-index: 0;
@@ -272,14 +287,29 @@ html:has(.pf-pkg.is-current) .pf-lede { opacity: 0; pointer-events: none; }
    edges, not a CSS mask: masking the moving video cost ~7 fps (58-60 ->
    51-53, tools/measure.mjs). will-change keeps the gradient on its own layer,
    painted once; without it it was repainted with the video (-3 to -5 fps).
-   Two layers (across and down), so the corners fade softest. As wide as the
-   visible picture, so it follows the wider room on package 04. */
+   Two layers (across and down), so the corners fade softest.
+   ::after = left, top and bottom, over the widest picture (it never changes
+   size). ::before = the right edge, a strip that moves with the visible edge
+   by transform when the room widens on package 04. It used to be one layer
+   whose width grew, but width runs on the main thread while Chrome runs the
+   clip-path widening on the GPU: on a busy laptop the fade lagged behind
+   and the right edge showed sharp (client 2026-10-05). Transform runs on the
+   GPU too, so the two stay together. */
 .pf-room-frame::after {
-  content: ""; position: absolute; z-index: 2; top: 0; bottom: 0; left: 0;
-  width: calc(var(--view-w) + 2px); pointer-events: none; will-change: transform;   /* +2px: no hairline at the clip edge */
+  /* -2px all round: the layer overhangs the picture (the frame's clip cuts it
+     off), so no 1px seam of video shows where the two layers' edges round
+     to different pixels. */
+  content: ""; position: absolute; z-index: 2; top: -2px; bottom: -2px; left: -2px;
+  width: calc(var(--view-max-w) + 4px); pointer-events: none; will-change: transform;
   background:
-    linear-gradient(to right, var(--sc-canvas), transparent var(--feather), transparent calc(100% - var(--feather)), var(--sc-canvas)),
-    linear-gradient(to bottom, var(--sc-canvas), transparent var(--feather-y), transparent calc(100% - var(--feather-y)), var(--sc-canvas));
+    linear-gradient(to right, var(--sc-canvas) 2px, transparent var(--feather)),
+    linear-gradient(to bottom, var(--sc-canvas) 2px, transparent var(--feather-y), transparent calc(100% - var(--feather-y)), var(--sc-canvas) calc(100% - 2px));
+}
+.pf-room-frame::before {
+  content: ""; position: absolute; z-index: 2; top: -2px; bottom: -2px; right: -2px;   /* overhangs like ::after */
+  width: calc(var(--feather) + 2px); pointer-events: none; will-change: transform;
+  transform: translateX(calc(var(--view-w) - var(--view-max-w)));
+  background: linear-gradient(to right, transparent, var(--sc-canvas) calc(100% - 2px));
 }
 .pf-room-frame > .pf-room-layer__poster,
 .pf-room-frame .seq__canvas {
@@ -414,43 +444,48 @@ html.view-tv .pf-tv-view { opacity: 1; }
 .pf-textlink:focus-visible { outline: 1px solid var(--sc-ink); outline-offset: 6px; }
 
 /* ----------------------------------------------------------------- about -- */
-/* Studio sheet (client reference "Form & Sight"): a light sheet the width of
-   the screen. Top: a row of four label/value pairs (studio, local time,
-   location, contact), then air, then a second row (about · name, role ·
-   title). Under it the photo runs from the left edge to just past the middle
-   and down to the sheet's bottom; to its right the description, lower down
-   the services list, and an arrow in the corner.
-   Four columns: 21% · 33% · 21% · rest (measured on the reference). */
+/* Dark spread (client reference 2026-10-05, a catalogue page): the photo
+   fills the left half, edge to edge and the full height of the section; the
+   right half is a beige page with a small title in its top right corner and
+   the text low down: a larger lead sentence, then two columns of small text.
+   Dark text on beige; type in css/type.css. */
 .pf-about {
-  --pad: clamp(0.9rem, 1.5vw, 1.4rem);
-  background: var(--sc-surface); color: var(--sc-ink);
-  padding-top: 4.75rem;                                 /* under the fixed header */
+  --pad: clamp(1.5rem, 4vw, 4.5rem);
+  background: #CAC4B9; color: var(--sc-ink);           /* beige (client 2026-10-05: back from the dark brown) */
+  scroll-margin-top: 4.75rem;                           /* a jump to #about lands under the fixed header */
 }
 .pf-about p { margin: 0; }
 .pf-about a { color: inherit; text-decoration: none; }
-.pf-about-up { text-transform: uppercase; }
-.pf-about-body { display: grid; grid-template-columns: 54% 1fr; }
-.pf-about-photo-wrap { position: relative; margin: 0; aspect-ratio: 0.865; overflow: hidden; }
+.pf-about-body { display: grid; grid-template-columns: auto 1fr; }
+/* The client's own 4:5 crop (2026-10-05), shown whole against the left edge.
+   Its height is the whole screen under the header (never wider than half
+   the page), and it sets the section's height: scrolled to, photo and
+   section fill the screen exactly and the dock sits on them (client 2026-10-05). */
+.pf-about-photo-wrap {
+  position: relative; margin: 0; overflow: hidden; aspect-ratio: 4 / 5; align-self: start;
+  width: min(50vw, (100svh - 4.75rem) * 0.8);
+}
 .pf-about-photo {
   position: absolute; inset: 0; width: 100%; height: 100%;
-  object-fit: cover; object-position: 50% 100%;     /* only the top of the wall is trimmed */
+  object-fit: cover; object-position: 50% 10%;      /* 4:5 in 4:5: nothing is cut; if ever cropped, the feet go first */
 }
 .pf-about-info {
   display: flex; flex-direction: column;
-  padding: clamp(3rem, 7vw, 6.5rem) var(--pad) var(--pad) calc(var(--pad) + 0.15rem);
+  padding: clamp(1.5rem, 3vw, 3rem) var(--pad) 7rem;            /* bottom: clear of the dock buttons */
 }
-.pf-about-info h3 { margin: 0 0 0.75rem; font: inherit; text-transform: uppercase; }
-.pf-about-desc { max-width: 46em; }
-.pf-about-arrow {
-  align-self: flex-end; margin-top: auto; padding-top: 3rem;   /* bottom right of the column, level with the photo end */
-  font-size: 1.15rem; line-height: 1; transition: transform var(--sc-d-base) var(--sc-ease-out);
-}
-.pf-about-arrow:hover { transform: translateX(0.3rem); }
+.pf-about-info h3 { margin: 0; align-self: flex-end; text-align: right; }
+.pf-about-desc { margin-top: auto; padding-top: 2rem; max-width: 44rem; }
+.pf-about-cols { columns: 2; column-gap: clamp(1.25rem, 2.5vw, 2.5rem); margin-top: clamp(1.75rem, 3vw, 2.75rem); }
+.pf-about-cols p { break-inside: avoid; }
+.pf-about-cols p + p { margin-top: 1em; }
 .pf-about a:focus-visible { outline: 1px solid var(--sc-ink); outline-offset: 3px; }
 @media (max-width: 900px) {
   .pf-about-body { grid-template-columns: 1fr; }
-  .pf-about-info { padding-top: 2.5rem; }
-  .pf-about-arrow { margin-top: 2.5rem; }
+  .pf-about-photo-wrap { width: 100%; }
+  .pf-about-info { padding: 2.5rem var(--sc-gutter) 6rem; }
+  .pf-about-info h3 { align-self: flex-start; text-align: left; }
+  .pf-about-desc { padding-top: 2rem; }
+  .pf-about-cols { columns: 1; }
 }
 
 /* -------------------------------------------------------- our work strip -- */

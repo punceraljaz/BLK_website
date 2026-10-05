@@ -197,6 +197,10 @@ Source videos (outside the project):
   `.pf-room-frame`; phone 3.5rem / 3rem). NOT a CSS mask (masking the moving video cost ~7 fps), and it needs
   `will-change: transform` (without it the gradient was repainted with the video: -3 to -5 fps). With both:
   57.7-58.3 fps vs 57-59.5 without any fade (tools/measure.mjs, interleaved runs).
+  **2026-10-05 (client: right edge sharp when the room widens to package 04):** the right fade is now its own layer
+  (`::before`) moved by `transform`, not part of `::after` with a growing `width`; Chrome runs the clip-path widening on
+  the GPU, the width change on the main thread, which lagged on the laptop. Both layers overhang the picture by 2px
+  (clipped by the frame), which also removed a 1px seam of video that showed round the picture.
 - **Margin around the picture** (client: not to the left/bottom edge): `--room-inset` (desktop
   `clamp(1rem, 2.2vw, 2.25rem)` on left, top and bottom; phone = `--sc-gutter` on left, right and bottom).
   The picture's own sizes are `--view-left/-top/-w/-max-w/-h` (derived from `--spread-img-w`, `--room-max-w`,
@@ -211,7 +215,7 @@ Source videos (outside the project):
   `.pk-extra img[src*="/img/"]`). View thumbs regenerated from the new end frames. Seams SSIM 0.94–0.99.
 - Screenshots for the client are in `primeri/` (`corador-*`, `katalog-*`, `clean-*` = current).
 - `zazeni-streznik.cmd` (double-click): starts the server if needed and prints the phone URL
-  (http://<LAN IP>:4500; the IP changes per network, was 192.168.178.29 on 2026-09-30, 192.168.20.155 on 2026-10-04, then 172.20.10.4 on an iPhone hotspot the same day). Over plain http
+  (http://<LAN IP>:4500; the IP changes per network, was 192.168.178.29 on 2026-09-30, 192.168.20.155 on 2026-10-04, then 172.20.10.4 and later 172.20.10.10 on an iPhone hotspot the same day; when it changes, the old address can belong to ANOTHER device on the hotspot, which then serves an older copy of the site. Always take the address zazeni-streznik.cmd prints). Over plain http
   on a LAN IP WebCodecs is unavailable (secure context only), so phones there use the WebP frames.
 - Performance note: on battery the laptop/Chrome caps at exactly 30 fps (worst frame 34 ms) for every
   layout; measure on mains power. Likely why the client saw ~20 fps.
@@ -227,12 +231,20 @@ Source videos (outside the project):
   only, after package.css), script `js/stories.js` (reveal + reviews background stages + dock hiding). Edit there, then
   `node tools/build-packages.mjs`.
 - Upscale Airbnb keeps its own "What it does / Beautiful is not enough" figures block (client: keep all old package content).
-- **2026-10-04 later: the stories now sit near the END of each package page** (before "Next package"), so the package
-  hero is the first screen (client: "too much on the page, optimise for the customer"). Planned next, not done yet
-  (Claude given free hand): before/after slider in the hero, 4 short bullets instead of the intro paragraph, cut
-  "The right package if…", steps as one line, 3 short quotes instead of the reviews section, figures only on 2-4,
-  "Not in this package" as an upsell to the next package / Donna Branka, remove the → arrows (no-icons rule).
-  Target ~4 screens, ~250 words (was 9.6 screens, 628 words).
+- **SUPERSEDED later on 2026-10-04: package pages rebuilt short, package first** (client: "too much on the page, optimise
+  for the customer", Claude given a free hand). Was 9.6 screens / 628 words, now ~4.7 screens / ~250 words (phone ~5-6).
+  Four parts (tools/build-packages.mjs, css/package.css rewritten, new js/package.js):
+  1. hero: label, (badge), title, one-line lead, 4 short `points`, "Ask about X on WhatsApp"; right (phone: under the title)
+     a **before/after slider** `.pk-ba` (before = clip's first frame, after = last; drag/tap anywhere, keyboard via a hidden
+     range input, touch-action pan-y so vertical swipes scroll). No hero button: the dock is always there.
+  2. What's included (full list) + `.pk-more` upsell: `moreQ` + the next package up (Donna Branka: "Something simpler?" ->
+     Upscale) + a line to Donna Branka on packages 1-2. Replaces "Not in this package".
+  3. A real apartment: client example photo(s) + the extra corners.
+  4. Next step: +20%/+50%/200+ on packages 2-4 only, three short quotes (Branko, Nastja, Marko), "Ready to see what your
+     apartment could become?", the steps as one line, Book a session / Get in touch (dock hides via html.cta-on), "See all four packages".
+  Removed from these pages: the stories (two seconds / beautiful is not enough / reviews with the stage background), "The right
+  package if...", the 4-step section, the next-package footer, all the arrow glyphs. tools/stories.html, css/stories.css and
+  js/stories.js are now unused (left on disk, never committed). The notes below about the stories on package pages are history.
 - "You have two seconds to convince." is on one line on screens over 900px (client 2026-10-04; end of css/stories.css,
   `nowrap`, size capped at 2.2vw so it stays clear of the plant photo). Phones: wraps as before.
 - `.pf-reviews` has `overflow: clip`, or its sticky photo slid over the package intro below it.
@@ -246,9 +258,10 @@ Source videos (outside the project):
   for buttons and the package-name band is unchanged). The About sheet fades into the gallery through stone, taupe,
   cocoa (`.pf-work` gradient, `--fade`). Reviews are warm cream (veil), fading in from the page colour and out into About.
 - Gallery order (js/home.js PHOTOS): photos that LOOK like the same apartment (visual guess: wood-slat flats 14/16/17/18/
-  24/26/27/30, 03+04, 07+08, 05/06/09, 22/32/34, 20+29, 25+28, 21+31, 10+12) at least 3 apart, no two bathrooms adjacent.
+  24/26/27/30, 03+04, 07+08, 05/06/09, 22/32/34, 20+29, 25+28, 21+31, 10+12) at least 3 apart, no two bathrooms adjacent. **2026-10-05:** list rotated to start at 17-work-corner (client); the strip loops, so neighbours are unchanged.
 - Package pages have an "Example · A real apartment" section (`examples` in tools/build-packages.mjs): B212 bedroom
-  for packages 1-3, F148 + B606 for Donna Branka (assets/img/pk-*-example-*.webp, Chrome-encoded q0.9).
+  for packages 1-3, F148 + B606 for Donna Branka (assets/img/pk-*-example-*.webp, Chrome-encoded q0.9). 2026-10-05: + Bay Residence
+  living room (Downloads\Bay Residence - Living Room opremljeno.jpg) as Donna Branka example-3; the row now takes up to 3 columns.
 
 ## 3s. Reviews rebuilt (2026-10-04, replaces 3o)
 
@@ -298,6 +311,10 @@ Source videos (outside the project):
 
 ## 3l. About tweaks (2026-10-03)
 
+- **2026-10-05 (client):** About background = stone `--pal-stone` #BFB8AA; photo smaller (38% column, margins
+  around it instead of touching the left edge; phone: gutter on the sides); text + label colour cocoa (the grey was too faint on stone).
+  Background then lifted to #CAC4B9 and the corner arrow link (to Calendly) removed, same day. "Our work" (.pf-work) background = #2C1F14 ; later the same day `--pf-floor` AND `--sc-accent` in site.css both became #2C1F14 (client): gallery, footer, package-name bands, Book a session and package-page buttons (was #261F1E). **Then (same day) About rebuilt as a dark spread** (client catalogue reference): photo = left 50%, full height, edge to edge; right = #3A302B page, "About us" small top right, text low: `.pf-about-lead` (first sentence + "I believe..." in larger Inter Tight 400, white) and `.pf-about-cols` (the rest in 2 columns, 1 on phones, white 78%). Phone: photo 4:5 on top. **Then:** back to beige #CAC4B9 with dark text (ink lead, cocoa columns), Montserrat like the rest (Inter Tight dropped), photo `object-position: 50% 10%` so her head is never cut (client: crop the feet, never the head). **Then the client supplied their own square crop** (DesktopIMG_2172 (1).jpeg, 4284x4284) → `assets/img/05-about-branka-square.webp` (Chrome-encoded, 1600 px, q0.92); the frame is square (`aspect-ratio: 1`), shown whole, and sets the section height (no min-height). Old 05-about-branka.webp unused. **Then a 4:5 crop** (same Desktop file, re-cropped by the client to 3427x4284) → `05-about-branka-portrait.webp` (1280x1600): photo against the left edge, width `min(50vw, (100svh - 4.75rem) * 0.8)`: photo + section = exactly the screen under the header, so the whole photo is visible and the dock sits on the section (client: at 88% the dock straddled the edge into the dark gallery). Text column bottom padding 7rem keeps the text clear of the dock. The square file is now unused.
+
 - "Branka" overlay on the photo removed (client). About text now styled like the rest (type.css: labels = tiny
   muted spaced caps 0.7rem; body 1rem / 1.7, muted; services 1rem).
 
@@ -312,10 +329,10 @@ Source videos (outside the project):
 - Client (ref: a services page whose menu sits on an image band): `section.pf-hero` at the top of `<main>`, before
   `.pf-room-track`. Picture `assets/img/hero-kitchen.webp` (since 2026-10-04 Downloads\"Sunlit Mediterranean Kitchen Sanctuary.png", 1916×666, 305 KB; first version was "...Stone Kitchen Interior.png",
   1957×804, Chrome-encoded q0.94, 249 KB; cropped from the top, `object-position: 60% 78%`). On it: logo + "Ras Al Khaimah · UAE" at the top, the four packages along
-  the bottom (`.pf-hero__nav`, latest 2026-10-04: **five items** = the four packages (01 Furnishing, 02 Basic Airbnb, 03 Upscale Airbnb, 04 Donna Branka -> #pkg-1..4, with their short lines) + 05 MANAGE "Property management" -> the property management site, **href is a placeholder `#` (data-todo="manage-url"), waiting for the address**. Desktop: 5 columns, number above the name. Phone: a list, one per line, name left / line right, no numbers, stronger shade behind it. Before that: FURNISH / REMODEL / MANAGE; hairline that fills in on hover). Desktop
+  the bottom (`.pf-hero__nav`, three items, 3 columns also on phones: FURNISH 01 "Furnishing & styling" -> #pkg-1, REMODEL 02 "Renovation & transformation" -> #pkg-2, MANAGE 03 "Property management" -> the property management site, **href is a placeholder `#` (data-todo="manage-url"), waiting for the address**. Briefly (2026-10-04) the four packages + Manage were five items here; the client had it reverted the same day; hairline that fills in on hover). Desktop
   height `clamp(18rem, 48svh, 36vw)` (client: shorter, twice), phone 44svh (min 21rem); small gap below it on desktop, none on phones. On phones the room layer's empty text zone then shows below the hero until package text appears (open question to the client).
-- `.pf-lede` (css/home.css), between the hero and the room: "Choose how far you want to take the transformation." only;
-  its 01-04 package index moved up into the hero (client 2026-10-04). Phones: right under the hero, not centred.
+- `.pf-lede` (css/home.css), between the hero and the room: "Choose how far you want to take the transformation." + the
+  01-04 package index on the right. Phones: only the sentence (index hidden), right under the hero, not centred (client 2026-10-04).
 - The fixed header is hidden while the hero is on screen: `html.hero-on` (set in the head script when there is no
   #hash, then kept by an IntersectionObserver in js/home.js). The hero is layered over package 01's fixed text and
   package text only becomes current once package 01's top is in the top 18% of the screen (else it showed cut under the hero on phones).
@@ -634,3 +651,29 @@ Revisit for mobile data (smaller/vertical phone frames, AVIF).
   Make the change, verify with screenshots/tests, report briefly with how to tweak the value.
 - Wants things to feel premium and smooth. Explain trade-offs (file size, credits) in plain terms with numbers.
 - Writes quickly and informally; answer in English, plainly, without jargon.
+
+## 9. Legal pages + self-hosted font (2026-10-05)
+
+- Client asked for "all legal requirements and a cookie policy in the footer". `legal/privacy.html`, `legal/cookies.html`,
+  `legal/terms.html`, GENERATED by `tools/build-legal.mjs` (all text there; `node tools/build-legal.mjs`), styles
+  `css/legal.css`. Footer row `.pf-legal` (site.css) on every page. The generated pages share the footer from
+  `tools/partials.mjs` (build-packages.mjs uses it too); index.html keeps its own copy: keep them in step.
+- Written for the site as it is: no cookies (only sessionStorage `pf-intro-seen`), no analytics, no forms, contact by
+  phone/WhatsApp/email/Calendly links. **If analytics, a form, an embed or a cookie is ever added, update the texts**
+  (and a consent banner may then be needed). Not legal advice: client should have a UAE lawyer check them.
+- **Placeholders** (`TODO()` in build-legal.mjs, shown highlighted on the pages): legal name on the trade licence,
+  licence number, issuing authority, business address, hosting provider, server-log retention days.
+- Terms state the room animations, intro and hero kitchen are computer-generated visualisations, and that the photos
+  under "Our work" and "A real apartment" are real finished apartments. **Open:** the Basic/Upscale example photos
+  (pk-*-example-1, same B212 bedroom) look virtually staged; if so, that sentence or the "A real apartment" heading must change.
+- **Montserrat is now served from the site** (`css/fonts.css`, `assets/fonts/montserrat-latin(-ext).woff2`, variable
+  200-500, from Google Fonts v31, OFL): Google Fonts sent every visitor's IP to Google on load (GDPR issue). Verified:
+  zero requests to other hosts on page load. serve.mjs got the `.woff2` type.
+- **Cookie banner (2026-10-05, client: "notifications for cookies at launch, like every site")**: `js/consent.js` +
+  `css/consent.css` on every page. Reject all / Accept all (equal weight) / Settings (Necessary always on, Analytics,
+  Marketing switches). Choice in localStorage `blk-consent` (12 months). Waits for the home intro to finish. Dock hides
+  while it is open (`html.cc-open`). Footer "Cookie settings" (`[data-consent-open]`) reopens it. **To add analytics or a
+  pixel:** `<script type="text/plain" data-consent="analytics|marketing" ...>` or `BLKConsent.on('analytics', fn)`, and
+  list the tool in the Cookie Policy (TODO placeholders in build-legal.mjs for the analytics and marketing tools).
+  Tested: hidden during intro, shown after, choice remembered across pages, reopen keeps the choice, gated script runs only
+  after Accept. Note: tools/check.mjs screenshots now include the banner (fresh browser profile).

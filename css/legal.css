@@ -1,0 +1,51 @@
+/* Legal pages (legal/*.html, built by tools/build-legal.mjs): one calm
+   reading column on the page colour, the same type as the rest of the site
+   (css/type.css sets the family). */
+body { background: var(--sc-canvas); color: var(--sc-ink); }
+.lg {
+  max-width: 46rem; margin-inline: auto;
+  padding: calc(4.75rem + clamp(2.5rem, 7vh, 5rem)) var(--sc-gutter) clamp(4rem, 10vh, 7rem);
+}
+.lg-tabs { display: flex; flex-wrap: wrap; gap: 0.6rem 2rem; margin-bottom: clamp(2.5rem, 6vh, 4rem); }
+.lg-tabs a {
+  font-size: 0.6rem; font-weight: 400; letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--sc-ink-soft); text-decoration: none; padding-bottom: 0.4em;
+}
+.lg-tabs a[aria-current] { color: var(--sc-ink); box-shadow: inset 0 -1px 0 var(--sc-ink); }
+.lg-tabs a:hover { color: var(--sc-ink); }
+.lg-title {
+  margin: 0; font-size: clamp(1.25rem, 0.85rem + 1vw, 1.9rem);
+  font-weight: 300; text-transform: uppercase; letter-spacing: 0.16em; line-height: 1.4;
+}
+.lg-date { margin: 0.9rem 0 0; font-size: 0.7rem; letter-spacing: 0.12em; color: var(--sc-ink-soft); }
+.lg-intro { margin: clamp(1.75rem, 4vh, 2.5rem) 0 0; font-size: 0.98rem; line-height: 1.85; }
+.lg-body { margin-top: clamp(2rem, 5vh, 3rem); }
+.lg-body section { padding-top: clamp(1.75rem, 4vh, 2.5rem); border-top: 1px solid var(--pf-line); margin-top: clamp(1.75rem, 4vh, 2.5rem); }
+.lg-body h2 {
+  display: flex; gap: 1.1rem; margin: 0 0 1rem;
+  font-size: 0.68rem; font-weight: 400; letter-spacing: 0.26em; text-transform: uppercase;
+}
+.lg-body h2 span { color: var(--sc-ink-soft); }
+.lg-body p, .lg-body li { font-size: 0.88rem; line-height: 1.85; color: color-mix(in oklab, var(--sc-ink) 82%, transparent); }
+.lg-body p { margin: 0 0 0.9rem; }
+.lg-body ul { margin: 0 0 0.9rem; padding-left: 1.1rem; }
+.lg-body li + li { margin-top: 0.35rem; }
+.lg-body strong { font-weight: 500; color: var(--sc-ink); }
+.lg a { color: inherit; text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
+.lg-table { width: 100%; border-collapse: collapse; margin: 0.4rem 0 1.1rem; font-size: 0.8rem; line-height: 1.6; }
+.lg-table th, .lg-table td { text-align: left; vertical-align: top; padding: 0.7rem 0.9rem 0.7rem 0; border-bottom: 1px solid var(--pf-line); }
+.lg-table th { font-size: 0.58rem; font-weight: 400; letter-spacing: 0.22em; text-transform: uppercase; color: var(--sc-ink-soft); }
+@media (max-width: 600px) {
+  .lg-table thead { display: none; }
+  .lg-table tr, .lg-table td { display: block; }
+  .lg-table td { border: 0; padding: 0.2rem 0; }
+  .lg-table tr { border-bottom: 1px solid var(--pf-line); padding-bottom: 0.7rem; }
+}
+/* Facts still missing from the business: bracketed and highlighted, so
+   nobody publishes the page without filling them in. */
+.lg-todo { background: color-mix(in oklab, #E0B04A 35%, transparent); padding: 0 0.2em; }
+/* "Cookie settings" inside the text: a button that reads like a link. */
+.lg-inline {
+  font: inherit; color: var(--sc-ink); background: none; border: 0; padding: 0; cursor: pointer;
+  text-decoration: underline; text-underline-offset: 0.2em; text-decoration-thickness: 1px;
+}

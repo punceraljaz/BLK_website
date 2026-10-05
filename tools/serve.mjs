@@ -8,7 +8,7 @@ import path from 'node:path';
 const TYPES = {
   '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.mjs': 'text/javascript',
   '.webp': 'image/webp', '.png': 'image/png', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml',
-  '.json': 'application/json', '.h264': 'application/octet-stream',
+  '.json': 'application/json', '.h264': 'application/octet-stream', '.woff2': 'font/woff2',
 };
 
 export function serve(port = 0, root = path.resolve('.')) {

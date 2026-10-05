@@ -4,15 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Upscale Airbnb · BLK Remodelling</title>
-<meta name="description" content="Upscale Airbnb, package 03 by BLK Remodelling, Ras Al Khaimah: The finer things, already in place. What it includes, who it is for and how it works.">
+<meta name="description" content="Upscale Airbnb, package 03 by BLK Remodelling, Ras Al Khaimah: The finer things, already in place. Ready to photograph, list and book. What it includes and how it works.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23161009'/><path d='M9 22V10h5.2c2.6 0 4.2 1.3 4.2 3.5 0 1.5-.8 2.5-2 3 1.5.4 2.5 1.5 2.5 3.2 0 2.5-1.8 3.8-4.5 3.8H9zm3-7h2c1 0 1.6-.5 1.6-1.3S15 12.4 14 12.4h-2v2.3zm0 4.7h2.3c1.1 0 1.8-.5 1.8-1.5s-.7-1.4-1.8-1.4H12v2.9z' fill='%23C1502E'/></svg>">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
+<link rel="preload" href="../assets/fonts/montserrat-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../css/fonts.css">
 <link rel="stylesheet" href="../css/base.css">
 <link rel="stylesheet" href="../css/site.css">
+<link rel="stylesheet" href="../css/consent.css">
 <link rel="stylesheet" href="../css/package.css">
-<link rel="stylesheet" href="../css/stories.css">
 <link rel="stylesheet" href="../css/type.css">
 </head>
 <body>
@@ -29,44 +28,41 @@
 </header>
 
 <main class="pk">
+  <!-- 1. What the package is, at a glance: name, one line, four points, and
+       the same studio before and after (drag the line to compare). -->
   <section class="pk-hero">
     <div class="pk-hero__copy">
       <p class="pk-label"><span>Package 03</span><span class="pk-label__rule" aria-hidden="true"></span><span>Upscale Airbnb</span></p>
       <h1 class="pk-title">Upscale <em>Airbnb</em></h1>
-      <p class="pk-lead">The finer things, already in place.</p>
-      <p class="pk-intro">Everything a short-term rental needs, a step up. Finer furniture, lighting and decoration, plus the more than 200 details guests notice, from plates and glasses to soft towels, linens and toiletries. We hand over an apartment that is ready to photograph, list and book.</p>
-      <div class="pk-actions">
-        <a class="pk-btn" href="https://calendly.com/blkremoddeling/30min" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg> Book a session</a>
-        <a class="pk-link" href="https://wa.me/971545979814" target="_blank" rel="noopener" data-choose="wa" data-wa-text="Hi BLK Remodelling, I'd like to know more about the Upscale Airbnb package." aria-haspopup="menu">Ask on WhatsApp <span aria-hidden="true">&rarr;</span></a>
-      </div>
+      <p class="pk-lead">The finer things, already in place. Ready to photograph, list and book.</p>
+      <ul class="pk-points">
+        <li>Everything in Basic Airbnb</li>
+        <li>Finer furniture and lighting</li>
+        <li>Linens, towels, kitchenware, toiletries</li>
+        <li>A photo shoot for the listing</li>
+      </ul>
+      <a class="pk-link" href="https://wa.me/971545979814" target="_blank" rel="noopener" data-choose="wa" data-wa-text="Hi BLK Remodelling, I'd like to know more about the Upscale Airbnb package." aria-haspopup="menu">Ask about Upscale Airbnb on WhatsApp</a>
     </div>
-    <figure class="pk-hero__media">
-      <img src="../assets/frames/room3/0121.webp" width="1904" height="1088" alt="The studio finished with a green feature wall, wood floor, leather armchair, throw and fresh towels.">
-      <figcaption>The studio after Upscale Airbnb</figcaption>
+    <figure class="pk-ba" style="--pos: 50%">
+      <img class="pk-ba__img" src="../assets/frames/room3/0001.webp" width="1904" height="1088" alt="Before Upscale Airbnb: the studio as it was.">
+      <img class="pk-ba__img pk-ba__after" src="../assets/frames/room3/0121.webp" width="1904" height="1088" alt="After Upscale Airbnb: The studio finished with a green feature wall, wood floor, leather armchair, throw and fresh towels.">
+      <span class="pk-ba__tag" aria-hidden="true">Before</span>
+      <span class="pk-ba__tag pk-ba__tag--after" aria-hidden="true">After</span>
+      <input class="pk-ba__range" type="range" min="0" max="100" value="50" aria-label="Before and after: move to compare">
+      <figcaption>Drag to compare</figcaption>
     </figure>
   </section>
 
-  <!-- A real apartment finished with this package (client photos, 2026-10-04).
-       Add more to the package's examples list above. -->
-  <section class="pk-sec pk-examples" aria-labelledby="ex-h">
-    <p class="pk-label"><span>Example</span><span class="pk-label__rule" aria-hidden="true"></span><span>A real apartment</span></p>
-    <h2 class="pk-h2" id="ex-h" style="margin-top:clamp(2rem,6vh,3.5rem)">What <em>Upscale Airbnb</em> looks like</h2>
-    <div class="pk-examples__grid" style="--n:1">
-      <figure><img src="../assets/img/pk-upscale-airbnb-example-1.webp" width="1672" height="941" loading="lazy" alt="The same bedroom with Upscale Airbnb: a feature wall, wood floor, sofa corner, throws, cushions and plants."><figcaption>The same bedroom with Upscale Airbnb: a feature wall, wood floor, sofa corner, throws, cushions and plants.</figcaption></figure>
-    </div>
-  </section>
-
+  <!-- 2. Everything in it, and the next package up. -->
   <section class="pk-sec" aria-labelledby="inc-h">
     <p class="pk-label"><span>01</span><span class="pk-label__rule" aria-hidden="true"></span><span>What’s included</span></p>
     <div class="pk-sec__grid">
       <div>
         <h2 class="pk-h2" id="inc-h">Everything in <em>Upscale Airbnb</em></h2>
-        <p class="pk-note">One team does all of it, with our own suppliers and subcontractors, so you deal with one contact and one price.</p>
-        <div class="pk-not">
-          <h3>Not in this package</h3>
-          <ul>
-            <li>The signature finish: pieces, art and styling chosen by Branka: see <a href="donna-branka.html">Donna Branka</a></li>
-          </ul>
+        <p class="pk-note">One team, one contact, one price.</p>
+        <div class="pk-more">
+          <p class="pk-more__q">The signature finish, chosen by Branka?</p>
+          <a class="pk-more__pkg" href="donna-branka.html"><span>Package 04</span>Donna Branka</a>
         </div>
       </div>
       <ul class="pk-list">
@@ -82,167 +78,44 @@
     </div>
   </section>
 
-  <section class="pk-sec" aria-labelledby="who-h">
-    <p class="pk-label"><span>02</span><span class="pk-label__rule" aria-hidden="true"></span><span>Who it’s for</span></p>
-    <h2 class="pk-h2" id="who-h" style="margin-top:clamp(2rem,6vh,3.5rem)">The right package <em>if&hellip;</em></h2>
-    <div class="pk-cols">
-      <div class="pk-col"><span class="pk-col__n">01</span><h3>You want to start earning now</h3><p>First-time host, no time to learn what guests expect. Day one is booking day.</p></div>
-      <div class="pk-col"><span class="pk-col__n">02</span><h3>You own several units</h3><p>One team equips them all to the same standard, fast.</p></div>
-      <div class="pk-col"><span class="pk-col__n">03</span><h3>You are not in the UAE</h3><p>Hand over the keys, get back an apartment that is ready to list.</p></div>
-    </div>
-  </section>
-  <section class="pk-sec" aria-labelledby="fig-h">
-    <p class="pk-label"><span>03</span><span class="pk-label__rule" aria-hidden="true"></span><span>What it does</span></p>
-    <h2 class="pk-h2" id="fig-h" style="margin-top:clamp(2rem,6vh,3.5rem)">Beautiful is <em>not enough.</em></h2>
-    <ul class="pk-figs">
-      <li><b>+20%</b><span>more bookings</span></li>
-      <li><b>+50%</b><span>higher daily rate</span></li>
-      <li><b>200+</b><span>details taken care of</span></li>
-    </ul>
-    <p class="pk-figs-note">Based on our experience with the apartments we have remodelled.</p>
-  </section>
-
-  <section class="pk-sec" aria-labelledby="ba-h">
-    <p class="pk-label"><span>04</span><span class="pk-label__rule" aria-hidden="true"></span><span>Before &amp; after</span></p>
-    <h2 class="pk-h2" id="ba-h" style="margin-top:clamp(2rem,6vh,3.5rem)">The same studio, <em>finished</em></h2>
-    <div class="pk-ba">
-      <figure><img src="../assets/frames/room3/0001.webp" width="1904" height="1088" loading="lazy" alt="Before Upscale Airbnb."><figcaption>Before</figcaption></figure>
-      <figure><img src="../assets/frames/room3/0121.webp" width="1904" height="1088" loading="lazy" alt="After Upscale Airbnb."><figcaption>After</figcaption></figure>
+  <!-- 3. A real apartment finished with this package (client photos), and
+       other corners of the studio. Add more to the package's lists above. -->
+  <section class="pk-sec" aria-labelledby="ex-h">
+    <p class="pk-label"><span>02</span><span class="pk-label__rule" aria-hidden="true"></span><span>A real apartment</span></p>
+    <h2 class="pk-h2 pk-h2--wide" id="ex-h">What <em>Upscale Airbnb</em> looks like</h2>
+    <div class="pk-photos" style="--n:1">
+      <img src="../assets/img/pk-upscale-airbnb-example-1.webp" width="1672" height="941" loading="lazy" alt="The same bedroom with Upscale Airbnb: a feature wall, wood floor, sofa corner, throws, cushions and plants.">
     </div>
     <div class="pk-extra" style="--n:2">
       <figure><img src="../assets/frames/tv3/0121.webp" loading="lazy" alt="TV corner."><figcaption>TV corner</figcaption></figure>
     </div>
   </section>
 
-  <section class="pk-sec" aria-labelledby="how-h">
-    <p class="pk-label"><span>05</span><span class="pk-label__rule" aria-hidden="true"></span><span>How it works</span></p>
-    <h2 class="pk-h2" id="how-h" style="margin-top:clamp(2rem,6vh,3.5rem)">From the first visit <em>to the keys</em></h2>
-    <ol class="pk-steps">
-      <li><span>01</span><h3>A visit</h3><p>We see the apartment, measure it and listen to what you want from it.</p></li>
-      <li><span>02</span><h3>A plan and a quote</h3><p>The design, the full list of what goes in and one clear price.</p></li>
-      <li><span>03</span><h3>We do the work</h3><p>Sourcing, delivery and assembly. You do not need to be there.</p></li>
-      <li><span>04</span><h3>The handover</h3><p>You get the keys back to a turnkey apartment, photographed and ready to list.</p></li>
-    </ol>
-    <div class="pk-actions">
-      <a class="pk-btn" href="https://calendly.com/blkremoddeling/30min" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg> Book a session</a>
-      <a class="pk-link" href="https://wa.me/971545979814" target="_blank" rel="noopener" data-choose="wa" data-wa-text="Hi BLK Remodelling, I'd like to know more about the Upscale Airbnb package." aria-haspopup="menu">Ask on WhatsApp <span aria-hidden="true">&rarr;</span></a>
-    </div>
-  </section>
-
-<!-- Shared by the four package pages (tools/build-packages.mjs puts it at the
-     top of each page and turns assets/ into ../assets/). Moved here from the
-     home page on 2026-10-04 (client). Styles: css/stories.css; script: js/stories.js. -->
-  <!-- After the room. Flow: "two seconds" and "Beautiful is not enough" as one
-       continuous spread (client refs: Armani Hotels, "Between Feeling"), with
-       two small photos placed beside the text. -->
-  <section class="pf-flow" aria-label="Why presentation matters, and what we do">
-    <div class="pf-flow__text">
-      <article class="pf-flow__ch" id="why" data-img="0">
-        <img class="pf-flow__inline" src="../assets/img/interlude-plant.webp" width="1086" height="1448" loading="lazy" alt="">
-        <span class="pf-kicker">Why presentation matters</span>
-        <h2 class="pf-display">You have <em>two seconds</em> to convince.</h2>
-        <div class="pf-flow__cols" data-sc-in>
-          <p class="pf-flow__label">Booking</p>
-          <div>
-            <p class="pf-lead">Booking an apartment is a swiping game. Guests decide in two seconds; if your place doesn&rsquo;t win them over, they swipe on and the booking is gone.</p>
-            <p class="pf-body">That is why the presentation is everything.</p>
-          </div>
-        </div>
-        <div class="pf-flow__cols" data-sc-in>
-          <p class="pf-flow__label">We know</p>
-          <ul class="pf-flow__know">
-            <li>what guests want</li>
-            <li>how to present your apartment</li>
-            <li><em>and above all</em> how to remodel it cost-effectively</li>
-          </ul>
-        </div>
-      </article>
-      <article class="pf-flow__ch" id="what-we-do" data-img="1">
-        <img class="pf-flow__inline" src="../assets/img/interlude-lamp.webp" width="1086" height="1448" loading="lazy" alt="">
-        <span class="pf-kicker">What we do</span>
-        <!-- Phones only: the plant photo runs as a narrow strip down the right
-             edge beside the headline and figures (client 2026-10-04). On
-             desktop both wrappers are display: contents and the strip is hidden,
-             so the layout there is unchanged. -->
-        <div class="pf-flow__pair">
-          <div class="pf-flow__pair-text">
-            <h2 class="pf-display">Beautiful is <em>not enough.</em></h2>
-            <ul class="pf-figures" data-sc-in>
-              <li><span class="pf-figure__num">+20%</span><span class="pf-figure__label">more bookings</span></li>
-              <li><span class="pf-figure__num">+50%</span><span class="pf-figure__label">higher daily rate</span></li>
-              <li><span class="pf-figure__num">200+</span><span class="pf-figure__label">details taken care of</span></li>
-            </ul>
-            <p class="pf-figures-note">Based on our experience with the apartments we have remodelled.</p>
-          </div>
-          <img class="pf-flow__side" src="../assets/img/interlude-plant.webp" width="1086" height="1448" loading="lazy" alt="">
-        </div>
-        <div class="pf-flow__cols" data-sc-in>
-          <p class="pf-flow__label">Feel right</p>
-          <div>
-            <p class="pf-lead">A rental has to look good, but it also has to feel right.</p>
-            <p class="pf-body">Guests notice when a space is comfortable, practical and carefully put together &mdash; even if they cannot explain exactly why.</p>
-            <p class="pf-body">That is the difference we focus on.</p>
-            <p class="pf-body">From the bigger decisions to the small things that are easy to forget, we make sure the apartment is truly ready for its next guest &mdash; and for the owner behind it.</p>
-          </div>
-        </div>
-      </article>
-    </div>
-  </section>
-
-  <section class="pf-story pf-reviews" id="reviews">
-    <!-- Background (client 2026-10-04): one room's transformation, before ->
-         the process -> after, cross-fading slowly while the section is on
-         screen (js/home.js "Reviews"), under a page-colour veil.
-         TODO: the client will send the real before and after photos; the
-         before and after below are placeholders (demolition shot, a gallery
-         photo). Only the process photo is meant to stay. -->
-    <div class="pf-reviews__bg" aria-hidden="true">
-      <img class="is-bw" data-stage="0" src="../assets/img/reviews-1-demolition.webp" alt="" loading="lazy" data-todo="before-photo">
-      <img class="is-bw" data-stage="1" src="../assets/img/reviews-2-wall.webp" alt="" loading="lazy">
-      <img data-stage="2" src="../assets/gallery/03-studio-living.webp" alt="" loading="lazy" data-todo="after-photo">
-    </div>
-    <div class="pf-story__inner">
-      <header class="pf-reviews__head" data-sc-in>
-        <h2 class="pf-h2">The transformations, in our clients&rsquo; words.</h2>
-        <p class="pf-reviews__sub">Real spaces. Real results. Real experiences.</p>
-        <p class="pf-reviews__stages" aria-hidden="true"><span data-stage="0">Before</span><span data-stage="1">The process</span><span data-stage="2">After</span></p>
-      </header>
-      <!-- Three reviews up front (client): one large, two smaller stacked
-           beside it; the other three open under "Read more client stories". -->
-      <div class="pf-quotes-top" data-sc-in>
-        <figure class="pf-quote pf-quote--hero"><blockquote>&ldquo;I couldn&rsquo;t believe it. I thought it was nice before &mdash; now it&rsquo;s incredible. My apartment is booked out and earning much more than before.&rdquo;</blockquote><figcaption>Branko &middot; JBR, Dubai</figcaption></figure>
-        <div class="pf-quotes-side">
-          <figure class="pf-quote"><blockquote>&ldquo;No words. It looks like a completely different apartment.&rdquo;</blockquote><figcaption>Nastja &middot; Dubai Marina</figcaption></figure>
-          <figure class="pf-quote"><blockquote>&ldquo;What a difference. Rented within a week &mdash; and rented ever since.&rdquo;</blockquote><figcaption>Marko &middot; Dubai Marina</figcaption></figure>
-        </div>
+  <!-- 4. What clients say, and the next step. The fixed dock steps aside
+       while these buttons are on screen (html.cta-on, js/package.js). -->
+  <section class="pk-sec pk-close" aria-labelledby="go-h">
+    <p class="pk-label"><span>03</span><span class="pk-label__rule" aria-hidden="true"></span><span>Next step</span></p>
+    <ul class="pk-figs">
+      <li><b>+20%</b><span>more bookings</span></li>
+      <li><b>+50%</b><span>higher daily rate</span></li>
+      <li><b>200+</b><span>details taken care of</span></li>
+    </ul>
+    <p class="pk-figs-note">Based on our experience with the apartments we have remodelled.</p>
+    <ul class="pk-quotes">
+      <li><figure class="pf-quote"><blockquote>&ldquo;I couldn’t believe it. I thought it was nice before; now it’s incredible. My apartment is booked out and earning much more than before.&rdquo;</blockquote><figcaption>Branko · JBR, Dubai</figcaption></figure></li>
+      <li><figure class="pf-quote"><blockquote>&ldquo;No words. It looks like a completely different apartment.&rdquo;</blockquote><figcaption>Nastja · Dubai Marina</figcaption></figure></li>
+      <li><figure class="pf-quote"><blockquote>&ldquo;What a difference. Rented within a week, and rented ever since.&rdquo;</blockquote><figcaption>Marko · Dubai Marina</figcaption></figure></li>
+    </ul>
+    <div class="pk-go">
+      <h2 class="pk-h2" id="go-h">Ready to see what your apartment <em>could become?</em></h2>
+      <p class="pk-steps-line">A visit <span aria-hidden="true">·</span> A plan and a quote <span aria-hidden="true">·</span> We do the work <span aria-hidden="true">·</span> The keys</p>
+      <div class="pf-cta">
+        <a class="pf-dock__book" href="https://calendly.com/blkremoddeling/30min" target="_blank" rel="noopener">Book a session</a>
+        <a class="pf-dock__call" href="tel:+971545979814" data-choose="call" aria-haspopup="menu">Get in touch</a>
       </div>
-      <details class="pf-more">
-        <summary>Read more client stories</summary>
-        <ul class="pf-quotes">
-          <li><figure class="pf-quote"><blockquote>&ldquo;I bought a studio and my agent recommended them. Quick, professional, at an unbelievable price. It&rsquo;s booked out, at a much higher rate than other apartments in my building. You&rsquo;ll be remodelling my next ones too!&rdquo;</blockquote><figcaption>Brian &middot; Marjan Island, RAK</figcaption></figure></li>
-          <li><figure class="pf-quote"><blockquote>&ldquo;Wow. Unbelievable, great job.&rdquo;</blockquote><figcaption>Mohamed &middot; Bab Al Bahr, RAK</figcaption></figure></li>
-          <li><figure class="pf-quote"><blockquote>&ldquo;They did all the work in my apartment. Fantastic work, very satisfied. I will definitely recommend them to my friends!&rdquo;</blockquote><figcaption>Rachid &middot; JVC, Dubai</figcaption></figure></li>
-        </ul>
-      </details>
-      <!-- The invitation closes the section; the fixed dock steps aside while
-           it is on screen (html.cta-on), so the same two buttons never show twice. -->
-      <div class="pf-reviews__cta" data-sc-in>
-        <p class="pf-reviews__ask">Ready to see what your property could become?</p>
-        <div class="pf-cta">
-          <a class="pf-dock__book" href="https://calendly.com/blkremoddeling/30min" target="_blank" rel="noopener">Book a session</a>
-          <a class="pf-dock__call" href="tel:+971545979814" data-choose="call" aria-haspopup="menu">Get in touch</a>
-        </div>
-      </div>
+      <a class="pk-link pk-all" href="../index.html#pkg-1">See all four packages</a>
     </div>
   </section>
-
-  <nav class="pk-next" aria-label="More packages">
-    <a class="pk-next__big" href="donna-branka.html">
-      <p class="pk-label"><span>Next · 04</span><span class="pk-label__rule" aria-hidden="true"></span><span>Our signature. Finished to the last detail.</span></p>
-      <strong>Donna Branka <i aria-hidden="true">&rarr;</i></strong>
-    </a>
-    <a class="pk-link" href="../index.html#pkg-1">All four packages <span aria-hidden="true">&rarr;</span></a>
-  </nav>
 </main>
 
 <nav class="pf-dock" aria-label="Contact">
@@ -275,11 +148,18 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 21a9 9 0 1 0-7.8-4.5L3 21l4.7-1.2A9 9 0 0 0 12 21Z"/><path d="M8.6 9.2c0 4 3.2 7.2 7.2 7.2.5 0 1-.5.9-1.1-.1-.7-1.9-1.6-2.3-1.4-.3.1-.5.6-.9.6-.7 0-2.4-1.4-2.6-2.5-.1-.3.5-.6.7-.9.2-.3-.5-2-1.2-2.2-.6-.1-.8.3-.8.3Z" fill="currentColor" stroke="none"/></svg>
       </a>
     </nav>
+    <nav class="pf-legal" aria-label="Legal">
+      <a href="../legal/privacy.html">Privacy Policy</a>
+      <a href="../legal/cookies.html">Cookie Policy</a>
+      <a href="../legal/terms.html">Terms of Use</a>
+      <button type="button" data-consent-open>Cookie settings</button>
+    </nav>
     <span class="pf-site-foot__copy">&copy; 2026 BLK Remodelling &middot; Ras Al Khaimah, UAE</span>
   </div>
 </footer>
 
 <script src="../js/site.js"></script>
-<script src="../js/stories.js"></script>
+<script src="../js/consent.js"></script>
+<script src="../js/package.js"></script>
 </body>
 </html>

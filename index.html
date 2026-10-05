@@ -6,12 +6,12 @@
 <title>BLK Remodelling · four ways into a rental-ready apartment</title>
 <meta name="description" content="BLK Remodelling furnishes, equips and styles apartments in Ras Al Khaimah, from a bare shell to a rental-ready home finished to the last detail.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23161009'/><path d='M9 22V10h5.2c2.6 0 4.2 1.3 4.2 3.5 0 1.5-.8 2.5-2 3 1.5.4 2.5 1.5 2.5 3.2 0 2.5-1.8 3.8-4.5 3.8H9zm3-7h2c1 0 1.6-.5 1.6-1.3S15 12.4 14 12.4h-2v2.3zm0 4.7h2.3c1.1 0 1.8-.5 1.8-1.5s-.7-1.4-1.8-1.4H12v2.9z' fill='%23C1502E'/></svg>">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
+<link rel="preload" href="assets/fonts/montserrat-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/fonts.css">
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/strip-gallery.css">
 <link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/consent.css">
 <link rel="stylesheet" href="css/intro.css">
 <script>
   // Intro switch (js/intro.js), decided before the first paint: once per tab,
@@ -79,16 +79,15 @@
       <a class="pf-hero__mark" href="#top">BLK<span>·</span>REMODELLING</a>
       <span class="pf-hero__place">Ras Al Khaimah · UAE</span>
     </div>
-    <!-- The four packages + Manage (client 2026-10-04; they were a list under
-         the hero before). Manage -> the property management site. -->
+    <!-- Three ways in (client 2026-10-04): Furnish -> package 01, Remodel ->
+         packages 02-04, Manage -> the property management site. The four
+         packages are listed under the hero (.pf-lede). -->
     <nav class="pf-hero__nav" aria-label="What we do">
-      <a href="#pkg-1"><span class="pf-hero__name">Furnishing</span><span class="pf-hero__n">01</span><span class="pf-hero__line">The empty shell, furnished</span></a>
-      <a href="#pkg-2"><span class="pf-hero__name">Basic Airbnb</span><span class="pf-hero__n">02</span><span class="pf-hero__line">Furniture and appliances</span></a>
-      <a href="#pkg-3"><span class="pf-hero__name">Upscale Airbnb</span><span class="pf-hero__n">03</span><span class="pf-hero__line">Down to the linens</span></a>
-      <a href="#pkg-4"><span class="pf-hero__name">Donna Branka</span><span class="pf-hero__n">04</span><span class="pf-hero__line">The signature package</span></a>
+      <a href="#pkg-1"><span class="pf-hero__name">Furnish</span><span class="pf-hero__n">01</span><span class="pf-hero__line">Furnishing &amp; styling</span></a>
+      <a href="#pkg-2"><span class="pf-hero__name">Remodel</span><span class="pf-hero__n">02</span><span class="pf-hero__line">Renovation &amp; transformation</span></a>
       <!-- TODO: the property management site's address (client to send); then add
            target="_blank" rel="noopener" so it opens in a new tab. -->
-      <a href="#" data-todo="manage-url"><span class="pf-hero__name">Manage</span><span class="pf-hero__n">05</span><span class="pf-hero__line">Property management</span></a>
+      <a href="#" data-todo="manage-url"><span class="pf-hero__name">Manage</span><span class="pf-hero__n">03</span><span class="pf-hero__line">Property management</span></a>
     </nav>
   </section>
 
@@ -138,6 +137,12 @@
       <h2 class="pf-h2 pf-lede__title">Choose how far you want to take the transformation.</h2>
       <p class="pf-body pf-lede__text">Four remodeling packages, shaped around the space, the vision and the investment.</p>
     </div>
+    <ol class="pf-lede__list" aria-label="The four packages">
+      <li><a href="#pkg-1"><span class="pf-lede__n">01</span><span class="pf-lede__name">Furnishing</span><span class="pf-lede__what">The empty shell, furnished</span></a></li>
+      <li><a href="#pkg-2"><span class="pf-lede__n">02</span><span class="pf-lede__name">Basic Airbnb</span><span class="pf-lede__what">Furniture and appliances</span></a></li>
+      <li><a href="#pkg-3"><span class="pf-lede__n">03</span><span class="pf-lede__name">Upscale Airbnb</span><span class="pf-lede__what">Down to the linens</span></a></li>
+      <li><a href="#pkg-4"><span class="pf-lede__n">04</span><span class="pf-lede__name">Donna Branka</span><span class="pf-lede__what">The signature package</span></a></li>
+    </ol>
   </div>
 
   <!-- Package 01, Furnishing -->
@@ -247,25 +252,26 @@
 
   </div><!-- /.pf-room-track -->
 
-  <!-- About us · studio sheet (client reference "Form & Sight",
+  <!-- About us · dark spread (client reference, 2026-10-05: photo on the left
+       half, text low on the right). Before that: studio sheet ("Form & Sight",
        copied as is; Branka's text verbatim). -->
   <section class="pf-about" id="about">
     <div class="pf-about-body">
       <figure class="pf-about-photo-wrap">
-        <img class="pf-about-photo" src="assets/img/05-about-branka.webp" width="1500" height="2000" loading="lazy"
+        <img class="pf-about-photo" src="assets/img/05-about-branka-portrait.webp" width="1280" height="1600" loading="lazy"
              alt="Branka, founder, seated on a cream sofa in a sunlit living room.">
       </figure>
       <div class="pf-about-info" data-sc-in>
+        <h3>About us</h3>
         <div class="pf-about-desc">
-          <h3>About us</h3>
-          <p>I&rsquo;m Branka, the founder of B&amp;B Remodeling.</p>
-          <p>I believe every property has the potential to become something exceptional. For me, transformation is not just about changing how a space looks, but about giving it character, warmth and a feeling people remember.</p>
-          <p>I&rsquo;m drawn to the details that make a place feel effortless &mdash; the balance, the atmosphere, the way everything comes together without needing to compete for attention.</p>
-          <p>Every project is personal to me. I want each space to feel considered, distinctive and complete, with a sense of identity that goes beyond trends.</p>
-          <p>Because the most beautiful interiors are not simply seen &mdash; they are felt.</p>
-        </div>
-        <a class="pf-about-arrow" href="https://calendly.com/blkremoddeling/30min" target="_blank" rel="noopener" aria-label="Book a session">&rarr;</a>
-      </div>
+          <p class="pf-about-lead">I&rsquo;m Branka, the founder of B&amp;B Remodeling. I believe every property has the potential to become something exceptional.</p>
+          <div class="pf-about-cols">
+            <p>For me, transformation is not just about changing how a space looks, but about giving it character, warmth and a feeling people remember.</p>
+            <p>I&rsquo;m drawn to the details that make a place feel effortless &mdash; the balance, the atmosphere, the way everything comes together without needing to compete for attention.</p>
+            <p>Every project is personal to me. I want each space to feel considered, distinctive and complete, with a sense of identity that goes beyond trends.</p>
+            <p>Because the most beautiful interiors are not simply seen &mdash; they are felt.</p>
+          </div>
+        </div>      </div>
     </div>
   </section>
 
@@ -315,12 +321,19 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 21a9 9 0 1 0-7.8-4.5L3 21l4.7-1.2A9 9 0 0 0 12 21Z"/><path d="M8.6 9.2c0 4 3.2 7.2 7.2 7.2.5 0 1-.5.9-1.1-.1-.7-1.9-1.6-2.3-1.4-.3.1-.5.6-.9.6-.7 0-2.4-1.4-2.6-2.5-.1-.3.5-.6.7-.9.2-.3-.5-2-1.2-2.2-.6-.1-.8.3-.8.3Z" fill="currentColor" stroke="none"/></svg>
       </a>
     </nav>
+    <nav class="pf-legal" aria-label="Legal">
+      <a href="legal/privacy.html">Privacy Policy</a>
+      <a href="legal/cookies.html">Cookie Policy</a>
+      <a href="legal/terms.html">Terms of Use</a>
+      <button type="button" data-consent-open>Cookie settings</button>
+    </nav>
     <span class="pf-site-foot__copy">&copy; 2026 BLK Remodelling &middot; Ras Al Khaimah, UAE</span>
   </div>
 </footer>
 
 <script src="js/scroll-sequence.js"></script>
 <script src="js/site.js"></script>
+<script src="js/consent.js"></script>
 <script src="js/strip-gallery.js"></script>
 <script src="js/home.js"></script>
 </body>

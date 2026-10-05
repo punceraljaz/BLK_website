@@ -12,7 +12,7 @@
   --sc-surface:     #EDECE8;
   --sc-ink:         #2B221E;
   --sc-ink-soft:    #7D7872;
-  --sc-accent:      #261F1E;   /* chocolate = the gallery/footer colour (client 2026-10-04: buttons and bands match it); was mahogany #351D14 */
+  --sc-accent:      #2C1F14;   /* warm dark brown = the gallery/footer colour (client 2026-10-05; was chocolate #261F1E, before that mahogany #351D14) */
   --sc-accent-ink:  #F2E6D8;   /* palette cream: light text on the browns */
   --pf-line:        #BEBAB2;
   --pf-accent-soft: #8C8579;   /* palette taupe */
@@ -25,7 +25,7 @@
   --pf-photo-filter: saturate(0.78) contrast(0.96) brightness(0.98);
   --pf-photo-tint:   rgba(110, 106, 98, 0.05);   /* cooler than before */
   /* The dark bands (gallery, footer): mahogany. */
-  --pf-floor:       #261F1E;   /* rich dark chocolate (client palette 2026-10-04; was mahogany #351D14) */
+  --pf-floor:       #2C1F14;   /* warm dark brown: gallery, footer, package-name bands (client 2026-10-05; was #261F1E) */
   /* The client's palette, for the background transitions between sections. */
   --pal-cream:  #F2E6D8;
   --pal-stone:  #BFB8AA;
@@ -216,6 +216,16 @@ footer.pf-site-foot { padding-bottom: calc(var(--sc-8) + 6rem); }
   font-size: var(--sc-t-xs); letter-spacing: var(--sc-track-normal);
   color: color-mix(in oklab, var(--sc-surface) 55%, transparent);
 }
+/* Privacy, cookies, terms: tiny spaced capitals over the copyright line. */
+.pf-legal { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--sc-2) var(--sc-6); }
+.pf-legal a, .pf-legal button {
+  font-size: 0.6rem; font-weight: 400; letter-spacing: 0.24em; text-transform: uppercase;
+  color: color-mix(in oklab, var(--sc-surface) 72%, transparent); text-decoration: none;
+  background: none; border: 0; padding: 0; cursor: pointer;   /* "Cookie settings" is a button (js/consent.js) */
+  transition: color var(--sc-d-fast) var(--sc-ease-out);
+}
+.pf-legal a:hover, .pf-legal button:hover, .pf-legal a[aria-current] { color: var(--sc-surface); }
+.pf-legal a:focus-visible, .pf-legal button:focus-visible { outline: 1px solid var(--sc-surface); outline-offset: 4px; }
 
 /* ------------------------------------------------------- package badge -- */
 /* "Signature · Best seller" on Donna Branka (home page title, package page):
