@@ -14,6 +14,13 @@ import fs from 'node:fs';
 import { footer, LEGAL } from './partials.mjs';
 
 const UPDATED = '5 October 2026';
+// Meta ads (Meta Pixel, js/meta-pixel.js). Set to true on the day the Pixel ID
+// goes into js/meta-pixel.js, change UPDATED, and rebuild: the Privacy and
+// Cookie Policy then describe the pixel. While false they say no marketing
+// tool is in use, which is true while the ID is empty.
+const META_ADS = false;
+const META_POLICY = '<a href="https://www.facebook.com/privacy/policy" target="_blank" rel="noopener">Meta Privacy Policy</a>';
+const META_COOKIES = '<a href="https://www.facebook.com/privacy/policies/cookies" target="_blank" rel="noopener">Meta Cookies Policy</a>';
 const EMAIL = '<a href="mailto:branka.kugler@gmail.com">branka.kugler@gmail.com</a>';
 const PHONE = '<a href="tel:+971545979814">+971 54 597 9814</a>';
 const TODO = t => `<span class="lg-todo" data-todo>[${t}]</span>`;
@@ -29,7 +36,8 @@ const PAGES = {
         <p>For anything about your personal data, contact Branka Kugler at ${EMAIL} or ${PHONE}.</p>`],
       ['What we collect', `
         <p><strong>When you visit the website.</strong> The website has no contact forms and no user accounts. Analytics and marketing cookies are used only if you allow them in the cookie banner; see the <a href="cookies.html">Cookie Policy</a>. Like every website, the server that hosts it (${TODO('hosting provider')}) receives the technical data needed to deliver the pages: your IP address, browser and device type, the page requested, and the date and time. This is kept in the server's logs for security and troubleshooting and deleted after ${TODO('number of days, per the hosting provider')}.</p>
-        <p><strong>When you contact us</strong> by phone, WhatsApp or email, or book a session through Calendly: your name, phone number and email address, the messages you send, the details of your property you share with us (location, size, photos, plans) and what you would like done, and the date and time of any appointment.</p>
+${META_ADS ? `        <p><strong>If you allow marketing cookies.</strong> We use the Meta Pixel, a tool from Meta (Facebook and Instagram), to measure our ads and to show ads to people who have visited this website. Only after you allow "Marketing" in the cookie banner, it sends Meta: the pages you view, when you click to book a session (Calendly) or contact us (WhatsApp, phone), your IP address, browser and device information, and the identifiers stored in the cookies listed in the <a href="cookies.html">Cookie Policy</a>. If you are logged in to Facebook or Instagram, Meta can link this to your account. We receive only aggregated reports, not who you are.</p>
+` : ''}        <p><strong>When you contact us</strong> by phone, WhatsApp or email, or book a session through Calendly: your name, phone number and email address, the messages you send, the details of your property you share with us (location, size, photos, plans) and what you would like done, and the date and time of any appointment.</p>
         <p><strong>When you become a client:</strong> in addition, what we need to prepare the quote and the contract, carry out the work, invoice and receive payment, and access the property.</p>
         <p>We do not ask for, and ask you not to send us, sensitive data such as health information or religious beliefs.</p>`],
       ['Why we use it', `
@@ -38,7 +46,8 @@ const PAGES = {
           <li>To prepare a quote, carry out the work and hand over the apartment (performance of a contract).</li>
           <li>To keep accounting, tax and commercial records (legal obligation).</li>
           <li>To keep the website secure and working (our legitimate interest).</li>
-        </ul>
+${META_ADS ? `          <li>To measure our Facebook and Instagram ads and show them to people who visited this website (your consent, given in the cookie banner; you can withdraw it at any time under Cookie settings).</li>
+` : ''}        </ul>
         <p>Photos of apartments we have finished are shown in our portfolio only with the owner's permission and without anything that identifies the owner or guests.</p>
         <p>We do not sell personal data, we do not use it for profiling or automated decisions, and we do not send marketing messages unless you ask for them.</p>`],
       ['Who we share it with', `
@@ -46,15 +55,18 @@ const PAGES = {
           <li>Providers that help us work: website hosting, email (Google), WhatsApp (Meta), appointment booking (Calendly) and our telephone providers.</li>
           <li>Contractors and suppliers working on your project, and only what they need (for example the address and access times).</li>
           <li>Public authorities, where the law requires it.</li>
-        </ul>
+${META_ADS ? `          <li>Meta Platforms, through the Meta Pixel, if you allow marketing cookies (see above). For collecting and sending this data, we and Meta are jointly responsible (joint controllers); Meta is solely responsible for what it does with the data afterwards, as described in the ${META_POLICY}. Meta is the first point of contact for rights concerning its processing; you can also contact us.</li>
+` : ''}        </ul>
         <p>The links to WhatsApp, Calendly, Instagram and Facebook take you to those companies' own websites and apps, where their privacy policies apply.</p>`],
       ['Transfers outside the UAE', `
-        <p>Some of the providers above (Google, Meta, Calendly) store data outside the UAE, including in the United States. We use them only as the UAE Personal Data Protection Law allows and, for visitors from the EU and the UK, rely on the safeguards these providers offer, such as standard contractual clauses.</p>`],
+        <p>Some of the providers above (Google, Meta, Calendly) store data outside the UAE, including in the United States. We use them only as the UAE Personal Data Protection Law allows and, for visitors from the EU and the UK, rely on the safeguards these providers offer, such as standard contractual clauses${META_ADS ? ' and, for Meta, its certification under the EU-U.S. Data Privacy Framework' : ''}.</p>`],
       ['How long we keep it', `
         <ul>
           <li>Enquiries that do not lead to a project: up to 24 months after our last contact, then deleted.</li>
           <li>Client and project records: for as long as UAE commercial and tax law requires us to keep them (generally five to seven years).</li>
           <li>Server logs: as stated above.</li>
+${META_ADS ? `          <li>Meta Pixel cookies: up to 90 days (see the Cookie Policy); data held by Meta: as set out in the ${META_POLICY}.</li>
+` : ''}
         </ul>`],
       ['Your rights', `
         <p>You can ask us to tell you what personal data we hold about you and give you a copy, to correct it, to delete it, to restrict or stop using it, or to send it to you or another company in a common format. Where we use your data because you agreed to it, you can withdraw that agreement at any time.</p>
@@ -96,7 +108,16 @@ const PAGES = {
         <p>Tools and cookies used: ${TODO('name of the analytics tool, its cookie names, provider and how long each lasts, once chosen; if none is used at launch, write "None at present."')}</p>`],
       ['Marketing', `
         <p>Marketing cookies are set by advertising partners to show you relevant ads on other websites and to measure them. They are set only if you allow "Marketing" in the banner.</p>
-        <p>Tools and cookies used: ${TODO('for example the Meta Pixel or Google Ads, with cookie names, provider and duration, once chosen; if none is used at launch, write "None at present."')}</p>`],
+${META_ADS ? `        <p>We use the <strong>Meta Pixel</strong> (Meta Platforms Ireland Ltd. for visitors in the EU and UK, Meta Platforms, Inc. elsewhere) to measure our Facebook and Instagram ads and to show ads to people who visited this website. It records page views and clicks to book a session or contact us. More in our <a href="privacy.html">Privacy Policy</a>, the ${META_POLICY} and the ${META_COOKIES}.</p>
+        <table class="lg-table">
+          <thead><tr><th>Name</th><th>Purpose</th><th>Provider</th><th>How long</th></tr></thead>
+          <tbody>
+            <tr><td>_fbp</td><td>Recognises your browser between visits, so Meta can measure and target ads.</td><td>Meta, set on this website</td><td>90 days</td></tr>
+            <tr><td>_fbc</td><td>Stores the ad click you arrived from, when you come from a Facebook or Instagram ad.</td><td>Meta, set on this website</td><td>90 days</td></tr>
+            <tr><td>fr</td><td>Shows and measures ads; read by Meta if you are logged in to Facebook or Instagram.</td><td>Meta (facebook.com)</td><td>90 days</td></tr>
+          </tbody>
+        </table>
+        <p>If you withdraw your consent, the pixel no longer loads and the _fbp and _fbc cookies are deleted from this website. The fr cookie belongs to facebook.com; delete it in your browser or in your Facebook settings.</p>` : `        <p>Tools and cookies used: none at present. If we start using one, it will be listed here before it is used, and it will run only if you allow "Marketing".</p>`}`],
       ['Your choices', `
         <p>You choose in the banner when you first visit: <strong>Accept all</strong>, <strong>Reject all</strong>, or <strong>Settings</strong> to choose by category. You can change or withdraw your choice at any time with <button type="button" class="lg-inline" data-consent-open>Cookie settings</button>, also at the bottom of every page. Withdrawing consent does not affect use before you withdrew it.</p>
         <p>You can also delete or block cookies in your browser's settings. The website works without analytics and marketing cookies.</p>`],
@@ -180,6 +201,7 @@ ${footer('../')}
 
 <script src="../js/site.js"></script>
 <script src="../js/consent.js"></script>
+<script src="../js/meta-pixel.js"></script>
 </body>
 </html>
 `;

@@ -677,3 +677,16 @@ Revisit for mobile data (smaller/vertical phone frames, AVIF).
   list the tool in the Cookie Policy (TODO placeholders in build-legal.mjs for the analytics and marketing tools).
   Tested: hidden during intro, shown after, choice remembered across pages, reopen keeps the choice, gated script runs only
   after Accept. Note: tools/check.mjs screenshots now include the banner (fresh browser profile).
+
+## 10. Meta ads, prepared but OFF (2026-10-05)
+
+- `js/meta-pixel.js` (loaded after consent.js on every page): Meta Pixel that runs ONLY after "Marketing" consent;
+  sends PageView, Schedule (Calendly click), Contact (WhatsApp/phone click); on withdrawal deletes _fbp/_fbc.
+  **Off while `META_PIXEL_ID = ''`.** Tested with a fake ID: nothing sent before consent, init + PageView after
+  Accept, Schedule on a Calendly click, cookies gone and no pixel after Reject + reload.
+- Legal texts behind `META_ADS` in tools/build-legal.mjs (false = "none at present"). True adds: Privacy (what is
+  sent to Meta, consent as basis, joint controllers with Meta, EU-U.S. Data Privacy Framework, retention) and a
+  Cookie Policy table (_fbp, _fbc, fr, 90 days). Verify the cookie list on the live site when switching on.
+- **To switch on:** Pixel ID in js/meta-pixel.js + `META_ADS = true` + new UPDATED date + `node tools/build-legal.mjs`;
+  in Events Manager accept the Business Tools Terms and keep Automatic Advanced Matching OFF.
+- Package pages need `node tools/build-packages.mjs` to get the meta-pixel.js tag (the builder already has it).
