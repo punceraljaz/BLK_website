@@ -36,6 +36,11 @@ const PACKAGES = [
       ['Delivery and assembly', 'We receive, carry in and build everything.'],
       ['One contact', 'From the first visit to the handover.'],
     ],
+    who: [
+      ['You just got the keys', 'A new, empty unit and no time to furnish it piece by piece.'],
+      ['You rent long-term', 'Tenants want it furnished; the appliances are already there or you choose them yourself.'],
+      ['You live abroad', 'Someone has to pick, order, wait for deliveries and assemble. We do it for you.'],
+    ],
     before: F + 'room/0001.webp', after: F + 'room/0122.webp',
     extra: [
       ['../assets/img/01-furnishing-dining.webp', 'Dining'],
@@ -61,6 +66,11 @@ const PACKAGES = [
       ['Kitchenware', 'Plates, glasses, cutlery, pots and pans.'],
       ['Toiletries and first-stay essentials', 'The basics guests expect to find.'],
     ],
+    who: [
+      ['You will host it yourself', 'You want a working apartment and prefer to choose the linens and kitchenware yourself.'],
+      ['You rent long-term', 'A fully equipped apartment lets faster and to better tenants.'],
+      ['You are testing the market', 'Start short-term rentals without paying for every last detail up front.'],
+    ],
     before: F + 'room2/0001.webp', after: F + 'room2/0121.webp',
     extra: [[F + 'tv2/0121.webp', 'TV corner']],
     figures: true,
@@ -82,6 +92,11 @@ const PACKAGES = [
       ['Professional photo shoot', 'Pictures that make guests stop swiping.'],
       ['A reliable host, if you need one', 'We help you find a property manager to run it.'],
     ],
+    who: [
+      ['You want to start earning now', 'First-time host, no time to learn what guests expect. Day one is booking day.'],
+      ['You own several units', 'One team equips them all to the same standard, fast.'],
+      ['You are not in the UAE', 'Hand over the keys, get back an apartment that is ready to list.'],
+    ],
     before: F + 'room3/0001.webp', after: F + 'room3/0121.webp',
     extra: [[F + 'tv3/0121.webp', 'TV corner']],
     figures: true,
@@ -102,6 +117,11 @@ const PACKAGES = [
       ['Plants and objects', 'Greenery, books, vases and the small things that give a home its character.'],
       ['The finishing check', 'Every room, surface and detail checked before the first guest.'],
       ['A personal handover', 'Branka walks you through the finished apartment.'],
+    ],
+    who: [
+      ['You want the best result', 'Branka’s personal design, every detail chosen for your apartment.'],
+      ['You are investing long-term', 'The best apartments command the best rates and the best guests.'],
+      ['You want it done once, done right', 'The whole apartment, from the first meeting to the handover.'],
     ],
     before: F + 'room4/0001.webp', after: F + 'room4/0121.webp',
     extra: [[F + 'tv4/0121.webp', 'Living corner']],
@@ -178,25 +198,30 @@ ${p.points.map(t => `        <li>${t}</li>`).join('\n')}
   <!-- 2. Everything in it, and the next package up. -->
   <section class="pk-sec" aria-labelledby="inc-h">
     ${label('01', 'What’s included')}
-    <div class="pk-sec__grid">
-      <div>
-        <h2 class="pk-h2" id="inc-h">Everything in <em>${p.name}</em></h2>
-        <p class="pk-note">One team, one contact, one price.</p>
-        <div class="pk-more">
-          <p class="pk-more__q">${p.moreQ}</p>
-          <a class="pk-more__pkg" href="${up.slug}.html"><span>Package ${up.n}</span>${up.name}</a>
-${!last && up !== signature ? `          <p class="pk-more__also">Or the whole thing, finished to the last detail: <a href="${signature.slug}.html">${signature.name}</a>, our signature.</p>\n` : ''}        </div>
-      </div>
-      <ul class="pk-list">
-${p.included.map(([t, d], k) => `        <li><span>${String(k + 1).padStart(2, '0')}</span><div>${t}<small>${d}</small></div></li>`).join('\n')}
-      </ul>
+    <h2 class="pk-h2 pk-h2--wide" id="inc-h">Everything in <em>${p.name}</em></h2>
+    <p class="pk-note">One team, one contact, one price.</p>
+    <ul class="pk-list"${p.included.length >= 5 ? ' style="--n:2"' : ''}>
+${p.included.map(([t, d], k) => `      <li><span>${String(k + 1).padStart(2, '0')}</span><div>${t}<small>${d}</small></div></li>`).join('\n')}
+    </ul>
+    <div class="pk-more">
+      <p class="pk-more__q">${p.moreQ}</p>
+      <a class="pk-more__pkg" href="${up.slug}.html"><span>Package ${up.n}</span>${up.name}</a>
+${!last && up !== signature ? `      <p class="pk-more__also">Or the whole thing, finished to the last detail: <a href="${signature.slug}.html">${signature.name}</a>, our signature.</p>\n` : ''}    </div>
+  </section>
+
+  <!-- 3. Who it's for: three short profiles. -->
+  <section class="pk-sec" aria-labelledby="who-h">
+    ${label('02', 'Who it’s for')}
+    <h2 class="pk-h2 pk-h2--wide" id="who-h">The right package <em>if&hellip;</em></h2>
+    <div class="pk-cols">
+${p.who.map(([t, d], k) => `      <div class="pk-col"><span class="pk-col__n">${String(k + 1).padStart(2, '0')}</span><h3>${t}</h3><p>${d}</p></div>`).join('\n')}
     </div>
   </section>
 
-  <!-- 3. A real apartment finished with this package (client photos), and
-       other corners of the studio. Add more to the package's lists above. -->
+  <!-- 4. A real apartment finished with this package (client photos), and
+       other corners of the studio. -->
   <section class="pk-sec" aria-labelledby="ex-h">
-    ${label('02', 'A real apartment')}
+    ${label('03', 'A real apartment')}
     <h2 class="pk-h2 pk-h2--wide" id="ex-h">What <em>${p.name}</em> looks like</h2>
     <div class="pk-photos" style="--n:${Math.min(p.examples.length, 3)}">
 ${p.examples.map(([src, alt, w = 1672, h = 941]) => `      <img src="${src}" width="${w}" height="${h}" loading="lazy" alt="${esc(alt)}">`).join('\n')}
@@ -206,25 +231,31 @@ ${p.extra.map(([src, cap]) => `      <figure><img src="${src}" loading="lazy" al
     </div>
   </section>
 
-  <!-- 4. What clients say, and the next step. The fixed dock steps aside
-       while these buttons are on screen (html.cta-on, js/package.js). -->
-  <section class="pk-sec pk-close" aria-labelledby="go-h">
-    ${label('03', 'Next step')}
+  <!-- 5. How it works + quotes + CTA. Dock steps aside while buttons are
+       on screen (html.cta-on, js/package.js). -->
+  <section class="pk-sec pk-close" aria-labelledby="how-h">
+    ${label('04', 'How it works')}
+    <h2 class="pk-h2 pk-h2--wide" id="how-h">From the first visit <em>to the keys</em></h2>
 ${p.figures ? `    <ul class="pk-figs">
       <li><b>+20%</b><span>more bookings</span></li>
       <li><b>+50%</b><span>higher daily rate</span></li>
       <li><b>200+</b><span>details taken care of</span></li>
     </ul>
     <p class="pk-figs-note">Based on our experience with the apartments we have remodelled.</p>
-` : ''}    <ul class="pk-quotes">
+` : ''}    <ol class="pk-steps">
+      <li><span>01</span><h3>A visit</h3><p>We see the apartment, measure it and listen to what you want from it.</p></li>
+      <li><span>02</span><h3>A plan and a quote</h3><p>The design, the full list of what goes in and one clear price.</p></li>
+      <li><span>03</span><h3>We do the work</h3><p>Sourcing, delivery and assembly. You do not need to be there.</p></li>
+      <li><span>04</span><h3>The handover</h3><p>You get the keys back to a finished apartment, ready for a guest or tenant.</p></li>
+    </ol>
+    <ul class="pk-quotes">
 ${QUOTES.map(([q, who]) => `      <li><figure class="pf-quote"><blockquote>&ldquo;${q}&rdquo;</blockquote><figcaption>${who}</figcaption></figure></li>`).join('\n')}
     </ul>
     <div class="pk-go">
       <h2 class="pk-h2" id="go-h">Ready to see what your apartment <em>could become?</em></h2>
-      <p class="pk-steps-line">A visit <span aria-hidden="true">·</span> A plan and a quote <span aria-hidden="true">·</span> We do the work <span aria-hidden="true">·</span> The keys</p>
-      <div class="pf-cta">
-        <a class="pf-dock__book" href="${CAL}" target="_blank" rel="noopener">Book a session</a>
-        <a class="pf-dock__call" href="tel:+971545979814" data-choose="call" aria-haspopup="menu">Get in touch</a>
+      <div class="pk-actions">
+        <a class="pk-btn" href="${CAL}" target="_blank" rel="noopener">${ICON_CAL} Book a session</a>
+        <a class="pk-link" href="https://wa.me/971545979814" target="_blank" rel="noopener" data-choose="wa" data-wa-text="${esc(waText)}" aria-haspopup="menu">Ask on WhatsApp</a>
       </div>
       <a class="pk-link pk-all" href="../index.html#pkg-1">See all four packages</a>
     </div>
