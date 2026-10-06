@@ -446,9 +446,10 @@
   // and standing still until the next notch, which made the room stutter.
   // Whole page; touch, keyboard and the scrollbar stay native.
   var SMOOTH_WHEEL_TAU = 110;         // ms: time constant of the ease toward the target
+  var HANDOFF_MS = 120;               // no wheel for this long mid-transition: glide on at once
 
   SequenceChain.prototype.bindSmoothWheel = function () {
-    var self = this, target = null, raf = 0, last = 0;
+    var self = this, target = null, raf = 0, last = 0, lastWheel = 0;
     function maxY() { return document.documentElement.scrollHeight - window.innerHeight; }
     function stop() { target = null; last = 0; self.smoothWheel = false; }
     function step(now) {
@@ -458,6 +459,13 @@
       last = now;
       var y = window.scrollY, d = target - y;
       var move = d * (1 - Math.exp(-dt / SMOOTH_WHEEL_TAU));
+      // The wheel stopped with the target part-way through a transition:
+      // carry straight on into the finishing glide at the current speed,
+      // instead of easing to a stop and waiting for auto finish.
+      if (now - lastWheel > HANDOFF_MS && !reducedMotion.matches) {
+        var dir = d > 0 ? 1 : -1, f = self.finishTarget(target, dir);
+        if (f && (f.dest - y) * dir > 0) { stop(); self.glideTo(f.dest, f.a, move / dt); return; }
+      }
       // Done when close, or when the step is too small to move a whole pixel
       // (scrollY is rounded, so the ease would otherwise never arrive and the
       // wheel would stay "active" forever, blocking auto finish).
@@ -474,6 +482,7 @@
       if (target == null) target = window.scrollY;
       target = Math.max(0, Math.min(maxY(), target + dy));
       self.smoothWheel = true;
+      lastWheel = performance.now();
       if (!raf) raf = requestAnimationFrame(step);
     }, { passive: false });
     // Any other way of scrolling takes over immediately.
@@ -485,10 +494,14 @@
   // ---- auto finish (with "smooth") -----------------------------------------
   // When scrolling stops part-way between two packages (any input: wheel,
   // touch, keys, scrollbar), the page glides to the end of that transition in
-  // the direction of travel. A tiny nudge (under FINISH_MIN of the way)
-  // returns to where it came from instead, so a small scroll never carries
-  // the page a whole package. New input cancels the glide at once.
-  var FINISH_IDLE_MS = 160;           // scroll pause before finishing
+  // the direction of travel, picking up the speed it already has so the room
+  // never pauses mid-animation (wheel: hand-off in bindSmoothWheel; touch
+  // fling and keys: when the native scroll slows below HANDOFF_SPEED). A tiny
+  // nudge (under FINISH_MIN of the way) returns to where it came from
+  // instead, so a small scroll never carries the page a whole package. Any
+  // new input cancels the glide at once: the visitor can always scroll.
+  var FINISH_IDLE_MS = 160;           // scroll pause before finishing (fallback)
+  var HANDOFF_SPEED = 0.5;            // px/ms: native scroll this slow is handed to the glide
   var FINISH_MIN = 0.1;               // share of a transition that counts as "going"
   var FINISH_MS_PER_SECTION = 1500, FINISH_MIN_MS = 450, FINISH_MAX_MS = 1400;
 
@@ -510,26 +523,50 @@
     return list.filter(function (v, i) { return i === 0 || v - list[i - 1] > 1; });
   };
 
-  SequenceChain.prototype.bindAutoFinish = function () {
-    var self = this, timer = 0, touching = false;
-    function finish() {
-      if (self.auto || touching || self.smoothWheel || reducedMotion.matches) return;
-      var a = self.anchors(), y = window.scrollY;
-      if (a.length < 2 || y <= a[0] + 2 || y >= a[a.length - 1] - 2) return;
-      for (var i = 0; i < a.length - 1; i++) {
-        if (y > a[i] + 2 && y < a[i + 1] - 2) {
-          var p = (y - a[i]) / (a[i + 1] - a[i]);
-          var dest = self.scrollDir > 0 ? (p > FINISH_MIN ? a[i + 1] : a[i]) : (p < 1 - FINISH_MIN ? a[i] : a[i + 1]);
-          self.glideTo(dest, a);
-          return;
-        }
+  // Where a transition at y, travelling in dir, should finish; null when y is
+  // on (or outside) the packages.
+  SequenceChain.prototype.finishTarget = function (y, dir) {
+    var a = this.anchors();
+    if (a.length < 2 || y <= a[0] + 2 || y >= a[a.length - 1] - 2) return null;
+    for (var i = 0; i < a.length - 1; i++) {
+      if (y > a[i] + 2 && y < a[i + 1] - 2) {
+        var p = (y - a[i]) / (a[i + 1] - a[i]);
+        var dest = dir > 0 ? (p > FINISH_MIN ? a[i + 1] : a[i]) : (p < 1 - FINISH_MIN ? a[i] : a[i + 1]);
+        return { dest: dest, a: a };
       }
+    }
+    return null;
+  };
+
+  SequenceChain.prototype.bindAutoFinish = function () {
+    var self = this, timer = 0, touching = false, mouseDown = false, lastY = window.scrollY, lastT = 0;
+    function finish(v) {
+      if (self.auto || touching || self.smoothWheel || reducedMotion.matches) return false;
+      var f = self.finishTarget(window.scrollY, self.scrollDir);
+      if (!f) return false;
+      self.glideTo(f.dest, f.a, v);
+      return true;
     }
     // The scroll direction comes from update(), which reads scrollY anyway.
     window.addEventListener('scroll', function () {
+      var y = window.scrollY, now = performance.now();
+      var v = lastT && now - lastT < 100 ? (y - lastY) / (now - lastT) : 0;
+      lastY = y; lastT = now;
       if (self.auto || self.ignoreScroll) return;
       clearTimeout(timer);
+      // A fling or key scroll slowing down: take over while it still moves,
+      // if it is heading where the glide would go (not for a nudge back).
+      if (v && !touching && !mouseDown && !self.smoothWheel && !reducedMotion.matches && Math.abs(v) < HANDOFF_SPEED) {
+        var f = self.finishTarget(y, v > 0 ? 1 : -1);
+        if (f && (f.dest - y) * v > 0 && finish(v)) return;
+      }
       timer = setTimeout(finish, FINISH_IDLE_MS);
+    }, { passive: true });
+    // Scrollbar drag: never take over while the button is held.
+    window.addEventListener('mousedown', function () { mouseDown = true; }, { passive: true });
+    window.addEventListener('mouseup', function () {
+      mouseDown = false;
+      clearTimeout(timer); timer = setTimeout(finish, FINISH_IDLE_MS);
     }, { passive: true });
     window.addEventListener('wheel', function () { if (self.auto) self.cancelGlide(); }, { passive: true, capture: true });
     window.addEventListener('touchstart', function () { touching = true; self.cancelGlide(); }, { passive: true });
@@ -541,11 +578,17 @@
     });
   };
 
-  SequenceChain.prototype.glideTo = function (dest, a) {
+  // v0 (px/ms, optional): the speed the page already has. The glide then
+  // starts at exactly that speed (cubic Hermite curve, never overshoots), so
+  // there is no seam between the visitor's scroll and the finish.
+  SequenceChain.prototype.glideTo = function (dest, a, v0) {
     var self = this;
     var from = window.scrollY, dist = dest - from;
     var section = (a[a.length - 1] - a[0]) / (a.length - 1);
     var ms = Math.min(FINISH_MAX_MS, Math.max(FINISH_MIN_MS, Math.abs(dist) / section * FINISH_MS_PER_SECTION));
+    var m0 = dist && v0 ? v0 * ms / dist : 0;          // start slope in curve units
+    if (m0 > 3) { ms = 3 * dist / v0; m0 = 3; }        // fast: land sooner rather than overshoot
+    var ease = m0 > 0 ? function (t) { return 3 * t * t - 2 * t * t * t + m0 * t * (1 - t) * (1 - t); } : easeGlide;
     if (this.auto) cancelAnimationFrame(this.auto.raf);
     var start = performance.now();
     this.ignoreScroll = true;
@@ -553,7 +596,7 @@
     function step(now) {
       if (!self.auto) return;
       var t = Math.min(1, (now - start) / ms);
-      jumpTo(from + dist * easeGlide(t));
+      jumpTo(from + dist * ease(t));
       if (t < 1) { self.auto.raf = requestAnimationFrame(step); return; }
       self.auto = null;
       // The final step's scroll event arrives next frame; keep ignoring it.

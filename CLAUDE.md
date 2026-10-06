@@ -106,6 +106,14 @@ Source videos (outside the project):
   returns instead. New input cancels. Fixed a smooth-wheel bug on the way: the ease never "arrived" (sub-pixel
   steps round to 0), leaving `smoothWheel` true forever. Test: `tools/test-finish.mjs` (server :4500):
   1 notch → back to pkg-1; 4 notches → pkg-2; 2 down from pkg-2 → pkg-3; 3 up from pkg-3 → pkg-2. Also the gallery flick was calmed (dragFriction 0.35, maxFlickSpeed 3, wheelStep 180).
+  **2026-10-06 (client: "no pause in the middle of the animation if the customer stops scrolling, but they must always be
+  able to scroll"):** no more 160 ms stop-then-glide. The smooth wheel hands over to the glide while still moving
+  (`HANDOFF_MS` 120 ms after the last notch, if the wheel's target is past 10% of a transition), and the glide starts
+  at the page's current speed (`glideTo(dest, a, v0)`: cubic Hermite curve, no overshoot). Touch flings and arrow keys
+  hand over when the native scroll slows below `HANDOFF_SPEED` 0.5 px/ms (not while a mouse button is held = scrollbar
+  drag). Any wheel / touch / key / click cancels the glide at once. The idle timer remains only as a fallback (finger
+  lifted without a fling, scrollbar release, the small-nudge return). Test: `node tools/test-finish.mjs` (recreated):
+  landings as above, longest still run between first move and landing = 1 frame (was ~10), wheel up mid-glide wins.
 - Text on photos: no box. `.pf-photo-card::before` is a **feathered rectangular frosted glow**
   (82% canvas tint, 24px blur, 2.75rem feather) behind the copy. Client went through box → more transparent → no box → glow → "more of a box, a bit bigger". Keep it.
 - Package 4 (Complete Renovation) is still the original design: hand-built SVG floorplan that draws itself
