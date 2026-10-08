@@ -13,6 +13,7 @@
 // pages before (tools/stories.html, css/stories.css, js/stories.js) are no
 // longer used here.
 import fs from 'node:fs';
+import { stamp } from './stamp.mjs';
 import { footer } from './partials.mjs';
 
 const CAL = 'https://calendly.com/blkremoddeling/30min';
@@ -289,3 +290,4 @@ PACKAGES.forEach((p, i) => {
   fs.writeFileSync(`packages/${p.slug}.html`, page(p, i));
   console.log(`packages/${p.slug}.html`);
 });
+stamp();                                   // ?v= on css/js links (tools/stamp.mjs)

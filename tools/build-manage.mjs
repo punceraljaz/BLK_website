@@ -10,6 +10,7 @@
 // stock photos behind the 12 services left out. Photos copied to assets/manage/
 // (tools/manage-photos.mjs), so nothing is loaded from another host.
 import fs from 'node:fs';
+import { stamp } from './stamp.mjs';
 import { footer } from './partials.mjs';
 
 const BRAND = 'BLK Orlovic Management';
@@ -399,3 +400,4 @@ ${footer()}
 fs.mkdirSync('manage', { recursive: true });
 fs.writeFileSync('manage/index.html', html);
 console.log('manage/index.html');
+stamp();                                   // ?v= on css/js links (tools/stamp.mjs)

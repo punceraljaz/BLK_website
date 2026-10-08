@@ -724,3 +724,12 @@ Revisit for mobile data (smaller/vertical phone frames, AVIF).
   prefill, the WhatsApp text; section screenshots in lab/check/manage/.
 - The ChatGPT site's footer names the company **BLK Orlovic FZE** — possibly the legal name for the legal-page TODOs (ask).
 - If the client changes the ChatGPT site, nothing syncs: update build-manage.mjs (new photos: tools/manage-photos.mjs).
+
+## 12. Cache busting (2026-10-08)
+
+- After the 10-08 push the client saw the new manage page broken (photos stretched, areas as a bullet list): the live files
+  were right, but GitHub Pages lets browsers keep CSS/JS for 10 minutes (`Cache-Control: max-age=600`), so the browser paired
+  the new HTML with the cached old manage.css. Ctrl+F5 fixed it.
+- Now every local css/ and js/ link carries `?v=<8-char content hash>` (`tools/stamp.mjs`). build-packages, build-legal and
+  build-manage call it at the end. **After editing index.html or any css/js file by hand, run `node tools/stamp.mjs`
+  before pushing**, or browsers may keep the old file for up to 10 minutes.

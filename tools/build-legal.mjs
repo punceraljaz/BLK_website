@@ -11,6 +11,7 @@
 // TODO() marks facts only the business can give (trade licence, legal name,
 // hosting). They show on the page as bracketed, highlighted text until filled.
 import fs from 'node:fs';
+import { stamp } from './stamp.mjs';
 import { footer, LEGAL } from './partials.mjs';
 
 const UPDATED = '5 October 2026';
@@ -212,3 +213,4 @@ for (const [slug] of LEGAL) {
   fs.writeFileSync(`legal/${slug}.html`, page(slug));
   console.log(`legal/${slug}.html`);
 }
+stamp();                                   // ?v= on css/js links (tools/stamp.mjs)
