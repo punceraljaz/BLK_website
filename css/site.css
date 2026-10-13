@@ -10,8 +10,8 @@
      #81786F, line #B7ADA1, accent #5A372A, floor #462C24. */
   --sc-canvas:      #E3E1DB;
   --sc-surface:     #EDECE8;
-  --sc-ink:         #2B221E;
-  --sc-ink-soft:    #7D7872;
+  --sc-ink:         #000;
+  --sc-ink-soft:    #000;
   --sc-accent:      #2C1F14;   /* warm dark brown = the gallery/footer colour (client 2026-10-05; was chocolate #261F1E, before that mahogany #351D14) */
   --sc-accent-ink:  #F2E6D8;   /* palette cream: light text on the browns */
   --pf-line:        #BEBAB2;
@@ -56,7 +56,7 @@
 }
 .site-bar__mark {
   font-family: var(--pf-serif); font-weight: 500;
-  font-size: 0.95rem; letter-spacing: 0.18em;
+  font-size: 1.1rem; letter-spacing: 0.18em;
   text-transform: uppercase; color: var(--sc-ink); text-decoration: none;
 }
 .site-bar__mark span { color: var(--sc-accent); }
@@ -80,7 +80,7 @@
   text-decoration: none;
 }
 .pf-rail__label {
-  font-family: var(--pf-serif); font-size: 0.76rem; font-weight: 500;
+  font-family: var(--pf-serif); font-size: 0.9rem; font-weight: 500;
   letter-spacing: 0.12em; text-transform: uppercase; white-space: nowrap;
   color: var(--pf-accent-soft);
   transition: color var(--sc-d-fast) var(--sc-ease-out);

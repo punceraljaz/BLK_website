@@ -225,6 +225,71 @@
   io.observe(root);
 })();
 
+// Package navigator: vertical list (desktop) / 2×2 grid (mobile).
+// Direct clicks jump to that package; Prev/Next step through them in order.
+// Scroll between packages is blocked (btnOnly); only clicking advances them.
+(function () {
+  var nav = document.querySelector('.pf-pkgnav');
+  var layer = document.querySelector('[data-seq-chain]');
+  if (!nav || !layer) return;
+
+  var root = document.documentElement;
+  var items = Array.prototype.slice.call(nav.querySelectorAll('.pf-pkgnav__item'));
+  var prevBtn = nav.querySelector('.pf-pkgnav__prev');
+  var nextBtn = nav.querySelector('.pf-pkgnav__next');
+  var curEl   = nav.querySelector('.pf-pkgnav__cur');
+  var pkgIds  = ['pkg-1', 'pkg-2', 'pkg-3', 'pkg-4'];
+  var currentIdx = -1;
+
+  function syncNav(idx) {
+    currentIdx = idx;
+    root.classList.toggle('pkg-on', idx >= 0);
+    items.forEach(function (item, i) { item.classList.toggle('is-active', i === idx); });
+    if (curEl) curEl.textContent = idx >= 0 ? ('0' + (idx + 1)).slice(-2) : '—';
+    if (prevBtn) prevBtn.disabled = (idx <= 0);
+    if (nextBtn) nextBtn.disabled = (idx < 0 || idx >= items.length - 1);
+  }
+
+  // pf:current is dispatched by js/home.js whenever the visible package changes.
+  document.addEventListener('pf:current', function (e) {
+    syncNav(pkgIds.indexOf(e.detail));
+  });
+
+  // scroll-sequence.js defers init() to DOMContentLoaded, so __seq may not
+  // be set yet when this script runs — defer click wiring until after init.
+  function wireClicks() {
+    var chain = layer.__seq;
+    if (!chain) return;
+    chain.btnOnly = true;
+
+    // Direct package jumps.
+    items.forEach(function (item, i) {
+      item.addEventListener('click', function () {
+        if (chain.auto) return;
+        var a = chain.anchors();
+        if (a.length > i) chain.glideTo(a[i], a);
+      });
+    });
+
+    // Prev / Next step through adjacent packages.
+    if (prevBtn) prevBtn.addEventListener('click', function () {
+      if (chain.auto || currentIdx <= 0) return;
+      var a = chain.anchors();
+      if (a.length > currentIdx - 1) chain.glideTo(a[currentIdx - 1], a);
+    });
+    if (nextBtn) nextBtn.addEventListener('click', function () {
+      if (chain.auto || currentIdx < 0 || currentIdx >= items.length - 1) return;
+      var a = chain.anchors();
+      if (a.length > currentIdx + 1) chain.glideTo(a[currentIdx + 1], a);
+    });
+  }
+
+  if (layer.__seq) wireClicks();
+  else document.addEventListener('DOMContentLoaded', wireClicks);
+
+  syncNav(-1);   // initialise disabled states before any package is current
+})();
+
 // Test aid, off unless asked for in the address:
 //   ?fps  corner readout: frames per second and how frames are decoded
 (function () {

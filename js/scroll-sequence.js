@@ -290,6 +290,7 @@
     this.auto = null;                        // running auto-finish glide
     this.ignoreScroll = false;
     this.smoothWheel = false;
+    this.btnOnly = false;
     this.lastY = window.scrollY;
     this.scrollDir = 1;                      // last scroll direction (auto finish)
     this.tick = this.tick.bind(this);
@@ -477,6 +478,20 @@
       if (reducedMotion.matches || e.ctrlKey || e.defaultPrevented) return;   // zoom, lightbox
       if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;                    // sideways: native
       if (document.documentElement.classList.contains('sg-lb-lock')) return;
+      if (self.btnOnly) {
+        // Button-only mode: block scroll between the first and last package anchor.
+        // At the first anchor the user can still scroll up (back to hero); at the
+        // last anchor they can scroll down (to About). Between them, use the button.
+        var a = self.anchors();
+        if (a.length >= 2) {
+          var by = window.scrollY;
+          if (by > a[0] + 2 && by < a[a.length - 1] - 2) {
+            e.preventDefault();
+            if (self.auto) { stop(); self.cancelGlide(); }
+          }
+        }
+        return;
+      }
       var dy = e.deltaY * (e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? window.innerHeight : 1);
       e.preventDefault();
       if (target == null) target = window.scrollY;
@@ -489,6 +504,22 @@
     ['mousedown', 'keydown', 'touchstart'].forEach(function (type) {
       window.addEventListener(type, function () { stop(); self.cancelGlide(); }, { passive: true });
     });
+    // Button-only mode: block keyboard and touch scroll in the animation zone.
+    window.addEventListener('keydown', function (e) {
+      if (!self.btnOnly || self.auto) return;
+      if ([32, 33, 34, 35, 36, 38, 40].indexOf(e.keyCode) < 0) return;
+      var a = self.anchors();
+      if (!a.length) return;
+      var ky = window.scrollY;
+      if (ky > a[0] + 2 && ky < a[a.length - 1] - 2) e.preventDefault();
+    }, { passive: false });
+    window.addEventListener('touchmove', function (e) {
+      if (!self.btnOnly || self.auto) return;
+      var a = self.anchors();
+      if (!a.length) return;
+      var ty = window.scrollY;
+      if (ty > a[0] + 2 && ty < a[a.length - 1] - 2) e.preventDefault();
+    }, { passive: false });
   };
 
   // ---- auto finish (with "smooth") -----------------------------------------

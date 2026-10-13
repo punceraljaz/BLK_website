@@ -36,7 +36,7 @@ body { background: var(--sc-canvas); color: var(--sc-ink); }
   padding: clamp(1.5rem, 4vh, 3rem) 0 clamp(4.5rem, 10vh, 6rem) var(--sc-gutter);   /* bottom: room for the dock */
 }
 .pk-title { margin: clamp(1.5rem, 4vh, 2.5rem) 0 0; }
-.pk-lead { margin: 0.9rem 0 0; max-width: 26rem; color: var(--sc-ink-soft); }
+.pk-lead { margin: 0.9rem 0 0; max-width: 26rem; color: var(--sc-ink); }
 .pk-points {
   list-style: none; margin: clamp(1.5rem, 4vh, 2.25rem) 0 clamp(1.75rem, 4.5vh, 2.5rem); padding: 0;
   max-width: 26rem;
@@ -44,7 +44,7 @@ body { background: var(--sc-canvas); color: var(--sc-ink); }
 }
 .pk-points li {
   padding: 0.75rem 0.5rem 0.75rem 0; border-top: 1px solid var(--sc-hairline);
-  font-size: 0.82rem; line-height: 1.6; letter-spacing: 0.04em; color: var(--sc-ink-soft);
+  font-size: 0.88rem; line-height: 1.6; letter-spacing: 0.08em; color: var(--sc-ink);
 }
 
 /* Before / after: the after picture is clipped from the left to --pos
@@ -88,7 +88,7 @@ body { background: var(--sc-canvas); color: var(--sc-ink); }
 }
 .pk-h2 { margin: 0; max-width: 18em; text-wrap: balance; }
 .pk-h2--wide { margin-top: clamp(1.75rem, 5vh, 3rem); max-width: none; }
-.pk-note { margin: 0.8rem 0 0; font-size: 0.86rem; color: var(--sc-ink-soft); }
+.pk-note { margin: 0.8rem 0 0; font-size: 0.86rem; color: var(--sc-ink); }
 
 /* What's included: a list on hairlines */
 .pk-list {
@@ -101,12 +101,12 @@ body { background: var(--sc-canvas); color: var(--sc-ink); }
   display: grid; grid-template-columns: 2.4rem 1fr; gap: 0.5rem;
   padding: 0.85rem 0; border-bottom: 1px solid var(--sc-hairline);
 }
-.pk-list li span { font-size: 0.66rem; letter-spacing: 0.16em; color: var(--sc-ink-soft); padding-top: 0.35em; }
-.pk-list small { display: block; font-size: 0.8rem; line-height: 1.6; color: var(--sc-ink-soft); }
+.pk-list li span { font-size: 0.66rem; letter-spacing: 0.16em; color: #000; padding-top: 0.35em; }
+.pk-list small { display: block; font-size: 0.95rem; line-height: 1.6; color: #000; }
 
 /* The next package up (Donna Branka: the one below), and the signature. */
 .pk-more { margin-top: clamp(2rem, 6vh, 3.5rem); padding-top: 1.5rem; border-top: 1px solid var(--sc-hairline); max-width: 24rem; }
-.pk-more__q { margin: 0; font-size: 0.86rem; color: var(--sc-ink-soft); }
+.pk-more__q { margin: 0; font-size: 0.86rem; color: var(--sc-ink); }
 .pk-more__pkg {
   display: block; margin-top: 0.7rem; color: var(--sc-ink); text-decoration: none;
   font-size: clamp(1rem, 0.8rem + 0.55vw, 1.4rem); font-weight: 300; letter-spacing: 0.16em; text-transform: uppercase;
@@ -114,7 +114,7 @@ body { background: var(--sc-canvas); color: var(--sc-ink); }
 }
 .pk-more__pkg span { display: block; margin-bottom: 0.4rem; font-size: 0.6rem; font-weight: 400; letter-spacing: 0.3em; color: var(--sc-ink-soft); }
 .pk-more__pkg:hover { color: var(--sc-accent); }
-.pk-more__also { margin: 1.25rem 0 0; font-size: 0.8rem; line-height: 1.7; color: var(--sc-ink-soft); }
+.pk-more__also { margin: 1.25rem 0 0; font-size: 0.86rem; line-height: 1.7; color: var(--sc-ink); }
 .pk-more__also a { color: var(--sc-ink); text-underline-offset: 0.25em; text-decoration-color: color-mix(in oklab, var(--sc-ink) 35%, transparent); }
 
 /* A real apartment: the client photo(s) large, other corners small under. */

@@ -14,7 +14,7 @@ body, body * { font-family: var(--pf-text) !important; }
 body { font-size: 15px; font-weight: 300; letter-spacing: 0.02em; }
 
 /* --- accent words: lighter, not italic ------------------------------------ */
-em { font-style: normal; color: var(--sc-ink-soft); }
+em { font-style: normal; }
 
 /* --- headlines: thin wide capitals ----------------------------------------- */
 .pf-page__sub, .pf-display, .pf-h2, .pf-work__title,
@@ -30,32 +30,34 @@ em { font-style: normal; color: var(--sc-ink-soft); }
 .pk-next__big strong { font-size: clamp(1.15rem, 0.85rem + 0.85vw, 1.65rem); }
 
 /* --- the logo and tiny spaced capitals (like the intro subtitle) ------------ */
-.site-bar__mark    { font-weight: 400; font-size: 0.74rem; letter-spacing: 0.34em; }
-.pf-rail__label    { font-weight: 400; font-size: 0.6rem; letter-spacing: 0.28em; }
-.pf-page__title    { font-weight: 400; font-size: 0.64rem; letter-spacing: 0.34em; }
+.site-bar__mark    { font-weight: 400; font-size: 1.1rem;  letter-spacing: 0.34em; }
+.pf-rail__label    { font-weight: 400; font-size: 0.9rem;  letter-spacing: 0.28em; }
+.pf-page__title    { font-weight: 400; font-size: 0.85rem; letter-spacing: 0.34em; }
 .pf-site-foot__brand { font-weight: 400; letter-spacing: 0.34em; }
 .pf-kicker, .pf-about-kicker, .pk-label, .pf-quote figcaption,
 .pf-page__link, .pf-textlink, .pk-link, .pf-dock a, .pf-cta a, .pk-btn, .pf-work__link,
 .pf-choose__head, .pf-choose a span, .pf-flow__label, .pf-badge {
   font-weight: 400 !important; letter-spacing: 0.3em !important;
 }
-.pf-kicker, .pf-about-kicker, .pk-label, .pf-flow__label, .pf-quote figcaption { font-size: 0.6rem !important; }
-.pf-page__link, .pf-dock a, .pf-cta a, .pk-btn, .pk-link, .pf-textlink, .pf-work__link { font-size: 0.6rem !important; }
-.pf-badge { font-size: 0.54rem !important; }
+.pf-kicker, .pf-about-kicker, .pk-label, .pf-flow__label, .pf-quote figcaption { font-size: 0.82rem !important; }
+.pf-page__link, .pk-link, .pf-textlink, .pf-work__link { font-size: 0.82rem !important; }
+.pf-dock a, .pf-cta a, .pk-btn { font-size: 0.78rem !important; }
+.pf-badge { font-size: 0.65rem !important; }
 
 /* --- figures: thin and wide ----------------------------------------------- */
 .pf-figure__num, .pk-figs b { font-weight: 200; letter-spacing: 0.08em; font-size: clamp(1.9rem, 1.2rem + 1.9vw, 3rem); }
 
-/* --- text: light, small, airy ---------------------------------------------- */
+/* --- text: light, readable, normal case ------------------------------------ */
 .pf-page__text, .pf-lead, .pf-body, .pk-intro, .pk-note, .pk-col p, .pk-steps p,
 .pf-figure__label, .pk-list li,
 .pf-flow__know {
-  font-weight: 300; line-height: 1.95; letter-spacing: 0.03em;
+  font-weight: 300; line-height: 1.75; letter-spacing: 0.025em;
+  color: #000 !important;
 }
-.pf-page__text, .pf-body, .pk-intro, .pk-note, .pk-col p, .pk-steps p { font-size: 0.86rem; }
-.pf-lead, .pk-lead { font-size: clamp(0.92rem, 0.85rem + 0.2vw, 1.02rem); line-height: 1.9; font-weight: 300; }
-.pf-figure__label, .pk-list li, .pf-flow__know { font-size: 0.86rem; }
-.pf-quote blockquote { font-style: normal; font-weight: 300; font-size: 0.9rem; line-height: 1.95; letter-spacing: 0.03em; }
+.pf-page__text, .pf-body, .pk-intro, .pk-note, .pk-col p, .pk-steps p { font-size: 0.95rem; }
+.pf-lead, .pk-lead { font-size: clamp(0.95rem, 0.88rem + 0.2vw, 1.08rem); line-height: 1.7; font-weight: 300; }
+.pf-figure__label, .pk-list li, .pf-flow__know { font-size: 1.05rem; }
+.pf-quote blockquote { font-style: normal; font-weight: 300; font-size: 0.95rem; line-height: 1.75; letter-spacing: 0.025em; }
 .pf-work__cta p { font-style: normal; font-weight: 300; font-size: 0.95rem; letter-spacing: 0.08em; }
 .pf-figures-note, .pk-figs-note { font-style: normal; font-size: 0.72rem; letter-spacing: 0.06em; }
 .pk-col h3, .pk-steps h3 {
@@ -75,4 +77,21 @@ em { font-style: normal; color: var(--sc-ink-soft); }
   font-size: clamp(0.95rem, 0.7rem + 0.55vw, 1.25rem); font-weight: 300; line-height: 1.6;
   text-transform: uppercase; letter-spacing: 0.16em; color: var(--sc-ink); max-width: 30em;
 }
-.pf-about-cols p { font-weight: 300; letter-spacing: 0.02em; color: var(--pal-cocoa); }
+.pf-about-cols p { font-weight: 300; letter-spacing: 0.02em; color: #000; }
+
+/* --- phone: revert all bumped sizes back to original ----------------------- */
+@media (max-width: 900px) {
+  .site-bar__mark    { font-size: 0.74rem; }
+  .pf-page__title    { font-size: 0.64rem; }
+  .pf-kicker, .pf-about-kicker, .pk-label,
+  .pf-flow__label, .pf-quote figcaption        { font-size: 0.6rem !important; }
+  .pf-page__link, .pk-link,
+  .pf-textlink, .pf-work__link                 { font-size: 0.6rem !important; }
+  .pf-dock a, .pf-cta a, .pk-btn              { font-size: 0.6rem !important; }
+  .pf-badge                                    { font-size: 0.54rem !important; }
+  .pf-page__text, .pf-body, .pk-intro,
+  .pk-note, .pk-col p, .pk-steps p            { font-size: 0.86rem; }
+  .pf-lead, .pk-lead                           { font-size: 0.92rem; }
+  .pf-figure__label, .pk-list li, .pf-flow__know { font-size: 0.86rem; }
+  .pk-list small { font-size: 0.86rem; }
+}

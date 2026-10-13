@@ -164,8 +164,10 @@ html.hero-on .site-bar { opacity: 0; transform: translateY(-100%); pointer-event
 }
 .pf-page__sub { margin: clamp(1.6rem, 4vh, 2.6rem) 0 0; color: var(--sc-ink); text-wrap: balance; }
 .pf-page__text {
-  margin: clamp(2rem, 4.5vh, 2.9rem) 0 0; max-width: 18rem;
-  font-size: 0.95rem; line-height: 1.65; color: var(--sc-ink-soft);
+  margin: clamp(1.75rem, 4vh, 2.5rem) 0 0; max-width: 26rem;
+  padding-top: clamp(1.25rem, 3vh, 1.75rem);
+  border-top: 1px solid color-mix(in oklab, var(--sc-ink) 10%, transparent);
+  font-size: 0.95rem; line-height: 1.75; color: #000; font-weight: 400;
 }
 /* Small caps links, muted; a 1px line draws in under them on hover
    (always shown, faint, under "More about"). */
@@ -181,6 +183,118 @@ html.hero-on .site-bar { opacity: 0; transform: translateY(-100%); pointer-event
 .pf-page__link--more { color: var(--sc-ink); box-shadow: inset 0 -1px 0 var(--pf-line); }
 .pf-page__link:focus-visible { outline: 1px solid var(--sc-ink); outline-offset: 6px; }
 .pf-page .pf-rooms { margin-top: clamp(2.5rem, 6vh, 3.75rem); }
+
+/* ─── Package navigator ──────────────────────────────────────────────────────
+   Desktop: fixed vertical list on the right edge. A 1px line connects the four
+   circular dots; the active dot is filled. Click any row or use Prev/Next.
+   Visible while html.pkg-on (any package is current).
+   Mobile: 2×2 grid above the package text + Prev/Next bar below it.
+   ─────────────────────────────────────────────────────────────────────────── */
+.pf-pkgnav {
+  position: fixed; right: 1.5rem; top: 50%; transform: translateY(-50%);
+  z-index: calc(var(--sc-z-copy) + 1);
+  display: flex; flex-direction: column; gap: 0.9rem;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity 0.4s ease, visibility 0.4s;
+}
+html.pkg-on .pf-pkgnav { opacity: 1; visibility: visible; pointer-events: auto; }
+
+/* "EXPLORE PACKAGES" heading above the track */
+.pf-pkgnav__heading {
+  margin: 0 0 0 0.75rem;
+  font-size: 0.46rem; letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--sc-ink); opacity: 0.38;
+  white-space: nowrap;
+}
+
+/* Track: vertical list with the 1px connecting line */
+.pf-pkgnav__track {
+  position: relative;
+  display: flex; flex-direction: column;
+}
+.pf-pkgnav__track::before {
+  content: ''; pointer-events: none;
+  position: absolute; left: 0.31rem; top: 1.5rem; bottom: 1.5rem;
+  width: 1px;
+  background: color-mix(in oklab, var(--sc-ink) 18%, transparent);
+}
+
+/* Each item: dot + number + name; entire row is the click target.
+   Inactive items are slightly muted; active stands out via filled dot + left bar. */
+.pf-pkgnav__item {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 0.7rem 0.8rem 0.7rem 0.75rem;
+  min-height: 2.75rem;
+  background: none; border: none; cursor: pointer;
+  color: var(--sc-ink); text-align: left; white-space: nowrap;
+  position: relative;
+  opacity: 0.52;
+  transition: opacity 0.25s ease;
+}
+.pf-pkgnav__item.is-active { opacity: 1; }
+.pf-pkgnav__item:hover { opacity: 0.8; }
+/* thin left selection bar — invisible on inactive, solid on active */
+.pf-pkgnav__item::before {
+  content: '';
+  position: absolute; left: 0; top: 22%; bottom: 22%;
+  width: 2px; border-radius: 1px;
+  background: var(--sc-ink);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.pf-pkgnav__item.is-active::before { opacity: 1; }
+.pf-pkgnav__item:hover:not(.is-active)::before { opacity: 0.2; }
+.pf-pkgnav__item:focus-visible { outline: 1px solid var(--sc-ink); outline-offset: 4px; border-radius: 2px; }
+
+/* Circular indicator */
+.pf-pkgnav__dot {
+  flex: none; position: relative; z-index: 1;
+  width: 0.56rem; height: 0.56rem; border-radius: 50%;
+  border: 1.5px solid color-mix(in oklab, var(--sc-ink) 45%, transparent);
+  background: var(--sc-canvas);
+  transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+.pf-pkgnav__item:hover .pf-pkgnav__dot { border-color: var(--sc-ink); }
+.pf-pkgnav__item.is-active .pf-pkgnav__dot {
+  background: var(--sc-ink); border-color: var(--sc-ink); transform: scale(1.5);
+}
+
+/* Number + name stacked */
+.pf-pkgnav__info { display: flex; flex-direction: column; gap: 0.08rem; }
+.pf-pkgnav__n { font-size: 0.5rem; letter-spacing: 0.2em; color: var(--sc-ink); }
+.pf-pkgnav__name { font-size: 0.78rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--sc-ink); }
+.pf-pkgnav__item.is-active .pf-pkgnav__name { font-weight: 500; }
+
+/* Controls row: labeled Prev/Next + counter */
+.pf-pkgnav__controls {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.5rem 0 0; gap: 0.5rem;
+  border-top: 1px solid color-mix(in oklab, var(--sc-ink) 10%, transparent);
+}
+.pf-pkgnav__counter {
+  flex: 1; text-align: center;
+  font-size: 0.52rem; letter-spacing: 0.22em; opacity: 0.38; white-space: nowrap;
+}
+.pf-pkgnav__cur { font-weight: 500; }
+.pf-pkgnav__prev, .pf-pkgnav__next {
+  flex: none;
+  display: flex; align-items: center; gap: 0.35rem;
+  min-height: 2.75rem; padding: 0 0.2rem;
+  background: none; border: none; cursor: pointer;
+  color: var(--sc-ink);
+  font-size: 0.52rem; letter-spacing: 0.18em; text-transform: uppercase;
+  opacity: 0.45;
+  transition: opacity 0.2s ease;
+}
+.pf-pkgnav__prev:hover:not(:disabled),
+.pf-pkgnav__next:hover:not(:disabled) { opacity: 1; }
+/* Next gets slightly more visual weight — it's the primary direction */
+.pf-pkgnav__next { opacity: 0.65; }
+.pf-pkgnav__prev:disabled, .pf-pkgnav__next:disabled {
+  opacity: 0.15; cursor: default; pointer-events: none;
+}
+.pf-pkgnav__prev:focus-visible,
+.pf-pkgnav__next:focus-visible { outline: 1px solid var(--sc-ink); outline-offset: 4px; border-radius: 2px; }
 
 /* Desktop: package 04 widens the room (more of the reconfigured studio is
    in view) and narrows the text page; html.room-wide is set by js/home.js. */
@@ -250,15 +364,19 @@ html.hero-on .site-bar { opacity: 0; transform: translateY(-100%); pointer-event
 }
 .pf-lede__list a:hover { background-size: 100% 1px, 100% 1px; }
 .pf-lede__list a:focus-visible { outline: 1px solid var(--sc-ink); outline-offset: 4px; }
-.pf-lede__n { margin-bottom: 0.55rem; font-size: 0.6rem; font-weight: 300; letter-spacing: 0.2em; color: var(--sc-ink-soft); }
-.pf-lede__name { font-size: 0.66rem; font-weight: 400; letter-spacing: 0.26em; text-transform: uppercase; white-space: nowrap; }
-.pf-lede__what { margin-top: 0.35rem; font-size: 0.74rem; line-height: 1.5; font-weight: 300; color: var(--sc-ink-soft); }
+.pf-lede__n { margin-bottom: 0.55rem; font-size: 0.72rem; font-weight: 300; letter-spacing: 0.2em; color: var(--sc-ink-soft); }
+.pf-lede__name { font-size: 0.85rem; font-weight: 400; letter-spacing: 0.26em; text-transform: uppercase; white-space: nowrap; }
+.pf-lede__what { margin-top: 0.35rem; font-size: 0.88rem; line-height: 1.5; font-weight: 300; color: var(--sc-ink); }
 html:has(.pf-pkg.is-current) .pf-lede { opacity: 0; pointer-events: none; }
 @media (max-width: 900px) {
   /* Client 2026-10-04: right under the hero picture, not centred in the band. */
   .pf-lede { grid-template-columns: minmax(0, 1fr); align-content: start; padding-top: 2rem; }
   .pf-lede__intro { padding-right: 0; }
   .pf-lede__list { display: none; }   /* client 2026-10-04: no 01-04 list on phones, only the sentence */
+  /* Revert lede sizes to original */
+  .pf-lede__n    { font-size: 0.6rem; }
+  .pf-lede__name { font-size: 0.66rem; }
+  .pf-lede__what { font-size: 0.74rem; }
 }
 .pf-room-layer {
   position: sticky; top: 0; z-index: 0;
@@ -382,20 +500,24 @@ html.view-tv .pf-tv-view { opacity: 1; }
   :root {
     /* Taller picture, but always leaving ~19rem for the text block above it,
        so small phones don't run the text into it. */
-    --m-img-h: min(52svh, calc(100svh - 4.75rem - 19rem));
+    /* Gap below the image: thumbnails (3rem) sit at bottom:5rem above the dock,
+       so the image needs at least 9rem of clear space under it. */
+    --m-img-bottom: 9rem;
+    --pf-grid-h: 7.5rem;       /* height of the 2×2 package nav grid + controls */
+    --m-img-h: min(52svh, calc(100svh - 4.75rem - 15rem - var(--m-img-bottom) - var(--pf-grid-h)));
     --spread-img-w: 100vw;
     --spread-img-h: var(--m-img-h);
     /* The picture keeps the text's side margins and a bottom margin. */
     --room-max-w: 100vw;
     --room-inset: var(--sc-gutter);
-    --view-top: calc(100svh - var(--m-img-h));
+    --view-top: calc(100svh - var(--m-img-h) - var(--m-img-bottom));
     --view-w: calc(100vw - 2 * var(--room-inset));
     --view-max-w: var(--view-w);
     --view-h: calc(var(--m-img-h) - var(--room-inset));
   }
   .pf-room-frame { --feather: 3.5rem; --feather-y: 3rem; }
   .pf-page {
-    left: 0; top: 4.75rem; bottom: var(--m-img-h);
+    left: 0; top: calc(4.75rem + var(--pf-grid-h)); bottom: calc(var(--m-img-h) + var(--m-img-bottom));
     padding: clamp(0.75rem, 3svh, 2rem) var(--sc-gutter) var(--sc-4);
   }
   /* Full width so the statements take two lines, not three (client 2026-10-04:
@@ -406,9 +528,60 @@ html.view-tv .pf-tv-view { opacity: 1; }
 
   .pf-page__text { display: none; }
   .pf-page__links { margin-top: clamp(1.1rem, 3svh, 1.75rem); gap: 0.6rem 1.8rem; }
-  .pf-page .pf-rooms { margin-top: clamp(1rem, 2.6svh, 1.6rem); gap: 0.55rem; }
+  /* Thumbnails move below the main image, above the dock (dock top ≈ 4.25rem). */
+  .pf-page .pf-rooms {
+    position: fixed; bottom: 5rem; left: var(--sc-gutter); right: var(--sc-gutter);
+    margin: 0; gap: 0.6rem; justify-content: flex-start;
+  }
   .pf-room { width: 3.9rem; }
   .pf-room:hover img { transform: none; }
+  /* Mobile package navigator: 2×2 grid + controls bar at top of text area. */
+  .pf-pkgnav {
+    right: auto; top: 4.75rem; left: 0; transform: none;
+    width: 100%; height: var(--pf-grid-h);
+    flex-direction: column; gap: 0;
+    background: var(--sc-canvas);
+    border-bottom: 1px solid color-mix(in oklab, var(--sc-ink) 12%, transparent);
+    z-index: 25;
+  }
+  .pf-pkgnav__heading { display: none; }
+  .pf-pkgnav__track {
+    flex: 1;
+    display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;
+  }
+  .pf-pkgnav__track::before { display: none; }
+  .pf-pkgnav__item {
+    padding: 0.6rem var(--sc-gutter);
+    min-height: 0; gap: 0.5rem;
+    border-right: 1px solid color-mix(in oklab, var(--sc-ink) 10%, transparent);
+    border-bottom: 1px solid color-mix(in oklab, var(--sc-ink) 10%, transparent);
+    border-radius: 0; opacity: 0.45; align-items: center;
+  }
+  .pf-pkgnav__item:nth-child(2n) { border-right: none; }
+  .pf-pkgnav__item:nth-child(n+3) { border-bottom: none; }
+  .pf-pkgnav__item.is-active {
+    opacity: 1;
+    background: color-mix(in oklab, var(--sc-ink) 6%, var(--sc-canvas));
+  }
+  .pf-pkgnav__item::before { display: none; }
+  .pf-pkgnav__dot { display: none; }
+  .pf-pkgnav__info { flex-direction: row; align-items: center; gap: 0.45rem; }
+  .pf-pkgnav__n { font-size: 0.5rem; }
+  .pf-pkgnav__name { font-size: 0.64rem; letter-spacing: 0.14em; }
+  .pf-pkgnav__item.is-active .pf-pkgnav__name { font-weight: 500; }
+  .pf-pkgnav__controls {
+    flex: none;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 var(--sc-gutter);
+    height: 2.2rem;
+    border-top: 1px solid color-mix(in oklab, var(--sc-ink) 10%, transparent);
+  }
+  .pf-pkgnav__prev, .pf-pkgnav__next {
+    min-height: 2.2rem; padding: 0 0.2rem;
+    font-size: 0.62rem; letter-spacing: 0.1em;
+    gap: 0.3rem;
+  }
+  .pf-pkgnav__btn-full { display: none; }
 }
 
 /* -------------------------------------------------- after the room -- */
@@ -432,7 +605,7 @@ html.view-tv .pf-tv-view { opacity: 1; }
 .pf-lead { margin: var(--sc-6) 0 0; max-width: 34em; color: var(--sc-ink); }
 .pf-body {
   margin: var(--sc-4) 0 0; max-width: 38em;
-  font-size: 1rem; line-height: 1.7; color: var(--sc-ink-soft);
+  font-size: 1rem; line-height: 1.7; color: var(--sc-ink); font-weight: 400;
 }
 .pf-textlink {
   display: inline-block; margin-top: var(--sc-6);
