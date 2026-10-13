@@ -360,9 +360,10 @@
   window.addEventListener('resize', function () { placeInd(cur); });
   document.fonts && document.fonts.ready.then(function () { placeInd(cur); });
 
-  // Start on first package (or from hash)
-  var m = /^#pkg-([1-4])$/.exec(location.hash);
-  go(m ? parseInt(m[1], 10) - 1 : 0, { focus: false });
-  if (m) setTimeout(function () { document.getElementById('packages').scrollIntoView({ block: 'start' }); }, 100);
+  // Always start on Furnishing (pkg-1); if a hash link is shared scroll to packages
+  go(0, { focus: false });
+  if (/^#pkg-[1-4]$/.test(location.hash)) {
+    setTimeout(function () { document.getElementById('packages').scrollIntoView({ block: 'start' }); }, 100);
+  }
 })();
 
