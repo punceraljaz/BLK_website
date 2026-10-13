@@ -39,8 +39,7 @@
     }, 9000);
   })();
 </script>
-<link rel="preload" as="image" href="assets/frames/room/0001.webp" type="image/webp">
-<link rel="stylesheet" href="css/home.css?v=58a37c9d">
+<link rel="stylesheet" href="css/home.css?v=c2801d07">
 <link rel="stylesheet" href="css/type.css?v=2d488e54">
 </head>
 <body>
@@ -61,7 +60,7 @@
   <nav class="pf-rail" aria-label="Packages">
     <a class="pf-rail__item is-active" href="#pkg-1" data-target="pkg-1"><span class="pf-rail__label">Furnishing</span></a>
     <a class="pf-rail__item" href="#pkg-2" data-target="pkg-2"><span class="pf-rail__label">Basic Airbnb</span></a>
-    <a class="pf-rail__item" href="#pkg-3" data-target="pkg-3"><span class="pf-rail__label">Upscale Airbnb</span></a>
+    <a class="pf-rail__item" href="#pkg-3" data-target="pkg-3"><span class="pf-rail__label">High-End Airbnb</span></a>
     <a class="pf-rail__item" href="#pkg-4" data-target="pkg-4"><span class="pf-rail__label">Donna Branka</span></a>
   </nav>
 
@@ -90,217 +89,67 @@
     </nav>
   </section>
 
-  <!-- ROOM TRACK · one room behind the four packages (js/scroll-sequence.js).
-       The layer is sticky across the whole track, and the package stages above
-       it are transparent, so only the text changes over one continuous room:
-         clip 1 plays on page load   (empty -> furnished, package 01)
-         clips 2-4 scrub with scroll (package 01 -> 02 -> 03 -> 04)
-       Each package section is --span screens of scroll (css/home.css .pf-pkg). -->
-  <div class="pf-room-track">
-    <!-- data-seq-assist="smooth": a wheel notch is eased over a few frames, and
-         scrolling that stops between two packages finishes the transition. -->
-    <div class="pf-room-layer" aria-hidden="true" data-seq-focus="0.62" data-seq-assist="smooth"
-         data-seq-chain='[
-           {"path":"assets/frames/room/",  "count":122, "video":true, "play":"load", "fps":24, "delay":150, "buffer":40},
-           {"path":"assets/frames/room2/", "count":121, "video":true, "play":"scroll", "from":"#pkg-1", "to":"#pkg-2", "blend":8},
-           {"path":"assets/frames/room3/", "count":121, "video":true, "play":"scroll", "from":"#pkg-2", "to":"#pkg-3", "blend":8},
-           {"path":"assets/frames/room4/", "count":121, "video":true, "play":"scroll", "from":"#pkg-3", "to":"#pkg-4", "blend":8}
-         ]'>
-      <div class="pf-room-frame">
-        <img class="pf-room-layer__poster" src="assets/frames/room/0001.webp" width="1904" height="1088" alt="">
-        <canvas class="seq__canvas"></canvas>
-        <!-- The TV-corner view: a second chain of the same studio seen from the
-             dining/TV corner, scrubbed by the same scroll. Downloaded only
-             once a TV thumbnail is hovered or picked; shown with html.view-tv
-             (js/home.js "Room views"). Clip 1 (dining) is played
-             on demand; clips 2-4 follow the packages like the bedroom. -->
-        <div class="pf-tv-view" aria-hidden="true" data-seq-lazy data-seq-assist="off" data-seq-focus="0.7"
-             data-seq-chain='[
-               {"path":"assets/frames/tv1/", "count":121, "video":true, "play":"manual"},
-               {"path":"assets/frames/tv2/", "count":121, "video":true, "play":"scroll", "from":"#pkg-1", "to":"#pkg-2"},
-               {"path":"assets/frames/tv3/", "count":121, "video":true, "play":"scroll", "from":"#pkg-2", "to":"#pkg-3", "blend":8},
-               {"path":"assets/frames/tv4/", "count":121, "video":true, "play":"scroll", "from":"#pkg-3", "to":"#pkg-4", "blend":8}
-             ]'>
+  <!-- Package intro -->
+  <div class="pf-sw-intro">
+    <div class="pf-sw-intro__copy" data-sc-in>
+      <h2 class="pf-h2">Choose how far you want to take the transformation.</h2>
+      <p class="pf-body">Four remodeling packages, shaped around the space, the vision and the investment.</p>
+    </div>
+    <div class="pf-sw-intro__scale" aria-hidden="true">
+      <span style="--o:.2">Shell</span><span style="--o:.5">Host</span><span style="--o:.75">List</span><span style="--o:1">Signature</span>
+    </div>
+  </div>
+
+  <!-- Package switcher: vertical tablist on the left, photo + copy panel on the right.
+       JS: js/home.js "Package switcher". -->
+  <section class="pf-sw" id="packages" aria-label="Packages">
+    <div class="pf-sw__rail">
+      <p class="pf-sw__label" id="pf-sw-label">Explore packages</p>
+      <div class="pf-sw__tabs" role="tablist" aria-labelledby="pf-sw-label"
+           aria-orientation="vertical" id="pf-sw-tabs">
+        <span class="pf-sw__track" aria-hidden="true"></span>
+        <span class="pf-sw__fill" aria-hidden="true"></span>
+        <span class="pf-sw__hlbox" aria-hidden="true" id="pf-sw-hlbox"></span>
+        <span class="pf-sw__ind" aria-hidden="true" id="pf-sw-ind"></span>
+      </div>
+    </div>
+    <div class="pf-sw__stage">
+      <!-- Shared animation frame: one canvas plays all 4 room clips.
+           JS (home.js "Package switcher") calls __seq.playClip(i) on tab change. -->
+      <div class="pf-sw__seq-wrap">
+        <div class="pf-sw__seq-frame" id="pf-sw-seq"
+          data-seq-chain='[{"path":"assets/frames/room/","count":122,"play":"load","fps":36,"delay":150,"buffer":40,"video":true},{"path":"assets/frames/room2/","count":121,"play":"manual","fps":36,"blend":8,"video":true},{"path":"assets/frames/room3/","count":121,"play":"manual","fps":36,"blend":8,"video":true},{"path":"assets/frames/room4/","count":121,"play":"manual","fps":36,"blend":8,"video":true}]'
+          data-seq-focus="0.62">
           <canvas class="seq__canvas"></canvas>
-        </div>
-        <!-- A photo of another room (kitchen, bathroom), shown over either view. -->
-        <img class="pf-room-view pf-room-view--still" alt="">
-      </div>
-    </div>
-
-  <!-- Lead line in the empty band between the hero and the room (client
-       2026-10-04). Sits at the top of the track and scrolls away with it;
-       fades out once a package's own text is shown (css/home.css .pf-lede). -->
-  <div class="pf-lede">
-    <div class="pf-lede__intro">
-      <h2 class="pf-h2 pf-lede__title">Choose how far you want to take the transformation.</h2>
-      <p class="pf-body pf-lede__text">Four remodeling packages, shaped around the space, the vision and the investment.</p>
-    </div>
-    <ol class="pf-lede__list" aria-label="The four packages">
-      <li><a href="#pkg-1"><span class="pf-lede__n">01</span><span class="pf-lede__name">Furnishing</span><span class="pf-lede__what">The empty shell, furnished</span></a></li>
-      <li><a href="#pkg-2"><span class="pf-lede__n">02</span><span class="pf-lede__name">Basic Airbnb</span><span class="pf-lede__what">Ready to host</span></a></li>
-      <li><a href="#pkg-3"><span class="pf-lede__n">03</span><span class="pf-lede__name">Upscale Airbnb</span><span class="pf-lede__what">The finer things</span></a></li>
-      <li><a href="#pkg-4"><span class="pf-lede__n">04</span><span class="pf-lede__name">Donna Branka</span><span class="pf-lede__what">The signature package</span></a></li>
-    </ol>
-  </div>
-
-  <!-- Package 01, Furnishing -->
-  <section id="pkg-1" class="pf-pkg" style="--span: 2"
-           aria-label="Package 01, Furnishing: an empty studio in Ras Al Khaimah with sea views fills with an upholstered bed and armchair.">
-    <div class="pf-stage">
-      <div class="pf-page">
-        <div class="pf-page__body">
-          <h1 class="pf-page__title">Furnishing</h1>
-          <p class="pf-page__sub">Every home starts empty.</p>
-          <p class="pf-page__text">The essential furniture, delivered and assembled.</p>
-          <div class="pf-page__links">
-            <a class="pf-page__link pf-page__link--more" href="packages/furnishing.html">More about the package <span aria-hidden="true">&rarr;</span></a>
-            <a class="pf-page__link" href="https://wa.me/971545979814" target="_blank" rel="noopener" data-choose="wa" data-wa-text="Hi BLK Remodelling, I'd like to know more about the Furnishing package." aria-haspopup="menu">Ask on WhatsApp</a>
+          <!-- TV-corner clips: loaded only when a TV thumbnail is first clicked -->
+          <div class="pf-sw__tv-seq" id="pf-sw-tv-seq"
+            data-seq-chain='[{"path":"assets/frames/tv1/","count":121,"play":"manual","fps":36,"video":true},{"path":"assets/frames/tv2/","count":121,"play":"manual","fps":36,"blend":8,"video":true},{"path":"assets/frames/tv3/","count":121,"play":"manual","fps":36,"blend":8,"video":true},{"path":"assets/frames/tv4/","count":121,"play":"manual","fps":36,"blend":8,"video":true}]'
+            data-seq-lazy data-seq-focus="0.7">
+            <canvas class="seq__canvas"></canvas>
           </div>
-          <!-- Views of the studio: each thumbnail switches what the left-hand
-               page shows (the bedroom animation, the dining clip, or a photo). -->
-          <ul class="pf-rooms" aria-label="Views of the studio">
-            <li><button type="button" class="pf-room is-active" aria-pressed="true" data-view="bedroom" data-caption="Bedroom">
-              <img src="assets/img/01-bedroom-thumb.webp" alt=""><span>Bedroom</span></button></li>
-            <li><button type="button" class="pf-room" aria-pressed="false" data-view="tv" data-caption="Dining">
-              <img src="assets/img/01-dining-end-thumb.webp" alt=""><span>Dining</span></button></li>
-            <li><button type="button" class="pf-room" aria-pressed="false" data-full="assets/img/01-furnishing-kitchen.webp" data-caption="Kitchen">
-              <img src="assets/img/01-furnishing-kitchen-thumb.webp" alt=""><span>Kitchen</span></button></li>
-            <li><button type="button" class="pf-room" aria-pressed="false" data-full="assets/img/01-furnishing-bathroom.webp" data-caption="Bathroom">
-              <img src="assets/img/01-furnishing-bathroom-thumb.webp" alt=""><span>Bathroom</span></button></li>
-          </ul>
+          <img class="pf-sw__seq-still" id="pf-sw-seq-still" src="" alt="" aria-hidden="true">
+          <span class="pf-sw__chip pf-sw__chip--room" id="pf-sw-seq-room">Bedroom</span>
+          <span class="pf-sw__chip pf-sw__chip--badge" id="pf-sw-seq-badge" style="display:none"></span>
         </div>
+        <div class="pf-sw__thumbs" id="pf-sw-thumbs" role="group" aria-label="Package views"></div>
+      </div>
+      <div class="pf-sw__panels" id="pf-sw-panels"></div>
+      <div class="pf-sw__controls">
+        <button class="pf-sw__prev" type="button" id="pf-sw-prev" aria-label="Previous package" disabled>
+          <span class="pf-sw__circ" aria-hidden="true">←</span>
+          <span class="pf-sw__steplbl">Previous<span class="pf-sw__full"> package</span></span>
+        </button>
+        <div class="pf-sw__counter">
+          <b id="pf-sw-count" aria-live="polite">01 <span>/ 04</span></b>
+          <span class="pf-sw__segs" id="pf-sw-segs" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        </div>
+        <button class="pf-sw__next" type="button" id="pf-sw-next" aria-label="Next package">
+          <span class="pf-sw__steplbl">Next<span class="pf-sw__full"> package</span></span>
+          <span class="pf-sw__circ" aria-hidden="true">→</span>
+        </button>
       </div>
     </div>
   </section>
-
-  <!-- Package 02, Basic Airbnb -->
-  <section id="pkg-2" class="pf-pkg" style="--span: 2"
-           aria-label="Package 02, Basic Airbnb: the same studio, now with bedding, curtains, lamps and wall art.">
-    <div class="pf-stage">
-      <div class="pf-page">
-        <div class="pf-page__body">
-          <h2 class="pf-page__title">Basic Airbnb</h2>
-          <p class="pf-page__sub">Furnished. Fitted. Ready to host.</p>
-          <p class="pf-page__text">Furniture, appliances, linens and kitchenware. Ready for the first guest.</p>
-          <div class="pf-page__links">
-            <a class="pf-page__link pf-page__link--more" href="packages/basic-airbnb.html">More about the package <span aria-hidden="true">&rarr;</span></a>
-            <a class="pf-page__link" href="https://wa.me/971545979814" target="_blank" rel="noopener" data-choose="wa" data-wa-text="Hi BLK Remodelling, I'd like to know more about the Basic Airbnb package." aria-haspopup="menu">Ask on WhatsApp</a>
-          </div>
-          <ul class="pf-rooms" aria-label="Views of the studio">
-            <li><button type="button" class="pf-room is-active" aria-pressed="true" data-view="bedroom" data-caption="Bedroom">
-              <img src="assets/img/02-bedroom-thumb.webp" alt=""><span>Bedroom</span></button></li>
-            <li><button type="button" class="pf-room" aria-pressed="false" data-view="tv" data-caption="TV corner">
-              <img src="assets/img/02-tv-end-thumb.webp" alt=""><span>TV corner</span></button></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Package 03, Upscale Airbnb -->
-  <section id="pkg-3" class="pf-pkg" style="--span: 2"
-           aria-label="Package 03, Upscale Airbnb: the studio finished with a green feature wall, wood floor, leather armchair, throw and fresh towels.">
-    <div class="pf-stage">
-      <div class="pf-page">
-        <div class="pf-page__body">
-          <h2 class="pf-page__title">Upscale Airbnb</h2>
-          <p class="pf-page__sub">The finer things, already in place.</p>
-          <p class="pf-page__text">Finer pieces, soft linens, every detail guests notice. Ready to list.</p>
-          <div class="pf-page__links">
-            <a class="pf-page__link pf-page__link--more" href="packages/upscale-airbnb.html">More about the package <span aria-hidden="true">&rarr;</span></a>
-            <a class="pf-page__link" href="https://wa.me/971545979814" target="_blank" rel="noopener" data-choose="wa" data-wa-text="Hi BLK Remodelling, I'd like to know more about the Upscale Airbnb package." aria-haspopup="menu">Ask on WhatsApp</a>
-          </div>
-          <ul class="pf-rooms" aria-label="Views of the studio">
-            <li><button type="button" class="pf-room is-active" aria-pressed="true" data-view="bedroom" data-caption="Bedroom">
-              <img src="assets/img/03-bedroom-thumb.webp" alt=""><span>Bedroom</span></button></li>
-            <li><button type="button" class="pf-room" aria-pressed="false" data-view="tv" data-caption="TV corner">
-              <img src="assets/img/03-tv-end-thumb.webp" alt=""><span>TV corner</span></button></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Package 04, Donna Branka: the signature package, best seller. The room
-       behind it is clip 4, the studio finished, the camera turning to a new
-       living corner. -->
-  <section id="pkg-4" class="pf-pkg" style="--span: 2.6"
-           aria-label="Package 04, Donna Branka, our signature and best-selling package: the studio finished to the last detail, with a living corner, sofa, shelves and a reading lamp beside the bed.">
-    <div class="pf-stage">
-      <div class="pf-page">
-        <div class="pf-page__body">
-          <h2 class="pf-page__title">Donna Branka</h2>
-          <p class="pf-badge">Signature · Best seller</p>
-          <p class="pf-page__sub">Our signature. Finished to the last detail.</p>
-          <p class="pf-page__text">Designed and styled by Branka. Nothing left to add.</p>
-          <div class="pf-page__links">
-            <a class="pf-page__link pf-page__link--more" href="packages/donna-branka.html">More about the package <span aria-hidden="true">&rarr;</span></a>
-            <a class="pf-page__link" href="https://wa.me/971545979814" target="_blank" rel="noopener" data-choose="wa" data-wa-text="Hi BLK Remodelling, I'd like to know more about the Donna Branka package." aria-haspopup="menu">Ask on WhatsApp</a>
-          </div>
-          <ul class="pf-rooms" aria-label="Views of the studio">
-            <li><button type="button" class="pf-room is-active" aria-pressed="true" data-view="bedroom" data-caption="Bedroom">
-              <img src="assets/img/04-bedroom-thumb.webp" alt=""><span>Bedroom</span></button></li>
-            <li><button type="button" class="pf-room" aria-pressed="false" data-view="tv" data-caption="TV corner">
-              <img src="assets/img/04-tv-end-thumb.webp" alt=""><span>TV corner</span></button></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  </div><!-- /.pf-room-track -->
-
-  <!-- Package navigator: visible while any package is current (html.pkg-on).
-       Desktop → fixed vertical list on the right edge with connecting line + dots.
-       Mobile  → 2×2 grid above the package text, with Prev/Next controls.
-       JS: js/home.js "Package navigator". -->
-  <div class="pf-pkgnav" aria-label="Package navigation" role="group">
-    <p class="pf-pkgnav__heading" aria-hidden="true">Explore Packages</p>
-    <div class="pf-pkgnav__track">
-      <button class="pf-pkgnav__item" data-pkg="0">
-        <span class="pf-pkgnav__dot" aria-hidden="true"></span>
-        <span class="pf-pkgnav__info">
-          <span class="pf-pkgnav__n">01</span>
-          <span class="pf-pkgnav__name">Furnishing</span>
-        </span>
-      </button>
-      <button class="pf-pkgnav__item" data-pkg="1">
-        <span class="pf-pkgnav__dot" aria-hidden="true"></span>
-        <span class="pf-pkgnav__info">
-          <span class="pf-pkgnav__n">02</span>
-          <span class="pf-pkgnav__name">Basic Airbnb</span>
-        </span>
-      </button>
-      <button class="pf-pkgnav__item" data-pkg="2">
-        <span class="pf-pkgnav__dot" aria-hidden="true"></span>
-        <span class="pf-pkgnav__info">
-          <span class="pf-pkgnav__n">03</span>
-          <span class="pf-pkgnav__name">Upscale Airbnb</span>
-        </span>
-      </button>
-      <button class="pf-pkgnav__item" data-pkg="3">
-        <span class="pf-pkgnav__dot" aria-hidden="true"></span>
-        <span class="pf-pkgnav__info">
-          <span class="pf-pkgnav__n">04</span>
-          <span class="pf-pkgnav__name">Donna Branka</span>
-        </span>
-      </button>
-    </div>
-    <div class="pf-pkgnav__controls">
-      <button class="pf-pkgnav__prev" aria-label="Previous package">
-        <span aria-hidden="true">&#8592;</span>
-        <span class="pf-pkgnav__btn-label">Prev<span class="pf-pkgnav__btn-full">ious</span></span>
-      </button>
-      <span class="pf-pkgnav__counter" aria-live="polite">
-        <b class="pf-pkgnav__cur">01</b><span aria-hidden="true"> / 04</span>
-      </span>
-      <button class="pf-pkgnav__next" aria-label="Next package">
-        <span class="pf-pkgnav__btn-label">Next<span class="pf-pkgnav__btn-full"> package</span></span>
-        <span aria-hidden="true">&#8594;</span>
-      </button>
-    </div>
-  </div>
 
   <!-- About us · dark spread (client reference, 2026-10-05: photo on the left
        half, text low on the right). Before that: studio sheet ("Form & Sight",
@@ -381,11 +230,11 @@
   </div>
 </footer>
 
-<script src="js/scroll-sequence.js?v=2efd52b7"></script>
 <script src="js/site.js?v=fd477c52"></script>
 <script src="js/consent.js?v=cf4d3bd9"></script>
 <script src="js/meta-pixel.js?v=b9498a67"></script>
 <script src="js/strip-gallery.js?v=9da2af36"></script>
-<script src="js/home.js?v=f2456e81"></script>
+<script src="js/scroll-sequence.js?v=placeholder"></script>
+<script src="js/home.js?v=bfccd8fd"></script>
 </body>
 </html>

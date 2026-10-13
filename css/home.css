@@ -78,17 +78,6 @@
 .site-bar { transition: opacity 0.6s ease, transform 0.7s var(--sc-ease-out); }
 html.hero-on .site-bar { opacity: 0; transform: translateY(-100%); pointer-events: none; }
 
-/* ------------------------------------------------- pinned package sections -- */
-/* Each package section is --span screens tall; its stage sticks to the top
-   while the page scrolls through it. (Was the scrollcraft engine's
-   data-sc-act="pin" / data-sc-span; now plain CSS.) */
-.pf-pkg { position: relative; height: calc(var(--span, 2) * 100vh); }
-.pf-stage {
-  position: sticky; top: 0; z-index: var(--sc-z-stage);
-  height: 100vh; height: 100svh;
-  overflow: clip;
-}
-
 /* Reveal once on entry (js/home.js adds .sc-in). */
 [data-sc-in] {
   opacity: 0; transform: translate3d(0, 14px, 0);
@@ -99,489 +88,327 @@ html.hero-on .site-bar { opacity: 0; transform: translateY(-100%); pointer-event
   [data-sc-in] { transform: none; transition-duration: 220ms; }
 }
 
-/* ---------------------------------------------- packages: the right page -- */
-/* Only four things: the package name as a small serif label, the statement,
-   one short sentence and quiet text links (plus the view thumbnails).
-   The page is fixed to the screen, so its text never scrolls over the room.
-   Only the current package's page shows (.is-current on its section, set by
-   js/home.js). On a change the old text slides off to the right and fades
-   (.is-leaving), and the new one slides in from the left, line after line.
-   The text block sits in the upper part of the page, not centred. */
-.pf-page {
-  position: fixed; z-index: var(--sc-z-copy);
-  left: var(--spread-img-w); right: 0; top: 4.75rem; bottom: 0;
-  padding: clamp(3rem, 15vh, 9rem) clamp(2.5rem, 7vw, 8rem) 2rem;
-  display: flex; align-items: flex-start;
-  color: var(--sc-ink);
-  visibility: hidden; pointer-events: none;
+/* ─── Package intro ───────────────────────────────────────────────────────── */
+.pf-sw-intro {
+  display: grid; grid-template-columns: minmax(0,1.6fr) minmax(0,1fr);
+  gap: 2rem clamp(2rem,5vw,5rem); align-items: end;
+  padding: clamp(3rem,7vw,6rem) var(--sc-gutter) clamp(2rem,4vw,3.5rem);
 }
-.is-current .pf-page { visibility: visible; pointer-events: auto; }
-.is-leaving .pf-page { visibility: visible; }
-.pf-page__body > * { opacity: 0; transform: translateX(-2.5rem); }
-.is-current .pf-page__body > * {
-  opacity: 1; transform: none;
-  transition: opacity 0.8s ease var(--in, 0.3s), transform 1.1s cubic-bezier(0.22, 0.61, 0.36, 1) var(--in, 0.3s);
+.pf-sw-intro__copy .pf-h2 { margin: 0; }
+.pf-sw-intro__copy .pf-body { margin: 0.75rem 0 0; max-width: 38ch; }
+.pf-sw-intro__scale {
+  display: grid; grid-template-columns: repeat(4,1fr); gap: 6px;
 }
-.pf-page__body > :nth-child(2) { --in: 0.42s; }
-.pf-page__body > :nth-child(3) { --in: 0.54s; }
-.pf-page__body > :nth-child(n+4) { --in: 0.66s; }
-.is-leaving .pf-page__body > * {
-  opacity: 0; transform: translateX(2.5rem);
-  transition: opacity 0.4s ease, transform 0.55s cubic-bezier(0.55, 0, 0.75, 0.35);
+.pf-sw-intro__scale span {
+  display: grid; gap: 7px;
+  font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--sc-ink); opacity: var(--o);
 }
-@media (prefers-reduced-motion: reduce) {
-  .pf-page__body > *, .is-current .pf-page__body > *, .is-leaving .pf-page__body > * { transform: none; }
+.pf-sw-intro__scale span::before {
+  content: ''; height: 2px; background: var(--sc-ink); opacity: inherit;
 }
-.pf-page__body { max-width: 30rem; }
-.pf-page__title {
-  margin: 0;
-  line-height: 1.2; text-transform: uppercase;
-  white-space: nowrap;                         /* the package name on one line */
-  color: var(--sc-ink);
-}
-/* Client 2026-10-04: the package name sits on a dark brown band, so it
-   stands apart from the rest of the text and marks each package as the
-   video moves on. Band and name are revealed together by one left-to-right
-   wipe (clip-path) a moment after the text arrives, so the light name is
-   never seen without its band. It stays while the text leaves and resets
-   (no transition) for the next arrival. */
-.pf-page__title {
-  width: fit-content; padding: 0.95em 1.3em 0.9em;
-  background: var(--pf-floor); color: var(--sc-accent-ink);   /* the darkest chocolate, set apart from the cocoa buttons */
-  clip-path: inset(0 100% 0 0);
-}
-.is-current .pf-page__title {
-  clip-path: inset(0);
-  transition: opacity 0.8s ease 0.3s, transform 1.1s cubic-bezier(0.22, 0.61, 0.36, 1) 0.3s,
-              clip-path 1s cubic-bezier(0.65, 0, 0.35, 1) 0.4s;
-}
-.is-leaving .pf-page__title { clip-path: inset(0); }
-/* Donna Branka's badge sits apart, under the band: brown text in a brown outline. */
-.pf-page p.pf-badge { margin: 1rem 0 0; border-color: var(--sc-accent); }
-.pf-page p.pf-badge + .pf-page__sub { margin-top: clamp(1.3rem, 3vh, 2rem); }
-@media (prefers-reduced-motion: reduce) {
-  .pf-page__title { clip-path: none; }
-}
-.pf-page__sub { margin: clamp(1.6rem, 4vh, 2.6rem) 0 0; color: var(--sc-ink); text-wrap: balance; }
-.pf-page__text {
-  margin: clamp(1.75rem, 4vh, 2.5rem) 0 0; max-width: 26rem;
-  padding-top: clamp(1.25rem, 3vh, 1.75rem);
-  border-top: 1px solid color-mix(in oklab, var(--sc-ink) 10%, transparent);
-  font-size: 0.95rem; line-height: 1.75; color: #000; font-weight: 400;
-}
-/* Small caps links, muted; a 1px line draws in under them on hover
-   (always shown, faint, under "More about"). */
-.pf-page__link {
-  display: inline-block; padding-bottom: 0.5em;
-  text-transform: uppercase;
-  color: var(--sc-ink-soft); text-decoration: none;
-  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
-  transition: color var(--sc-d-base) var(--sc-ease-out), background-size 0.5s var(--sc-ease-out);
-}
-.pf-page__link:hover { color: var(--sc-ink); background-size: 100% 1px; }
-.pf-page__links { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.9rem 2.6rem; margin-top: clamp(2.25rem, 5vh, 3.25rem); }
-.pf-page__link--more { color: var(--sc-ink); box-shadow: inset 0 -1px 0 var(--pf-line); }
-.pf-page__link:focus-visible { outline: 1px solid var(--sc-ink); outline-offset: 6px; }
-.pf-page .pf-rooms { margin-top: clamp(2.5rem, 6vh, 3.75rem); }
-
-/* ─── Package navigator ──────────────────────────────────────────────────────
-   Desktop: fixed vertical list on the right edge. A 1px line connects the four
-   circular dots; the active dot is filled. Click any row or use Prev/Next.
-   Visible while html.pkg-on (any package is current).
-   Mobile: 2×2 grid above the package text + Prev/Next bar below it.
-   ─────────────────────────────────────────────────────────────────────────── */
-.pf-pkgnav {
-  position: fixed; right: 1.5rem; top: 50%; transform: translateY(-50%);
-  z-index: calc(var(--sc-z-copy) + 1);
-  display: flex; flex-direction: column; gap: 0.9rem;
-  opacity: 0; visibility: hidden; pointer-events: none;
-  transition: opacity 0.4s ease, visibility 0.4s;
-}
-html.pkg-on .pf-pkgnav { opacity: 1; visibility: visible; pointer-events: auto; }
-
-/* "EXPLORE PACKAGES" heading above the track */
-.pf-pkgnav__heading {
-  margin: 0 0 0 0.75rem;
-  font-size: 0.46rem; letter-spacing: 0.28em; text-transform: uppercase;
-  color: var(--sc-ink); opacity: 0.38;
-  white-space: nowrap;
-}
-
-/* Track: vertical list with the 1px connecting line */
-.pf-pkgnav__track {
-  position: relative;
-  display: flex; flex-direction: column;
-}
-.pf-pkgnav__track::before {
-  content: ''; pointer-events: none;
-  position: absolute; left: 0.31rem; top: 1.5rem; bottom: 1.5rem;
-  width: 1px;
-  background: color-mix(in oklab, var(--sc-ink) 18%, transparent);
-}
-
-/* Each item: dot + number + name; entire row is the click target.
-   Inactive items are slightly muted; active stands out via filled dot + left bar. */
-.pf-pkgnav__item {
-  display: flex; align-items: center; gap: 1rem;
-  padding: 0.7rem 0.8rem 0.7rem 0.75rem;
-  min-height: 2.75rem;
-  background: none; border: none; cursor: pointer;
-  color: var(--sc-ink); text-align: left; white-space: nowrap;
-  position: relative;
-  opacity: 0.52;
-  transition: opacity 0.25s ease;
-}
-.pf-pkgnav__item.is-active { opacity: 1; }
-.pf-pkgnav__item:hover { opacity: 0.8; }
-/* thin left selection bar — invisible on inactive, solid on active */
-.pf-pkgnav__item::before {
-  content: '';
-  position: absolute; left: 0; top: 22%; bottom: 22%;
-  width: 2px; border-radius: 1px;
-  background: var(--sc-ink);
-  opacity: 0;
-  transition: opacity 0.25s ease;
-}
-.pf-pkgnav__item.is-active::before { opacity: 1; }
-.pf-pkgnav__item:hover:not(.is-active)::before { opacity: 0.2; }
-.pf-pkgnav__item:focus-visible { outline: 1px solid var(--sc-ink); outline-offset: 4px; border-radius: 2px; }
-
-/* Circular indicator */
-.pf-pkgnav__dot {
-  flex: none; position: relative; z-index: 1;
-  width: 0.56rem; height: 0.56rem; border-radius: 50%;
-  border: 1.5px solid color-mix(in oklab, var(--sc-ink) 45%, transparent);
-  background: var(--sc-canvas);
-  transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
-}
-.pf-pkgnav__item:hover .pf-pkgnav__dot { border-color: var(--sc-ink); }
-.pf-pkgnav__item.is-active .pf-pkgnav__dot {
-  background: var(--sc-ink); border-color: var(--sc-ink); transform: scale(1.5);
-}
-
-/* Number + name stacked */
-.pf-pkgnav__info { display: flex; flex-direction: column; gap: 0.08rem; }
-.pf-pkgnav__n { font-size: 0.5rem; letter-spacing: 0.2em; color: var(--sc-ink); }
-.pf-pkgnav__name { font-size: 0.78rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--sc-ink); }
-.pf-pkgnav__item.is-active .pf-pkgnav__name { font-weight: 500; }
-
-/* Controls row: labeled Prev/Next + counter */
-.pf-pkgnav__controls {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0.5rem 0 0; gap: 0.5rem;
-  border-top: 1px solid color-mix(in oklab, var(--sc-ink) 10%, transparent);
-}
-.pf-pkgnav__counter {
-  flex: 1; text-align: center;
-  font-size: 0.52rem; letter-spacing: 0.22em; opacity: 0.38; white-space: nowrap;
-}
-.pf-pkgnav__cur { font-weight: 500; }
-.pf-pkgnav__prev, .pf-pkgnav__next {
-  flex: none;
-  display: flex; align-items: center; gap: 0.35rem;
-  min-height: 2.75rem; padding: 0 0.2rem;
-  background: none; border: none; cursor: pointer;
-  color: var(--sc-ink);
-  font-size: 0.52rem; letter-spacing: 0.18em; text-transform: uppercase;
-  opacity: 0.45;
-  transition: opacity 0.2s ease;
-}
-.pf-pkgnav__prev:hover:not(:disabled),
-.pf-pkgnav__next:hover:not(:disabled) { opacity: 1; }
-/* Next gets slightly more visual weight — it's the primary direction */
-.pf-pkgnav__next { opacity: 0.65; }
-.pf-pkgnav__prev:disabled, .pf-pkgnav__next:disabled {
-  opacity: 0.15; cursor: default; pointer-events: none;
-}
-.pf-pkgnav__prev:focus-visible,
-.pf-pkgnav__next:focus-visible { outline: 1px solid var(--sc-ink); outline-offset: 4px; border-radius: 2px; }
-
-/* Desktop: package 04 widens the room (more of the reconfigured studio is
-   in view) and narrows the text page; html.room-wide is set by js/home.js. */
-@media (min-width: 901px) {
-  html.room-wide { --spread-img-w: 62vw; }
-  html.room-wide .pf-page { padding-inline: clamp(2rem, 3.5vw, 4rem); }
-  .pf-room-frame { transition: clip-path 0.9s cubic-bezier(0.65, 0, 0.35, 1); }
-  .pf-room-frame::before { transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1); }
-  .pf-room-frame > .pf-room-layer__poster,
-  .pf-room-frame .seq__canvas { transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1); }
-  .pf-page { transition: left 0.9s cubic-bezier(0.65, 0, 0.35, 1), padding 0.9s cubic-bezier(0.65, 0, 0.35, 1); }
-}
-
-/* ------------------------------------------------------------ room track -- */
-/* One sticky room layer behind the four packages. margin-bottom cancels its
-   own height so the first package starts at the same top; the package
-   stages above it are transparent, so only their text changes.
-   Layout (client reference: a furniture catalogue spread): the room is the
-   left-hand page; each package's text is the right-hand page. Under half the
-   screen, so frames are drawn scaled down (sharp) and the animation stays
-   light. */
-:root {
-  --spread-img-w: 47vw;                       /* visible width of the room */
-  --room-max-w: 62vw;                         /* its widest (package 04) */
-  --spread-img-h: calc(100svh - 4.75rem);
-  /* Air around the picture so it does not run to the screen edges. The
-     view-* sizes are the picture itself, inside that margin. */
-  --room-inset: clamp(1rem, 2.2vw, 2.25rem);   /* sets the picture's size */
-  --room-edge: calc(var(--room-inset) * 0.45);  /* its gap to the left and bottom screen edges */
-  --view-w: calc(var(--spread-img-w) - var(--room-inset));
-  --view-max-w: calc(var(--room-max-w) - var(--room-inset));
-  --view-h: calc(var(--spread-img-h) - 2 * var(--room-inset));
-  --view-left: var(--room-edge);
-  --view-top: calc(100svh - var(--room-edge) - var(--view-h));
-}
-.pf-room-track { position: relative; }
-/* Lead line between the hero and the room (client 2026-10-04): the
-   sentence on the left, the four packages as a small index on the right,
-   starting where the package text column starts. It fills the band from the
-   hero's bottom edge to the picture's top (the hero gap + the track's first
-   --view-top), scrolls away with the page and fades once a package's own
-   text is current, so the two never overlap. Phones: stacked, see below. */
-.pf-lede {
-  position: absolute; z-index: 1; left: 0; right: 0;
-  top: calc(-1 * var(--hero-gap)); height: calc(var(--hero-gap) + var(--view-top));
-  display: grid; align-items: center;
-  grid-template-columns: calc(var(--spread-img-w) + clamp(2.5rem, 7vw, 8rem) - var(--sc-gutter)) minmax(0, 1fr);
-  padding: 0 var(--sc-gutter) calc(var(--room-inset) * 0.3);
-  transition: opacity 0.6s var(--sc-ease-out);
-}
-.pf-lede__intro { padding-right: clamp(1.5rem, 4vw, 4rem); }
-.pf-lede .pf-lede__title { margin: 0; max-width: 30em; font-size: clamp(1.05rem, 0.85rem + 0.5vw, 1.4rem); color: var(--sc-ink); text-wrap: balance; }
-.pf-lede__text { margin: 0.6rem 0 0; max-width: 34em; text-wrap: balance; }
-/* The index: one row of four, each package under a hairline that darkens on hover
-   (like the hero items), number and name on one line, a few words under. */
-.pf-lede__list {
-  list-style: none; margin: 0; padding: 0;
-  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.1rem clamp(1rem, 2vw, 2rem);
-}
-.pf-lede__list a {
-  display: grid; grid-template-columns: auto; align-items: baseline;
-  padding-top: 0.8rem; color: var(--sc-ink); text-decoration: none;
-  background:
-    linear-gradient(var(--sc-ink), var(--sc-ink)) 0 0 / 0 1px no-repeat,
-    linear-gradient(var(--pf-line), var(--pf-line)) 0 0 / 100% 1px no-repeat;
-  transition: background-size 0.7s var(--sc-ease-out);
-}
-.pf-lede__list a:hover { background-size: 100% 1px, 100% 1px; }
-.pf-lede__list a:focus-visible { outline: 1px solid var(--sc-ink); outline-offset: 4px; }
-.pf-lede__n { margin-bottom: 0.55rem; font-size: 0.72rem; font-weight: 300; letter-spacing: 0.2em; color: var(--sc-ink-soft); }
-.pf-lede__name { font-size: 0.85rem; font-weight: 400; letter-spacing: 0.26em; text-transform: uppercase; white-space: nowrap; }
-.pf-lede__what { margin-top: 0.35rem; font-size: 0.88rem; line-height: 1.5; font-weight: 300; color: var(--sc-ink); }
-html:has(.pf-pkg.is-current) .pf-lede { opacity: 0; pointer-events: none; }
 @media (max-width: 900px) {
-  /* Client 2026-10-04: right under the hero picture, not centred in the band. */
-  .pf-lede { grid-template-columns: minmax(0, 1fr); align-content: start; padding-top: 2rem; }
-  .pf-lede__intro { padding-right: 0; }
-  .pf-lede__list { display: none; }   /* client 2026-10-04: no 01-04 list on phones, only the sentence */
-  /* Revert lede sizes to original */
-  .pf-lede__n    { font-size: 0.6rem; }
-  .pf-lede__name { font-size: 0.66rem; }
-  .pf-lede__what { font-size: 0.74rem; }
+  .pf-sw-intro { grid-template-columns: 1fr; }
+  .pf-sw-intro__scale { display: none; }
 }
-.pf-room-layer {
-  position: sticky; top: 0; z-index: 0;
-  height: 100vh; height: 100svh;
-  margin-bottom: -100vh; margin-bottom: -100svh;
-  overflow: hidden;
+
+/* ─── Package switcher ────────────────────────────────────────────────────── */
+/* Left: sticky numbered rail; Right: photo + copy panel.
+   Desktop ≥ 901px; Mobile collapses to single column. */
+.pf-sw {
+  display: grid; grid-template-columns: 300px minmax(0,1fr);
+  gap: clamp(2rem,4vw,4rem);
+  padding: 0 var(--sc-gutter) clamp(3rem,6vw,5rem);
+  scroll-margin-top: 4.75rem;
+}
+
+/* Rail — sticky left column */
+.pf-sw__rail {
+  position: sticky; top: calc(4.75rem + 1.5rem);
+  align-self: start;
+  display: grid; gap: 1rem;
+}
+.pf-sw__label {
+  margin: 0;
+  font-size: 0.58rem; letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--sc-ink); opacity: 0.4;
+}
+
+/* Tabs: vertical list with animated fill line, highlight box, and indicator dot */
+.pf-sw__tabs {
+  position: relative; display: grid; gap: 4px;
+  padding-left: 26px;
+  --fill: 0px;
+}
+.pf-sw__track, .pf-sw__fill {
+  position: absolute; left: 5px; top: 36px; width: 1px;
+}
+.pf-sw__track { bottom: 36px; background: var(--pf-line); }
+.pf-sw__fill {
+  height: var(--fill);
+  background: var(--pf-floor);
+  transition: height 320ms var(--sc-ease-out);
+}
+.pf-sw__ind {
+  position: absolute; left: 0; top: 0;
+  width: 11px; height: 11px; border-radius: 50%;
+  background: var(--pf-floor);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--pf-floor) 20%, transparent);
+  transition: transform 320ms var(--sc-ease-out);
+  pointer-events: none; z-index: 2;
+}
+.pf-sw__hlbox {
+  position: absolute; left: 20px; right: 0; top: 0;
+  background: var(--sc-canvas);
+  box-shadow: 0 1px 0 var(--pf-line), 0 18px 36px -22px rgb(0 0 0 / 0.18);
+  transition: transform 320ms var(--sc-ease-out), height 320ms var(--sc-ease-out);
   pointer-events: none;
 }
-/* The room is seen through a frame. The canvas always keeps its widest
-   size; package 04 only opens the frame's clip and slides the canvas
-   (clip-path + transform, no layout). Resizing the canvas, or changing
-   widths so Chrome re-layered it, flashed black for a few frames. The
-   canvas sits on its own layer for good (will-change) for the same
-   reason. It is shifted by the same 62% focus the frames are cropped
-   with, so the narrow view shows the bed and window. */
-.pf-room-frame {
-  position: absolute; left: var(--view-left); top: var(--view-top);
-  width: var(--view-max-w); height: var(--view-h);
-  clip-path: inset(0 calc(var(--view-max-w) - var(--view-w)) 0 0);
-  /* --feather: how far in the soft edge reaches (see ::after below). */
-  --feather: clamp(2.5rem, 8vw, 8rem);
-  --feather-y: clamp(2rem, 9vh, 6rem);
+
+/* Each tab button */
+.pf-sw__tab {
+  position: relative; z-index: 1;
+  display: grid; grid-template-columns: 56px minmax(0,1fr) 16px;
+  align-items: center; column-gap: 12px;
+  min-height: 72px; padding: 10px 12px 10px 6px;
+  text-align: left; background: none; border: none; cursor: pointer;
+  color: color-mix(in oklab, var(--sc-ink) 45%, transparent);
+  transition: color 0.25s;
 }
-/* No hard edge (client 2026-10-04): the picture fades into the page on all
-   four sides. Done with a still gradient in the page colour laid over the
-   edges, not a CSS mask: masking the moving video cost ~7 fps (58-60 ->
-   51-53, tools/measure.mjs). will-change keeps the gradient on its own layer,
-   painted once; without it it was repainted with the video (-3 to -5 fps).
-   Two layers (across and down), so the corners fade softest.
-   ::after = left, top and bottom, over the widest picture (it never changes
-   size). ::before = the right edge, a strip that moves with the visible edge
-   by transform when the room widens on package 04. It used to be one layer
-   whose width grew, but width runs on the main thread while Chrome runs the
-   clip-path widening on the GPU: on a busy laptop the fade lagged behind
-   and the right edge showed sharp (client 2026-10-05). Transform runs on the
-   GPU too, so the two stay together. */
-.pf-room-frame::after {
-  /* -2px all round: the layer overhangs the picture (the frame's clip cuts it
-     off), so no 1px seam of video shows where the two layers' edges round
-     to different pixels. */
-  content: ""; position: absolute; z-index: 2; top: -2px; bottom: -2px; left: -2px;
-  width: calc(var(--view-max-w) + 4px); pointer-events: none; will-change: transform;
-  background:
-    linear-gradient(to right, var(--sc-canvas) 2px, transparent var(--feather)),
-    linear-gradient(to bottom, var(--sc-canvas) 2px, transparent var(--feather-y), transparent calc(100% - var(--feather-y)), var(--sc-canvas) calc(100% - 2px));
+.pf-sw__tab::before {
+  content: '';
+  position: absolute; left: -23px; top: 50%; margin-top: -3px;
+  width: 6px; height: 6px;
+  border: 1px solid var(--pf-line); border-radius: 50%;
+  background: color-mix(in oklab, var(--sc-canvas) 100%, transparent);
+  transition: border-color 0.25s, background 0.25s;
 }
-.pf-room-frame::before {
-  content: ""; position: absolute; z-index: 2; top: -2px; bottom: -2px; right: -2px;   /* overhangs like ::after */
-  width: calc(var(--feather) + 2px); pointer-events: none; will-change: transform;
-  transform: translateX(calc(var(--view-w) - var(--view-max-w)));
-  background: linear-gradient(to right, transparent, var(--sc-canvas) calc(100% - 2px));
+.pf-sw__tab.is-done::before { border-color: var(--pf-floor); background: var(--pf-floor); }
+.pf-sw__tab[aria-selected="true"]::before { opacity: 0; }
+.pf-sw__tab:hover { color: var(--sc-ink); }
+.pf-sw__tab:hover::before { border-color: var(--sc-ink); }
+.pf-sw__tab[aria-selected="true"] { color: var(--sc-ink); }
+.pf-sw__tab:focus-visible { outline: 1px solid var(--sc-ink); outline-offset: 3px; border-radius: 2px; }
+
+/* Tab thumbnail */
+.pf-sw__tthumb {
+  display: block; width: 56px; height: 42px; overflow: hidden;
+  opacity: 0.45; transition: opacity 0.3s, transform 0.4s var(--sc-ease-out);
 }
-.pf-room-frame > .pf-room-layer__poster,
-.pf-room-frame .seq__canvas {
-  position: absolute; top: 0; left: 0; height: 100%;
-  width: var(--view-max-w);
-  transform: translateX(calc((var(--view-w) - var(--view-max-w)) * 0.62));
-  will-change: transform;
+.pf-sw__tthumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.pf-sw__tab:hover .pf-sw__tthumb { opacity: 0.85; }
+.pf-sw__tab[aria-selected="true"] .pf-sw__tthumb { opacity: 1; }
+
+/* Tab text */
+.pf-sw__ttext { display: grid; gap: 3px; min-width: 0; }
+.pf-sw__tn { font-size: 0.58rem; letter-spacing: 0.12em; }
+.pf-sw__tname { font-size: 0.82rem; letter-spacing: 0.14em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pf-sw__tshort { display: none; }
+.pf-sw__ttag { font-size: 0.72rem; line-height: 1.4; opacity: 0.75; }
+.pf-sw__tab[aria-selected="true"] .pf-sw__tname { font-weight: 500; }
+
+/* Arrow visible on hover/selected */
+.pf-sw__tgo {
+  font-size: 0.9rem; opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 0.2s, transform 0.3s var(--sc-ease-out), color 0.2s;
 }
-.pf-room-frame .seq__canvas { display: block; }
-/* matches data-seq-focus on the layer */
-.pf-room-layer__poster { object-fit: cover; object-position: 62% 50%; }
-/* No CSS filter on the room: its colour grade is baked into the frames
-   (tools/grade.ps1). The kitchen/bathroom stills shown in the same frame
-   keep the photo filter. */
-.pf-room-view--still { filter: var(--pf-photo-filter); }
-/* A photo of another room laid over the visible part of the room. Fades in. */
-.pf-room-view {
-  position: absolute; top: 0; left: 0;
-  width: var(--view-w); height: 100%;
-  object-fit: cover; object-position: 62% 50%;
-  background: var(--sc-canvas);
-  opacity: 0; transition: opacity 0.7s ease;
+.pf-sw__tab:hover .pf-sw__tgo { opacity: 0.5; transform: none; }
+.pf-sw__tab[aria-selected="true"] .pf-sw__tgo { opacity: 1; transform: none; color: var(--pf-floor); }
+
+/* Stage — right column */
+.pf-sw__stage { display: grid; gap: 1.5rem; }
+
+/* Panels: stacked, only active one is visible */
+.pf-sw__panels { display: grid; }
+.pf-sw__panel {
+  grid-area: 1 / 1;
+  display: grid; gap: 1.5rem;
+  opacity: 0; visibility: hidden;
+  transition: opacity 320ms var(--sc-ease-out), visibility 0s linear 320ms;
 }
-.pf-room-view.is-shown { opacity: 1; }
-/* The TV-corner chain lies over the bedroom and cross-fades in. */
-.pf-tv-view {
+.pf-sw__panel.is-active {
+  opacity: 1; visibility: visible;
+  transition: opacity 320ms var(--sc-ease-out) 70ms, visibility 0s;
+}
+.pf-sw__panel.is-active .pf-sw__copy { transition-delay: 70ms; }
+
+/* Shared animation frame (shared across all packages; scroll-sequence.js canvas) */
+.pf-sw__seq-wrap { display: grid; gap: 10px; }
+.pf-sw__seq-frame {
+  position: relative;
+  aspect-ratio: 16 / 9; overflow: hidden;
+  background: color-mix(in oklab, var(--sc-ink) 6%, var(--sc-canvas));
+}
+.pf-sw__seq-frame canvas {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+}
+/* TV-corner canvas: sits above the room canvas, shown on TV view */
+.pf-sw__tv-seq {
   position: absolute; inset: 0;
-  opacity: 0; transition: opacity 0.7s ease;
+  opacity: 0; pointer-events: none;
+  transition: opacity 320ms var(--sc-ease-out);
 }
-html.view-tv .pf-tv-view { opacity: 1; }
+.pf-sw__tv-seq canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.pf-sw__seq-frame.show-tv .pf-sw__tv-seq { opacity: 1; }
+
+/* Static-photo overlay: shown when a thumbnail other than the first is picked */
+.pf-sw__seq-still {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; z-index: 2;
+  opacity: 0; pointer-events: none;
+  transition: opacity 320ms var(--sc-ease-out);
+}
+.pf-sw__seq-frame.show-still .pf-sw__seq-still { opacity: 1; }
+.pf-sw__chip {
+  position: absolute; z-index: 3;
+  font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
+  background: color-mix(in oklab, var(--sc-canvas) 88%, transparent);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  padding: 6px 10px; color: var(--sc-ink);
+}
+.pf-sw__chip--room { left: 14px; top: 14px; }
+.pf-sw__chip--badge { right: 14px; top: 14px; background: var(--pf-floor); color: var(--sc-surface); }
+
+/* Thumbnails */
+.pf-sw__thumbs { display: flex; gap: 8px; flex-wrap: wrap; }
+.pf-sw__th {
+  position: relative; width: 80px; aspect-ratio: 4/3;
+  overflow: hidden; opacity: 0.55; border: none; padding: 0; cursor: pointer; background: none;
+  transition: opacity 0.25s;
+}
+.pf-sw__th img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.pf-sw__th::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0;
+  height: 2px; background: var(--pf-floor);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.3s var(--sc-ease-out);
+}
+.pf-sw__th[aria-pressed="true"] { opacity: 1; }
+.pf-sw__th[aria-pressed="true"]::after { transform: none; }
+.pf-sw__th:hover { opacity: 0.9; }
+.pf-sw__th:focus-visible { outline: 1px solid var(--sc-ink); outline-offset: 2px; }
+
+/* Copy area */
+.pf-sw__copy {
+  display: grid; grid-template-columns: minmax(0,1fr);
+  gap: 10px 24px; align-items: end;
+  transform: translateY(10px);
+  transition: transform 320ms var(--sc-ease-out);
+}
+.pf-sw__panel.is-active .pf-sw__copy { transform: none; }
+.pf-sw__big { display: none; }
+.pf-sw__copymain { display: grid; gap: 8px; min-width: 0; }
+.pf-sw__meta {
+  display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+  font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: color-mix(in oklab, var(--sc-ink) 45%, transparent);
+}
+.pf-sw__level { display: inline-flex; gap: 3px; align-items: center; }
+.pf-sw__level i { width: 14px; height: 2px; background: var(--pf-line); }
+.pf-sw__level i.on { background: var(--sc-ink); }
+.pf-sw__name { font-size: clamp(1.3rem, 2.2vw, 1.8rem); font-weight: 300; letter-spacing: 0.16em; text-transform: uppercase; margin: 0; }
+.pf-sw__lede { margin: 0; font-size: clamp(0.9rem, 1.2vw, 1.1rem); font-weight: 300; letter-spacing: 0.06em; }
+.pf-sw__desc { margin: 0; font-size: 0.9rem; line-height: 1.7; color: color-mix(in oklab, var(--sc-ink) 60%, transparent); max-width: 50ch; }
+.pf-sw__ctas {
+  grid-column: 1 / -1;
+  display: flex; flex-wrap: wrap; gap: 0.75rem 2rem;
+  padding-top: 0.5rem; border-top: 1px solid var(--pf-line);
+  margin-top: 0.5rem;
+}
+.pf-sw__link {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--sc-ink); text-decoration: none;
+  padding-bottom: 0.25em;
+  background: linear-gradient(currentColor,currentColor) 0 100% / 0 1px no-repeat;
+  transition: background-size 0.4s var(--sc-ease-out), color 0.2s;
+}
+.pf-sw__link--primary { background-size: 100% 1px; }
+.pf-sw__link:hover { background-size: 100% 1px; }
+.pf-sw__link:focus-visible { outline: 1px solid var(--sc-ink); outline-offset: 5px; }
+
+/* Controls: Prev / counter / Next */
+.pf-sw__controls {
+  display: grid; grid-template-columns: 1fr auto 1fr;
+  align-items: center; gap: 12px;
+  padding-top: 1rem; border-top: 1px solid var(--pf-line);
+}
+.pf-sw__prev, .pf-sw__next {
+  display: inline-flex; align-items: center; gap: 10px;
+  min-height: 44px;
+  background: none; border: none; cursor: pointer;
+  font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--sc-ink); transition: color 0.2s;
+}
+.pf-sw__prev { justify-self: start; }
+.pf-sw__next { justify-self: end; }
+.pf-sw__circ {
+  display: grid; place-items: center;
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid color-mix(in oklab, var(--sc-ink) 28%, transparent);
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+.pf-sw__prev:not(:disabled):hover .pf-sw__circ,
+.pf-sw__next:not(:disabled):hover .pf-sw__circ {
+  background: var(--sc-ink); border-color: var(--sc-ink); color: var(--sc-canvas);
+}
+.pf-sw__prev:disabled, .pf-sw__next:disabled {
+  color: color-mix(in oklab, var(--sc-ink) 25%, transparent);
+  cursor: default;
+}
+.pf-sw__prev:disabled .pf-sw__circ, .pf-sw__next:disabled .pf-sw__circ {
+  border-color: color-mix(in oklab, var(--sc-ink) 18%, transparent);
+}
+.pf-sw__prev:focus-visible, .pf-sw__next:focus-visible { outline: 1px solid var(--sc-ink); outline-offset: 4px; border-radius: 2px; }
+.pf-sw__full { } /* shown by default; hidden on mobile below */
+.pf-sw__counter { display: grid; gap: 6px; justify-items: center; }
+.pf-sw__counter b { font-size: 1rem; font-weight: 300; letter-spacing: 0.08em; }
+.pf-sw__counter b span { color: color-mix(in oklab, var(--sc-ink) 40%, transparent); }
+.pf-sw__segs { display: flex; gap: 4px; }
+.pf-sw__segs i { width: 20px; height: 2px; background: var(--pf-line); transition: background 320ms var(--sc-ease-out); }
+.pf-sw__segs i.on { background: var(--pf-floor); }
+
+/* Mobile: single column, no sticky rail */
+@media (max-width: 900px) {
+  .pf-sw { grid-template-columns: 1fr; gap: 1.5rem; padding-top: 0; }
+  .pf-sw__rail { position: static; }
+
+  /* Single-row pill tabs — show only the number, all four on one line */
+  .pf-sw__tabs {
+    display: flex; flex-wrap: nowrap; gap: 8px; padding-left: 0;
+    overflow-x: auto; scrollbar-width: none;
+  }
+  .pf-sw__tabs::-webkit-scrollbar { display: none; }
+  .pf-sw__track, .pf-sw__fill, .pf-sw__ind, .pf-sw__hlbox,
+  .pf-sw__tab::before { display: none; }
+  .pf-sw__tab {
+    display: inline-flex; align-items: center; justify-content: center;
+    flex: 1 1 0; min-width: 0;
+    min-height: 40px; padding: 6px 10px;
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--sc-ink) 6%, var(--sc-canvas));
+    color: color-mix(in oklab, var(--sc-ink) 55%, transparent);
+    transition: background 0.25s, color 0.25s;
+  }
+  .pf-sw__tthumb, .pf-sw__ttag, .pf-sw__tgo, .pf-sw__tn, .pf-sw__tname { display: none; }
+  .pf-sw__tshort { display: block; font-size: 0.62rem; letter-spacing: 0.1em; white-space: nowrap; text-transform: uppercase; }
+  .pf-sw__tab[aria-selected="true"] {
+    background: var(--sc-ink); color: var(--sc-canvas);
+  }
+
+  .pf-sw__copy { grid-template-columns: minmax(0,1fr); }
+  .pf-sw__ctas { flex-direction: column; gap: 0.75rem; }
+  .pf-sw__full { display: none; }
+  .pf-sw__th { width: 68px; }
+}
+
 /* ?fps test readout (js/home.js) */
 .pf-fps {
   position: fixed; left: 0.75rem; bottom: 0.75rem; z-index: 50;
   padding: 0.35rem 0.6rem; border-radius: 0.3rem;
   background: rgb(0 0 0 / 0.75); color: #fff;
   font: 600 0.75rem/1.2 ui-monospace, monospace;
-}
-
-/* View thumbnails under each package: a calm 4:3, no border or rounding;
-   hover is a little more opacity and a hint of zoom inside the frame. */
-.pf-rooms {
-  list-style: none; margin: 0; padding: 0;
-  display: flex; gap: clamp(0.75rem, 1.2vw, 1.15rem);
-}
-.pf-room {
-  position: relative; display: block; width: clamp(5.25rem, 6.4vw, 6.75rem); padding: 0;
-  border: 0; border-radius: 0; background: none;
-  cursor: pointer; overflow: hidden; opacity: 0.6;
-  transition: opacity 0.4s var(--sc-ease-out);
-}
-.pf-room:hover { opacity: 0.9; }
-.pf-room.is-active { opacity: 1; }                 /* the view on show */
-.pf-room:focus-visible { outline: 1px solid var(--sc-accent); outline-offset: 2px; }
-.pf-room img {
-  display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover;
-  transition: transform 0.6s var(--sc-ease-out);
-}
-.pf-room:hover img { transform: scale(1.04); }
-/* Video-frame thumbnails are graded like the room; only photos get the filter. */
-.pf-room[data-full] img { filter: var(--pf-photo-filter); }
-/* The label is for screen readers only (the button's name). */
-.pf-room span {
-  position: absolute; width: 1px; height: 1px; overflow: hidden;
-  clip-path: inset(50%); white-space: nowrap;
-}
-
-/* Phones and narrow tablets: the package text on top, the room filling the
-   bottom of the screen. */
-@media (max-width: 900px) {
-  :root {
-    /* Taller picture, but always leaving ~19rem for the text block above it,
-       so small phones don't run the text into it. */
-    /* Gap below the image: thumbnails (3rem) sit at bottom:5rem above the dock,
-       so the image needs at least 9rem of clear space under it. */
-    --m-img-bottom: 9rem;
-    --pf-grid-h: 7.5rem;       /* height of the 2×2 package nav grid + controls */
-    --m-img-h: min(52svh, calc(100svh - 4.75rem - 15rem - var(--m-img-bottom) - var(--pf-grid-h)));
-    --spread-img-w: 100vw;
-    --spread-img-h: var(--m-img-h);
-    /* The picture keeps the text's side margins and a bottom margin. */
-    --room-max-w: 100vw;
-    --room-inset: var(--sc-gutter);
-    --view-top: calc(100svh - var(--m-img-h) - var(--m-img-bottom));
-    --view-w: calc(100vw - 2 * var(--room-inset));
-    --view-max-w: var(--view-w);
-    --view-h: calc(var(--m-img-h) - var(--room-inset));
-  }
-  .pf-room-frame { --feather: 3.5rem; --feather-y: 3rem; }
-  .pf-page {
-    left: 0; top: calc(4.75rem + var(--pf-grid-h)); bottom: calc(var(--m-img-h) + var(--m-img-bottom));
-    padding: clamp(0.75rem, 3svh, 2rem) var(--sc-gutter) var(--sc-4);
-  }
-  /* Full width so the statements take two lines, not three (client 2026-10-04:
-     on Donna Branka the third line pushed the thumbnails onto the room). */
-  .pf-page__sub { margin-top: clamp(1rem, 2.4svh, 1.5rem); max-width: none; font-size: min(1.1rem, 4.5vw) !important; letter-spacing: 0.12em !important; }
-  .pf-page p.pf-badge { margin-top: 0.7rem; }
-  .pf-page p.pf-badge + .pf-page__sub { margin-top: clamp(0.9rem, 2.2svh, 1.3rem); }
-
-  .pf-page__text { display: none; }
-  .pf-page__links { margin-top: clamp(1.1rem, 3svh, 1.75rem); gap: 0.6rem 1.8rem; }
-  /* Thumbnails move below the main image, above the dock (dock top ≈ 4.25rem). */
-  .pf-page .pf-rooms {
-    position: fixed; bottom: 5rem; left: var(--sc-gutter); right: var(--sc-gutter);
-    margin: 0; gap: 0.6rem; justify-content: flex-start;
-  }
-  .pf-room { width: 3.9rem; }
-  .pf-room:hover img { transform: none; }
-  /* Mobile package navigator: 2×2 grid + controls bar at top of text area. */
-  .pf-pkgnav {
-    right: auto; top: 4.75rem; left: 0; transform: none;
-    width: 100%; height: var(--pf-grid-h);
-    flex-direction: column; gap: 0;
-    background: var(--sc-canvas);
-    border-bottom: 1px solid color-mix(in oklab, var(--sc-ink) 12%, transparent);
-    z-index: 25;
-  }
-  .pf-pkgnav__heading { display: none; }
-  .pf-pkgnav__track {
-    flex: 1;
-    display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;
-  }
-  .pf-pkgnav__track::before { display: none; }
-  .pf-pkgnav__item {
-    padding: 0.6rem var(--sc-gutter);
-    min-height: 0; gap: 0.5rem;
-    border-right: 1px solid color-mix(in oklab, var(--sc-ink) 10%, transparent);
-    border-bottom: 1px solid color-mix(in oklab, var(--sc-ink) 10%, transparent);
-    border-radius: 0; opacity: 0.45; align-items: center;
-  }
-  .pf-pkgnav__item:nth-child(2n) { border-right: none; }
-  .pf-pkgnav__item:nth-child(n+3) { border-bottom: none; }
-  .pf-pkgnav__item.is-active {
-    opacity: 1;
-    background: color-mix(in oklab, var(--sc-ink) 6%, var(--sc-canvas));
-  }
-  .pf-pkgnav__item::before { display: none; }
-  .pf-pkgnav__dot { display: none; }
-  .pf-pkgnav__info { flex-direction: row; align-items: center; gap: 0.45rem; }
-  .pf-pkgnav__n { font-size: 0.5rem; }
-  .pf-pkgnav__name { font-size: 0.64rem; letter-spacing: 0.14em; }
-  .pf-pkgnav__item.is-active .pf-pkgnav__name { font-weight: 500; }
-  .pf-pkgnav__controls {
-    flex: none;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 var(--sc-gutter);
-    height: 2.2rem;
-    border-top: 1px solid color-mix(in oklab, var(--sc-ink) 10%, transparent);
-  }
-  .pf-pkgnav__prev, .pf-pkgnav__next {
-    min-height: 2.2rem; padding: 0 0.2rem;
-    font-size: 0.62rem; letter-spacing: 0.1em;
-    gap: 0.3rem;
-  }
-  .pf-pkgnav__btn-full { display: none; }
 }
 
 /* -------------------------------------------------- after the room -- */

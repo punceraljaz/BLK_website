@@ -78,7 +78,7 @@ const PACKAGES = [
     examples: [['../assets/img/pk-basic-airbnb-example-1.webp', 'The same bedroom with Basic Airbnb: bedding, curtains, bedside lamps and art.']],
   },
   {
-    slug: 'upscale-airbnb', n: '03', name: 'Upscale Airbnb', titleHtml: 'Upscale <em>Airbnb</em>',
+    slug: 'high-end-airbnb', n: '03', name: 'High-End Airbnb', titleHtml: 'High-End <em>Airbnb</em>',
     lead: 'The finer things, already in place. Ready to photograph, list and book.',
     points: ['Everything in Basic Airbnb', 'Finer furniture and decoration', 'Premium linens, towels and toiletries', 'A photo shoot for the listing'],
     moreQ: 'The signature finish, chosen by Branka?',
@@ -101,17 +101,17 @@ const PACKAGES = [
     before: F + 'room3/0001.webp', after: F + 'room3/0121.webp',
     extra: [[F + 'tv3/0121.webp', 'TV corner']],
     figures: true,
-    examples: [['../assets/img/pk-upscale-airbnb-example-1.webp', 'The same bedroom with Upscale Airbnb: a feature wall, wood floor, sofa corner, throws, cushions and plants.']],
+    examples: [['../assets/img/pk-upscale-airbnb-example-1.webp', 'The same bedroom with High-End Airbnb: a feature wall, wood floor, sofa corner, throws, cushions and plants.']],
   },
   {
     slug: 'donna-branka', n: '04', name: 'Donna Branka', titleHtml: 'Donna <em>Branka</em>',
     badge: 'Signature · Best seller',
     lead: 'Our signature, designed by Branka and finished to the last detail.',
-    points: ['Everything in Upscale Airbnb', 'Designed and styled by Branka', 'Signature pieces, art and textiles', 'A personal handover'],
+    points: ['Everything in High-End Airbnb', 'Designed and styled by Branka', 'Signature pieces, art and textiles', 'A personal handover'],
     moreQ: 'Something simpler?',
     heroAlt: 'The studio finished: a living corner with a sofa, shelves with plants and a reading lamp beside the bed.',
     included: [
-      ['Everything in Upscale Airbnb', 'Furniture, appliances, linens, kitchenware, toiletries and the photo shoot.'],
+      ['Everything in High-End Airbnb', 'Furniture, appliances, linens, kitchenware, toiletries and the photo shoot.'],
       ['Designed by Branka', 'One personal design for the whole apartment, from where the furniture goes to the colours.'],
       ['Signature pieces', 'Statement furniture, lighting and art, chosen piece by piece.'],
       ['Layered textiles', 'Curtains, rugs, throws and cushions that make a room feel finished.'],
@@ -144,6 +144,8 @@ function page(p, i) {
   const last = i === PACKAGES.length - 1;
   const up = last ? PACKAGES[i - 1] : PACKAGES[i + 1];          // the next package up (Donna Branka: the one below)
   const signature = PACKAGES[PACKAGES.length - 1];
+  const beforeLabel = i === 0 ? 'Empty' : PACKAGES[i - 1].name;
+  const afterLabel = p.name;
   const waText = `Hi BLK Remodelling, I'd like to know more about the ${p.name} package.`;
   const rail = PACKAGES.map(q => `    <a class="pf-rail__item${q === p ? ' is-active' : ''}" href="${q.slug}.html"${q === p ? ' aria-current="page"' : ''}><span class="pf-rail__label">${q.name}</span></a>`).join('\n');
 
@@ -189,8 +191,8 @@ ${p.points.map(t => `        <li>${t}</li>`).join('\n')}
     <figure class="pk-ba" style="--pos: 50%">
       <img class="pk-ba__img" src="${p.before}" width="1904" height="1088" alt="Before ${esc(p.name)}: the studio as it was.">
       <img class="pk-ba__img pk-ba__after" src="${p.after}" width="1904" height="1088" alt="After ${esc(p.name)}: ${esc(p.heroAlt)}">
-      <span class="pk-ba__tag" aria-hidden="true">Before</span>
-      <span class="pk-ba__tag pk-ba__tag--after" aria-hidden="true">After</span>
+      <span class="pk-ba__tag" aria-hidden="true">${beforeLabel}</span>
+      <span class="pk-ba__tag pk-ba__tag--after" aria-hidden="true">${afterLabel}</span>
       <input class="pk-ba__range" type="range" min="0" max="100" value="50" aria-label="Before and after: move to compare">
       <figcaption>Drag to compare</figcaption>
     </figure>

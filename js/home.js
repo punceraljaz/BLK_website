@@ -30,136 +30,13 @@
   }, { rootMargin: '-76px 0px 0px 0px' }).observe(hero);
 })();
 
-// Package rail: highlights whichever package is crossing the screen's
-// centre (a -48%/-48% rootMargin collapses the trigger zone to a thin band).
+// Package rail in the header: highlight the active tab when it changes.
 (function () {
   var items = Array.prototype.slice.call(document.querySelectorAll('.pf-rail__item'));
   if (!items.length) return;
-  var byId = {};
-  items.forEach(function (it) { byId[it.dataset.target] = it; });
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      var match = entry.isIntersecting && byId[entry.target.id];
-      if (!match) return;
-      items.forEach(function (it) { it.classList.toggle('is-active', it === match); });
-    });
-  }, { threshold: 0, rootMargin: '-48% 0px -48% 0px' });
-  document.querySelectorAll('main section[id]').forEach(function (s) { io.observe(s); });
-})();
-
-// Current package: marks the package section (01-04) whose top is nearest
-// the scroll position with .is-current, which shows its fixed text page (it
-// swaps halfway between two packages; none while the hero above fills the
-// screen). The one it replaces gets .is-leaving
-// for the slide-out. Once the first section after the room fills half the
-// screen, none is current and the text leaves with the room.
-(function () {
-  var els = ['pkg-1', 'pkg-2', 'pkg-3', 'pkg-4'].map(function (id) { return document.getElementById(id); });
-  var after = document.getElementById('about');
-  if (els.some(function (el) { return !el; })) return;
-  var current = null, queued = false;
-  function update() {
-    queued = false;
-    var best = null, bestD = Infinity;
-    els.forEach(function (el) {
-      var d = Math.abs(el.getBoundingClientRect().top);
-      if (d < bestD) { bestD = d; best = el; }
-    });
-    if (after && after.getBoundingClientRect().top < innerHeight * 0.5) best = null;
-    if (els[0].getBoundingClientRect().top > innerHeight * 0.18) best = null;   // the hero is still in the way
-    if (best === current) return;
-    if (current) {
-      var old = current;
-      old.classList.remove('is-current');
-      old.classList.add('is-leaving');
-      setTimeout(function () { old.classList.remove('is-leaving'); }, 650);
-    }
-    if (best) { best.classList.remove('is-leaving'); best.classList.add('is-current'); }
-    current = best;
-    document.documentElement.classList.toggle('room-wide', best === els[3]);
-    document.dispatchEvent(new CustomEvent('pf:current', { detail: best ? best.id : null }));
-  }
-  function queue() { if (!queued) { queued = true; requestAnimationFrame(update); } }
-  addEventListener('scroll', queue, { passive: true });
-  addEventListener('resize', queue);
-  addEventListener('load', queue);
-  update();
-})();
-
-// Room views (the thumbnails under each package). The chosen view is
-// remembered while scrolling:
-//   Bedroom (data-view="bedroom") - the main room chain.
-//   Dining / TV corner (data-view="tv") - the second chain (.pf-tv-view),
-//     scrubbed by the same scroll, so moving to another package plays that
-//     corner's transition. Picking it also plays the current package's
-//     transition once in place.
-//   Kitchen / Bathroom (data-full) - a photo over the view, package 01 only;
-//     changing package clears it.
-// The hidden chain stops drawing (setActive) once the cross-fade is over.
-(function () {
-  var btns = Array.prototype.slice.call(document.querySelectorAll('.pf-room'));
-  var mainEl = document.querySelector('.pf-room-layer');
-  var tvEl = document.querySelector('.pf-tv-view');
-  var still = document.querySelector('.pf-room-frame .pf-room-view--still');
-  if (!btns.length || !mainEl || !tvEl || !still) return;
-  var root = document.documentElement, FADE = 750, view = 'bedroom', fadeTimer = 0;
-  function seq(el) { return el.__seq; }
-  function pkgIndex(btn) {                      // pkg-3 -> 2
-    var s = btn.closest('section[id^="pkg-"]');
-    return s ? parseInt(s.id.slice(4), 10) - 1 : 0;
-  }
-  function markRow(btn) {
-    btn.closest('.pf-rooms').querySelectorAll('.pf-room').forEach(function (b) {
-      b.classList.toggle('is-active', b === btn);
-      b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
-    });
-  }
-  function markAll() {                          // every row shows the current view
-    document.querySelectorAll('.pf-rooms').forEach(function (row) {
-      var pick = row.querySelector('.pf-room[data-view="' + view + '"]');
-      if (pick) markRow(pick);
-    });
-  }
-  function setView(v) {
-    if (!seq(mainEl) || !seq(tvEl)) return;
-    view = v;
-    clearTimeout(fadeTimer);
-    if (v === 'tv') {
-      seq(tvEl).start();
-      seq(tvEl).setActive(true);
-      root.classList.add('view-tv');
-      fadeTimer = setTimeout(function () { if (view === 'tv') seq(mainEl).setActive(false); }, FADE);
-    } else {
-      seq(mainEl).setActive(true);
-      root.classList.remove('view-tv');
-      fadeTimer = setTimeout(function () { if (view === 'bedroom') seq(tvEl).setActive(false); }, FADE);
-    }
-  }
-  btns.forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      markRow(btn);
-      if (btn.dataset.full) {                   // a photo over the current view
-        still.src = btn.dataset.full;
-        still.classList.add('is-shown');
-        return;
-      }
-      still.classList.remove('is-shown');
-      setView(btn.dataset.view === 'tv' ? 'tv' : 'bedroom');
-      if (view === 'tv') seq(tvEl).playClip(pkgIndex(btn));
-      markAll();
-    });
-    // Start downloading the TV view when the pointer reaches its thumbnail.
-    if (btn.dataset.view === 'tv') btn.addEventListener('pointerenter', function () {
-      if (seq(tvEl)) seq(tvEl).start();
-    }, { once: true });
+  document.addEventListener('pf:pkg', function (e) {
+    items.forEach(function (it) { it.classList.toggle('is-active', it.getAttribute('href') === '#pkg-' + (e.detail + 1)); });
   });
-  document.addEventListener('pf:current', function () {
-    still.classList.remove('is-shown');
-    markAll();
-  });
-  // Until the TV view is first picked, its (lazy) chain draws nothing.
-  function park() { if (seq(tvEl)) seq(tvEl).setActive(false); else setTimeout(park, 50); }
-  park();
 })();
 
 // "Our work" photo strip (StripGallery). Vertical wheel is left to the page
@@ -225,88 +102,267 @@
   io.observe(root);
 })();
 
-// Package navigator: vertical list (desktop) / 2×2 grid (mobile).
-// Direct clicks jump to that package; Prev/Next step through them in order.
-// Scroll between packages is blocked (btnOnly); only clicking advances them.
+// Package switcher: tablist rail (desktop) / 2×2 grid (mobile).
+// Tabs and panels are built from PK data; JS handles selection, indicator
+// animation, Prev/Next, keyboard navigation, and hash routing.
 (function () {
-  var nav = document.querySelector('.pf-pkgnav');
-  var layer = document.querySelector('[data-seq-chain]');
-  if (!nav || !layer) return;
+  var tabsEl = document.getElementById('pf-sw-tabs');
+  var panelsEl = document.getElementById('pf-sw-panels');
+  if (!tabsEl || !panelsEl) return;
 
-  var root = document.documentElement;
-  var items = Array.prototype.slice.call(nav.querySelectorAll('.pf-pkgnav__item'));
-  var prevBtn = nav.querySelector('.pf-pkgnav__prev');
-  var nextBtn = nav.querySelector('.pf-pkgnav__next');
-  var curEl   = nav.querySelector('.pf-pkgnav__cur');
-  var pkgIds  = ['pkg-1', 'pkg-2', 'pkg-3', 'pkg-4'];
-  var currentIdx = -1;
+  var WA = 'https://wa.me/971545979814';
+  var PK = [
+    { id: 'pkg-1', n: '01', name: 'Furnishing', short: 'Furnish', tag: 'The empty shell, furnished',
+      lede: 'Every home starts empty.', desc: 'The essential furniture, delivered and assembled.',
+      href: 'packages/furnishing.html',
+      wa: "Hi BLK Remodelling, I'd like to know more about the Furnishing package.",
+      imgs: [
+        { label: 'Bedroom',  view: 'anim',  src: 'assets/img/pk-furnishing-example-1.webp', thumb: 'assets/img/01-bedroom-thumb.webp' },
+        { label: 'Dining',   view: 'tv',    src: '', thumb: 'assets/img/01-dining-end-thumb.webp' },
+        { label: 'Kitchen',  view: 'still', src: 'assets/img/01-furnishing-kitchen.webp',   thumb: 'assets/img/01-furnishing-kitchen-thumb.webp' },
+        { label: 'Bathroom', view: 'still', src: 'assets/img/01-furnishing-bathroom.webp',  thumb: 'assets/img/01-furnishing-bathroom-thumb.webp' }
+      ]
+    },
+    { id: 'pkg-2', n: '02', name: 'Basic Airbnb', short: 'Basic', tag: 'Ready to host',
+      lede: 'Furnished. Fitted. Ready to host.', desc: 'Furniture, appliances, linens and kitchenware. Ready for the first guest.',
+      href: 'packages/basic-airbnb.html',
+      wa: "Hi BLK Remodelling, I'd like to know more about the Basic Airbnb package.",
+      imgs: [
+        { label: 'Bedroom',   view: 'anim', src: 'assets/img/pk-basic-airbnb-example-1.webp', thumb: 'assets/img/02-bedroom-thumb.webp' },
+        { label: 'TV corner', view: 'tv',   src: '', thumb: 'assets/img/02-tv-end-thumb.webp' }
+      ]
+    },
+    { id: 'pkg-3', n: '03', name: 'High-End Airbnb', short: 'High-End', tag: 'The finer things',
+      lede: 'The finer things, already in place.', desc: 'Finer pieces, soft linens, every detail guests notice. Ready to list.',
+      href: 'packages/high-end-airbnb.html',
+      wa: "Hi BLK Remodelling, I'd like to know more about the High-End Airbnb package.",
+      imgs: [
+        { label: 'Bedroom',   view: 'anim', src: 'assets/img/pk-upscale-airbnb-example-1.webp', thumb: 'assets/img/03-bedroom-thumb.webp' },
+        { label: 'TV corner', view: 'tv',   src: '', thumb: 'assets/img/03-tv-end-thumb.webp' }
+      ]
+    },
+    { id: 'pkg-4', n: '04', name: 'Donna Branka', short: 'Donna B.', tag: 'The signature package',
+      lede: 'Our signature. Finished to the last detail.', desc: 'Designed and styled by Branka. Nothing left to add.',
+      badge: 'Signature · Best seller',
+      href: 'packages/donna-branka.html',
+      wa: "Hi BLK Remodelling, I'd like to know more about the Donna Branka package.",
+      imgs: [
+        { label: 'Bedroom',   view: 'anim',  src: 'assets/img/pk-donna-branka-example-1.webp', thumb: 'assets/img/04-bedroom-thumb.webp' },
+        { label: 'Detail',    view: 'still', src: 'assets/img/pk-donna-branka-example-2.webp', thumb: 'assets/img/pk-donna-branka-example-2.webp' },
+        { label: 'Living',    view: 'still', src: 'assets/img/pk-donna-branka-example-3.webp', thumb: 'assets/img/pk-donna-branka-example-3.webp' },
+        { label: 'TV corner', view: 'tv',    src: '', thumb: 'assets/img/04-tv-end-thumb.webp' }
+      ]
+    }
+  ];
 
-  function syncNav(idx) {
-    currentIdx = idx;
-    root.classList.toggle('pkg-on', idx >= 0);
-    items.forEach(function (item, i) { item.classList.toggle('is-active', i === idx); });
-    if (curEl) curEl.textContent = idx >= 0 ? ('0' + (idx + 1)).slice(-2) : '—';
-    if (prevBtn) prevBtn.disabled = (idx <= 0);
-    if (nextBtn) nextBtn.disabled = (idx < 0 || idx >= items.length - 1);
-  }
+  var lvl = function (i) {
+    return '<span class="pf-sw__level" aria-hidden="true">' +
+      [0,1,2,3].map(function (k) { return '<i class="' + (k <= i ? 'on' : '') + '"></i>'; }).join('') +
+      '</span>';
+  };
 
-  // pf:current is dispatched by js/home.js whenever the visible package changes.
-  document.addEventListener('pf:current', function (e) {
-    syncNav(pkgIds.indexOf(e.detail));
+  // Build tabs
+  var tabs = PK.map(function (p, i) {
+    var t = document.createElement('button');
+    t.className = 'pf-sw__tab'; t.type = 'button'; t.id = 'pf-sw-tab-' + (i + 1);
+    t.setAttribute('role', 'tab'); t.setAttribute('aria-controls', p.id);
+    t.setAttribute('aria-selected', 'false'); t.tabIndex = -1;
+    t.innerHTML =
+      '<span class="pf-sw__tthumb" aria-hidden="true"><img src="' + p.imgs[0].thumb + '" alt="" loading="lazy"></span>' +
+      '<span class="pf-sw__ttext">' +
+        '<span class="pf-sw__tn">' + p.n + '</span>' +
+        '<span class="pf-sw__tname">' + p.name + '</span>' +
+        '<span class="pf-sw__tshort">' + (p.short || p.name) + '</span>' +
+        '<span class="pf-sw__ttag">' + p.tag + '</span>' +
+      '</span>' +
+      '<span class="pf-sw__tgo" aria-hidden="true">→</span>';
+    t.addEventListener('click', function () { go(i); });
+    tabsEl.appendChild(t);
+    return t;
   });
 
-  // scroll-sequence.js defers init() to DOMContentLoaded, so __seq may not
-  // be set yet when this script runs — defer click wiring until after init.
-  function wireClicks() {
-    var chain = layer.__seq;
-    if (!chain) return;
-    chain.btnOnly = true;
+  // Build panels (copy-only; the frame lives in the shared pf-sw__seq-wrap above)
+  var panels = PK.map(function (p, i) {
+    var sec = document.createElement('article');
+    sec.className = 'pf-sw__panel'; sec.id = p.id;
+    sec.setAttribute('role', 'tabpanel'); sec.setAttribute('aria-labelledby', 'pf-sw-tab-' + (i + 1));
+    sec.inert = true;
 
-    // Direct package jumps.
-    items.forEach(function (item, i) {
-      item.addEventListener('click', function () {
-        if (chain.auto) return;
-        var a = chain.anchors();
-        if (a.length > i) chain.glideTo(a[i], a);
+    sec.innerHTML =
+      '<div class="pf-sw__copy">' +
+        '<span class="pf-sw__big" aria-hidden="true">' + p.n + '</span>' +
+        '<div class="pf-sw__copymain">' +
+          '<div class="pf-sw__meta"><span>Package ' + p.n + ' of 04</span>' + lvl(i) + '</div>' +
+          '<h2 class="pf-sw__name">' + p.name + '</h2>' +
+          '<p class="pf-sw__lede">' + p.lede + '</p>' +
+          '<p class="pf-sw__desc">' + p.desc + '</p>' +
+        '</div>' +
+        '<div class="pf-sw__ctas">' +
+          '<a class="pf-sw__link pf-sw__link--primary" href="' + p.href + '">More about the package →</a>' +
+          '<a class="pf-sw__link" href="' + WA + '?text=' + encodeURIComponent(p.wa) + '" target="_blank" rel="noopener" data-choose="wa" data-wa-text="' + p.wa + '" aria-haspopup="menu">Ask on WhatsApp</a>' +
+        '</div>' +
+      '</div>';
+
+    panelsEl.appendChild(sec);
+    return sec;
+  });
+
+  // Shared frame helpers (the canvas + still overlay in pf-sw__seq-frame)
+  var seqEl = document.getElementById('pf-sw-seq');
+  var tvEl = document.getElementById('pf-sw-tv-seq');
+  var seqRoomChip = document.getElementById('pf-sw-seq-room');
+  var seqBadge = document.getElementById('pf-sw-seq-badge');
+  var seqStill = document.getElementById('pf-sw-seq-still');
+  var seqThumbsEl = document.getElementById('pf-sw-thumbs');
+
+  function showAnimation() {
+    if (seqEl) seqEl.classList.remove('show-still', 'show-tv');
+  }
+  function showStill(src, label) {
+    if (!seqEl || !seqStill) return;
+    seqStill.src = src;
+    seqStill.alt = label || '';
+    seqEl.classList.add('show-still');
+    seqEl.classList.remove('show-tv');
+  }
+  function showTv(i) {
+    if (!seqEl || !tvEl || !tvEl.__seq) return;
+    tvEl.__seq.start();       // no-op if already started; downloads lazily on first call
+    tvEl.__seq.playClip(i);
+    seqEl.classList.add('show-tv');
+    seqEl.classList.remove('show-still');
+  }
+
+  function updateThumbs(i) {
+    if (!seqThumbsEl) return;
+    seqThumbsEl.innerHTML = PK[i].imgs.map(function (im, j) {
+      return '<button type="button" class="pf-sw__th" aria-pressed="' + (j === 0 ? 'true' : 'false') +
+        '" aria-label="Show ' + im.label + '" data-src="' + (im.src || '') + '" data-view="' + (im.view || 'still') + '">' +
+        '<img src="' + im.thumb + '" alt="' + im.label + '" loading="lazy"></button>';
+    }).join('');
+    seqThumbsEl.querySelectorAll('.pf-sw__th').forEach(function (b) {
+      b.addEventListener('click', function () {
+        seqThumbsEl.querySelectorAll('.pf-sw__th').forEach(function (x) { x.setAttribute('aria-pressed', x === b); });
+        if (seqRoomChip) seqRoomChip.textContent = b.getAttribute('aria-label').replace('Show ', '');
+        var view = b.dataset.view;
+        if (view === 'tv') {
+          showTv(cur);
+        } else if (view === 'anim') {
+          showAnimation();
+        } else {
+          showStill(b.dataset.src, b.getAttribute('aria-label').replace('Show ', ''));
+        }
       });
-    });
-
-    // Prev / Next step through adjacent packages.
-    if (prevBtn) prevBtn.addEventListener('click', function () {
-      if (chain.auto || currentIdx <= 0) return;
-      var a = chain.anchors();
-      if (a.length > currentIdx - 1) chain.glideTo(a[currentIdx - 1], a);
-    });
-    if (nextBtn) nextBtn.addEventListener('click', function () {
-      if (chain.auto || currentIdx < 0 || currentIdx >= items.length - 1) return;
-      var a = chain.anchors();
-      if (a.length > currentIdx + 1) chain.glideTo(a[currentIdx + 1], a);
     });
   }
 
-  if (layer.__seq) wireClicks();
-  else document.addEventListener('DOMContentLoaded', wireClicks);
+  // Indicator + fill line placement
+  var indEl = document.getElementById('pf-sw-ind');
+  var hlboxEl = document.getElementById('pf-sw-hlbox');
+  function placeInd(i) {
+    var t = tabs[i]; if (!t || !indEl) return;
+    var y = t.offsetTop + t.offsetHeight / 2;
+    indEl.style.transform = 'translateY(' + (y - 5.5) + 'px)';
+    tabsEl.style.setProperty('--fill', Math.max(0, y - 36) + 'px');
+    if (hlboxEl) { hlboxEl.style.transform = 'translateY(' + t.offsetTop + 'px)'; hlboxEl.style.height = t.offsetHeight + 'px'; }
+  }
 
-  syncNav(-1);   // initialise disabled states before any package is current
-})();
+  var cur = -1;
+  var firstGo = true;   // clip 0 plays on load automatically; skip playClip on first call
+  var prevBtn = document.getElementById('pf-sw-prev');
+  var nextBtn = document.getElementById('pf-sw-next');
+  var countEl = document.getElementById('pf-sw-count');
+  var segs = Array.prototype.slice.call(document.querySelectorAll('#pf-sw-segs i'));
 
-// Test aid, off unless asked for in the address:
-//   ?fps  corner readout: frames per second and how frames are decoded
-(function () {
-  if (!/[?&]fps\b/.test(location.search)) return;
-  var badge = document.createElement('div');
-  badge.className = 'pf-fps';
-  document.body.appendChild(badge);
-  var frames = 0, worst = 0, last = performance.now(), prev = last;
-  (function tick(now) {
-    frames++; worst = Math.max(worst, now - prev); prev = now;
-    if (now - last >= 1000) {
-      var s = document.querySelector('[data-seq-chain]').__seq;
-      var mode = s && s.clips.every(function (c) { return c.set.useVideo; }) ? 'GPU video' : 'slike (CPU)';
-      badge.textContent = Math.round(frames * 1000 / (now - last)) + ' fps · najdaljša ' +
-        Math.round(worst) + ' ms · ' + mode + (location.protocol === 'file:' ? ' · file://' : '');
-      frames = 0; worst = 0; last = now;
+  function go(i, opts) {
+    opts = opts || {};
+    i = Math.max(0, Math.min(PK.length - 1, i));
+    if (i === cur) return;
+    cur = i;
+    tabs.forEach(function (t, k) {
+      var on = k === i;
+      t.setAttribute('aria-selected', on);
+      t.tabIndex = on ? 0 : -1;
+      t.classList.toggle('is-done', k < i);
+    });
+    panels.forEach(function (p, k) {
+      var on = k === i;
+      p.classList.toggle('is-active', on);
+      p.inert = !on;
+      p.setAttribute('aria-hidden', !on);
+    });
+    segs.forEach(function (s, k) { s.classList.toggle('on', k <= i); });
+    if (prevBtn) prevBtn.disabled = (i === 0);
+    if (nextBtn) nextBtn.disabled = (i === PK.length - 1);
+    if (countEl) countEl.innerHTML = PK[i].n + ' <span>/ 04</span>';
+    requestAnimationFrame(function () { placeInd(i); });
+    document.dispatchEvent(new CustomEvent('pf:pkg', { detail: i }));
+    if (opts.focus) tabs[i].focus();
+    try { history.replaceState(null, '', '#' + PK[i].id); } catch (e) {}
+
+    // Play the room animation clip for this package.
+    // Skip on first call: clip 0 plays automatically on load.
+    if (seqEl && seqEl.__seq && !firstGo) seqEl.__seq.playClip(i);
+    firstGo = false;
+
+    // Update badge chip
+    if (seqBadge) {
+      seqBadge.textContent = PK[i].badge || '';
+      seqBadge.style.display = PK[i].badge ? '' : 'none';
     }
-    requestAnimationFrame(tick);
-  })(last);
+
+    // Reset to animation view and update thumbnails
+    showAnimation();
+    if (seqRoomChip) seqRoomChip.textContent = PK[i].imgs[0].label;
+    updateThumbs(i);
+  }
+
+  // Keyboard nav within tablist
+  tabsEl.addEventListener('keydown', function (e) {
+    var vert = getComputedStyle(tabsEl).gridTemplateColumns.split(' ').length === 1;
+    var to = null;
+    if (e.key === 'ArrowDown') to = cur + (vert ? 1 : 2);
+    if (e.key === 'ArrowUp')   to = cur - (vert ? 1 : 2);
+    if (e.key === 'ArrowRight') to = cur + 1;
+    if (e.key === 'ArrowLeft')  to = cur - 1;
+    if (e.key === 'Home') to = 0;
+    if (e.key === 'End')  to = PK.length - 1;
+    if (to !== null) { e.preventDefault(); go(Math.max(0, Math.min(3, to)), { focus: true }); }
+  });
+
+  if (prevBtn) prevBtn.addEventListener('click', function () { go(cur - 1); });
+  if (nextBtn) nextBtn.addEventListener('click', function () { go(cur + 1); });
+
+  // Swipe on the shared animation frame
+  var sx = null, sy = null;
+  var swipeTarget = seqEl || panelsEl;
+  swipeTarget.addEventListener('touchstart', function (e) {
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+  }, { passive: true });
+  swipeTarget.addEventListener('touchend', function (e) {
+    if (sx === null) return;
+    var dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+    sx = null;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) go(cur + (dx < 0 ? 1 : -1));
+  });
+
+  // Clicks on header rail or anchor links
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('a[href^="#pkg-"]');
+    if (a) {
+      e.preventDefault();
+      var idx = parseInt(a.getAttribute('href').slice(5), 10) - 1;
+      go(idx);
+      document.getElementById('packages').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+
+  window.addEventListener('resize', function () { placeInd(cur); });
+  document.fonts && document.fonts.ready.then(function () { placeInd(cur); });
+
+  // Start on first package (or from hash)
+  var m = /^#pkg-([1-4])$/.exec(location.hash);
+  go(m ? parseInt(m[1], 10) - 1 : 0, { focus: false });
+  if (m) setTimeout(function () { document.getElementById('packages').scrollIntoView({ block: 'start' }); }, 100);
 })();
+

@@ -378,6 +378,7 @@
     clip.forced = { t0: null, dur: reducedMotion.matches ? 0 : (clip.set.count - 1) / fps * 1000 };
     clip.p = 0;
     this.lastKey = '';
+    this.lastPlayedClip = i;   // remembered so activeIndex stays on this clip after forced finishes
     this.wake();
   };
 
@@ -763,7 +764,8 @@
     for (var c = this.clips.length - 1; c > 0; c--) {
       if (this.clips[c].play === 'scroll' && this.clips[c].p > 0) return c;
     }
-    return 0;
+    // After playClip() finishes, stay on the last-played clip (not clip 0).
+    return this.lastPlayedClip !== undefined ? this.lastPlayedClip : 0;
   };
 
   // Near 1:1 the frame is drawn pixel-exact. A tiny "cover" stretch (e.g.

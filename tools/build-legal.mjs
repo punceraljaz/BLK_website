@@ -152,7 +152,7 @@ ${META_ADS ? `        <p>We use the <strong>Meta Pixel</strong> (Meta Platforms 
   },
 };
 
-const RAIL = [['furnishing', 'Furnishing'], ['basic-airbnb', 'Basic Airbnb'], ['upscale-airbnb', 'Upscale Airbnb'], ['donna-branka', 'Donna Branka']];
+const RAIL = [['furnishing', 'Furnishing'], ['basic-airbnb', 'Basic Airbnb'], ['high-end-airbnb', 'High-End Airbnb'], ['donna-branka', 'Donna Branka']];
 
 function page(slug) {
   const p = PAGES[slug];
