@@ -298,7 +298,7 @@
     requestAnimationFrame(function () { placeInd(i); });
     document.dispatchEvent(new CustomEvent('pf:pkg', { detail: i }));
     if (opts.focus) tabs[i].focus();
-    try { history.replaceState(null, '', '#' + PK[i].id); } catch (e) {}
+    if (!opts.noHistory) try { history.replaceState(null, '', '#' + PK[i].id); } catch (e) {}
 
     // Play the room animation clip for this package.
     // Skip on first call: clip 0 plays automatically on load.
@@ -360,8 +360,8 @@
   window.addEventListener('resize', function () { placeInd(cur); });
   document.fonts && document.fonts.ready.then(function () { placeInd(cur); });
 
-  // Always start on Furnishing (pkg-1); if a hash link is shared scroll to packages
-  go(0, { focus: false });
+  // Always start on Furnishing (pkg-1); suppress hash so browser doesn't scroll to anchor on next load
+  go(0, { focus: false, noHistory: true });
   if (/^#pkg-[1-4]$/.test(location.hash)) {
     setTimeout(function () { document.getElementById('packages').scrollIntoView({ block: 'start' }); }, 100);
   }

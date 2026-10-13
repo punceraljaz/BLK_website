@@ -21,6 +21,8 @@
   // Safety: if the intro script never finishes, the page is released after 9 s.
   (function () {
     var d = document.documentElement, seen = null;
+    // Clear any pkg hash so the browser doesn't auto-scroll to it on load
+    if (/^#pkg-/.test(location.hash)) history.replaceState(null, '', location.pathname + location.search);
     if (!location.hash) d.classList.add('hero-on');      // header waits until the hero has scrolled away (js/home.js)
     try { seen = sessionStorage.getItem('pf-intro-seen'); } catch (e) {}
     var force = /[?&]intro\b/.test(location.search);
@@ -235,6 +237,6 @@
 <script src="js/meta-pixel.js?v=b9498a67"></script>
 <script src="js/strip-gallery.js?v=9da2af36"></script>
 <script src="js/scroll-sequence.js?v=placeholder"></script>
-<script src="js/home.js?v=749990bc"></script>
+<script src="js/home.js?v=26e5a633"></script>
 </body>
 </html>
