@@ -10,8 +10,8 @@
      #81786F, line #B7ADA1, accent #5A372A, floor #462C24. */
   --sc-canvas:      #E3E1DB;
   --sc-surface:     #EDECE8;
-  --sc-ink:         #000;
-  --sc-ink-soft:    #000;
+  --sc-ink:         var(--pf-floor);
+  --sc-ink-soft:    color-mix(in oklab, var(--pf-floor) 55%, transparent);
   --sc-accent:      #2C1F14;   /* warm dark brown = the gallery/footer colour (client 2026-10-05; was chocolate #261F1E, before that mahogany #351D14) */
   --sc-accent-ink:  #F2E6D8;   /* palette cream: light text on the browns */
   --pf-line:        #BEBAB2;
@@ -46,12 +46,9 @@
 /* ------------------------------------------------------------- nav bar -- */
 .site-bar {
   position: fixed; inset: 0 0 auto 0; z-index: var(--sc-z-chrome);
-  display: flex; align-items: center; justify-content: space-between;
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
   padding: var(--sc-4) var(--sc-gutter);
-  /* The page lays out under a 4.75rem bar (room top, package pages); kept
-     explicitly since "Book a Visit" (which set the height) was removed. */
   min-height: 4.75rem; box-sizing: border-box;
-  /* Plain ivory, no rule under it: the client asked for no unneeded lines. */
   background: var(--sc-canvas);
 }
 .site-bar__mark {
@@ -72,8 +69,8 @@
 /* Quieter (2026-10-03): smaller, less tracking, muted; the active item is
    only darker, no weight or underline. */
 .pf-rail {
-  position: absolute; left: 50%; transform: translateX(-50%);
   display: flex; align-items: center; gap: clamp(1.25rem, 2.2vw, 2.25rem);
+  justify-self: center;
 }
 .pf-rail__item {
   position: relative; display: flex; align-items: center; gap: var(--sc-2);
@@ -179,7 +176,7 @@ footer.pf-site-foot { padding-bottom: calc(var(--sc-8) + 6rem); }
    parquet at her feet, so the fade above walks straight into this
    without a seam. */
 .pf-site-foot {
-  background: var(--pf-floor);
+  background: color-mix(in oklab, var(--pf-floor) 72%, var(--sc-canvas));
   padding: var(--sc-8) var(--sc-gutter);
 }
 .pf-site-foot__inner {

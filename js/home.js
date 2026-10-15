@@ -119,8 +119,8 @@
       imgs: [
         { label: 'Bedroom',  view: 'anim',  src: 'assets/img/pk-furnishing-example-1.webp', thumb: 'assets/img/01-bedroom-thumb.webp' },
         { label: 'Dining',   view: 'tv',    src: '', thumb: 'assets/img/01-dining-end-thumb.webp' },
-        { label: 'Kitchen',  view: 'still', src: 'assets/img/01-furnishing-kitchen.webp',   thumb: 'assets/img/01-furnishing-kitchen-thumb.webp' },
-        { label: 'Bathroom', view: 'still', src: 'assets/img/01-furnishing-bathroom.webp',  thumb: 'assets/img/01-furnishing-bathroom-thumb.webp' }
+        { label: 'Kitchen',  view: 'still', src: 'assets/img/01-furnishing-kitchen.png',   thumb: 'assets/img/01-furnishing-kitchen.png' },
+        { label: 'Bathroom', view: 'still', src: 'assets/img/01-furnishing-bathroom.png',  thumb: 'assets/img/01-furnishing-bathroom.png' }
       ]
     },
     { id: 'pkg-2', n: '02', name: 'Basic Airbnb', short: 'Basic', tag: 'Ready to host',
@@ -128,8 +128,10 @@
       href: 'packages/basic-airbnb.html',
       wa: "Hi BLK Remodelling, I'd like to know more about the Basic Airbnb package.",
       imgs: [
-        { label: 'Bedroom',   view: 'anim', src: 'assets/img/pk-basic-airbnb-example-1.webp', thumb: 'assets/img/02-bedroom-thumb.webp' },
-        { label: 'TV corner', view: 'tv',   src: '', thumb: 'assets/img/02-tv-end-thumb.webp' }
+        { label: 'Bedroom',   view: 'anim',  src: 'assets/img/pk-basic-airbnb-example-1.webp', thumb: 'assets/img/02-bedroom-thumb.webp' },
+        { label: 'TV corner', view: 'tv',    src: '', thumb: 'assets/img/02-tv-end-thumb.webp' },
+        { label: 'Kitchen',   view: 'still', src: 'assets/img/02-basic-kitchen.png',            thumb: 'assets/img/02-basic-kitchen.png' },
+        { label: 'Bathroom',  view: 'still', src: 'assets/img/02-basic-bathroom.png',           thumb: 'assets/img/02-basic-bathroom.png' }
       ]
     },
     { id: 'pkg-3', n: '03', name: 'High-End Airbnb', short: 'High-End', tag: 'The finer things',
@@ -137,20 +139,23 @@
       href: 'packages/high-end-airbnb.html',
       wa: "Hi BLK Remodelling, I'd like to know more about the High-End Airbnb package.",
       imgs: [
-        { label: 'Bedroom',   view: 'anim', src: 'assets/img/pk-upscale-airbnb-example-1.webp', thumb: 'assets/img/03-bedroom-thumb.webp' },
-        { label: 'TV corner', view: 'tv',   src: '', thumb: 'assets/img/03-tv-end-thumb.webp' }
+        { label: 'Bedroom',   view: 'anim',  src: 'assets/img/pk-upscale-airbnb-example-1.webp', thumb: 'assets/img/03-bedroom-thumb.webp' },
+        { label: 'TV corner', view: 'tv',    src: '', thumb: 'assets/img/03-tv-end-thumb.webp' },
+        { label: 'Kitchen',   view: 'still', src: 'assets/img/03-highend-kitchen.png',            thumb: 'assets/img/03-highend-kitchen.png' },
+        { label: 'Bathroom',  view: 'still', src: 'assets/img/03-highend-bathroom.png',           thumb: 'assets/img/03-highend-bathroom.png' }
       ]
     },
     { id: 'pkg-4', n: '04', name: 'Donna Branka', short: 'Donna B.', tag: 'The signature package',
       lede: 'Our signature. Finished to the last detail.', desc: 'Designed and styled by Branka. Nothing left to add.',
+      note: 'Same apartment as the other packages — layout redesigned through complete remodelling.',
       badge: 'Signature · Best seller',
       href: 'packages/donna-branka.html',
       wa: "Hi BLK Remodelling, I'd like to know more about the Donna Branka package.",
       imgs: [
         { label: 'Bedroom',   view: 'anim',  src: 'assets/img/pk-donna-branka-example-1.webp', thumb: 'assets/img/04-bedroom-thumb.webp' },
-        { label: 'Detail',    view: 'still', src: 'assets/img/pk-donna-branka-example-2.webp', thumb: 'assets/img/pk-donna-branka-example-2.webp' },
-        { label: 'Living',    view: 'still', src: 'assets/img/pk-donna-branka-example-3.webp', thumb: 'assets/img/pk-donna-branka-example-3.webp' },
-        { label: 'TV corner', view: 'tv',    src: '', thumb: 'assets/img/04-tv-end-thumb.webp' }
+        { label: 'TV corner', view: 'tv',    src: '', thumb: 'assets/img/04-tv-end-thumb.webp' },
+        { label: 'Kitchen',   view: 'still', src: 'assets/img/03-highend-kitchen.png',           thumb: 'assets/img/03-highend-kitchen.png' },
+        { label: 'Bathroom',  view: 'still', src: 'assets/img/04-donna-bathroom.jpg',            thumb: 'assets/img/04-donna-bathroom.jpg' }
       ]
     }
   ];
@@ -196,9 +201,10 @@
           '<h2 class="pf-sw__name">' + p.name + '</h2>' +
           '<p class="pf-sw__lede">' + p.lede + '</p>' +
           '<p class="pf-sw__desc">' + p.desc + '</p>' +
+          (p.note ? '<p class="pf-sw__note-mobile pf-sw__note">' + p.note + '</p>' : '') +
         '</div>' +
         '<div class="pf-sw__ctas">' +
-          '<a class="pf-sw__link pf-sw__link--primary" href="' + p.href + '">More about the package →</a>' +
+          '<a class="pf-sw__link pf-sw__link--primary" href="' + p.href + '">More about the package and price →</a>' +
           '<a class="pf-sw__link" href="' + WA + '?text=' + encodeURIComponent(p.wa) + '" target="_blank" rel="noopener" data-choose="wa" data-wa-text="' + p.wa + '" aria-haspopup="menu">Ask on WhatsApp</a>' +
         '</div>' +
       '</div>';
@@ -212,6 +218,7 @@
   var tvEl = document.getElementById('pf-sw-tv-seq');
   var seqRoomChip = document.getElementById('pf-sw-seq-room');
   var seqBadge = document.getElementById('pf-sw-seq-badge');
+  var seqNote = document.getElementById('pf-sw-seq-note');
   var seqStill = document.getElementById('pf-sw-seq-still');
   var seqThumbsEl = document.getElementById('pf-sw-thumbs');
 
@@ -310,6 +317,11 @@
       seqBadge.textContent = PK[i].badge || '';
       seqBadge.style.display = PK[i].badge ? '' : 'none';
     }
+    // Update note chip (bottom-left)
+    if (seqNote) {
+      seqNote.textContent = PK[i].note || '';
+      seqNote.style.display = PK[i].note ? '' : 'none';
+    }
 
     // Reset to animation view and update thumbnails
     showAnimation();
@@ -365,5 +377,28 @@
   if (/^#pkg-[1-4]$/.test(location.hash)) {
     setTimeout(function () { document.getElementById('packages').scrollIntoView({ block: 'start' }); }, 100);
   }
+})();
+
+// Hide packages section and dock until user scrolls to them; re-hide when scrolling back up.
+// Arrow fades out when packages appear, fades back in when hidden again.
+(function () {
+  var sw = document.getElementById('packages');
+  var dock = document.querySelector('.pf-dock');
+  var arrow = document.querySelector('.pf-sw-intro__arrow');
+  if (!sw || !('IntersectionObserver' in window)) return;
+  sw.classList.add('pf-sw--pre');
+  if (dock) dock.classList.add('pf-dock--pre');
+  new IntersectionObserver(function (entries) {
+    var e = entries[0];
+    if (e.isIntersecting) {
+      sw.classList.remove('pf-sw--pre');
+      if (dock) dock.classList.remove('pf-dock--pre');
+      if (arrow) arrow.classList.add('pf-sw-intro__arrow--gone');
+    } else if (e.boundingClientRect.top > 0) {
+      sw.classList.add('pf-sw--pre');
+      if (dock) dock.classList.add('pf-dock--pre');
+      if (arrow) arrow.classList.remove('pf-sw-intro__arrow--gone');
+    }
+  }, { rootMargin: '0px 0px -35% 0px', threshold: 0.01 }).observe(sw);
 })();
 
